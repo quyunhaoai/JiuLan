@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="gTV-IL-0wX" customClass="CCCommendityNoQuanCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="230" height="292"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="230" height="292"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pur-CR-RzT">
+                        <rect key="frame" x="0.0" y="0.0" width="230" height="292"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TWw-az-CX0">
+                                <rect key="frame" x="10" y="118" width="208" height="14"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="QLV-ME-L9L"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="首页课程图片" translatesAutoresizingMaskIntoConstraints="NO" id="sSa-t2-vyG">
+                                <rect key="frame" x="0.0" y="0.0" width="230" height="108"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="108" id="dfP-1d-rbO"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N8T-0x-OYi">
+                                <rect key="frame" x="10" y="137" width="208" height="14"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="hff-d2-QQd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="TWw-az-CX0" secondAttribute="trailing" constant="12" id="8Fz-IM-isW"/>
+                            <constraint firstItem="sSa-t2-vyG" firstAttribute="top" secondItem="Pur-CR-RzT" secondAttribute="top" constant="0.10000000000000001" id="G4J-0L-WCd"/>
+                            <constraint firstItem="N8T-0x-OYi" firstAttribute="top" secondItem="TWw-az-CX0" secondAttribute="bottom" constant="5" id="Pdn-4h-iCP"/>
+                            <constraint firstItem="N8T-0x-OYi" firstAttribute="leading" secondItem="Pur-CR-RzT" secondAttribute="leading" constant="10" id="VcR-FZ-h25"/>
+                            <constraint firstItem="sSa-t2-vyG" firstAttribute="leading" secondItem="Pur-CR-RzT" secondAttribute="leading" constant="0.10000000000000001" id="cFB-VJ-Y8h"/>
+                            <constraint firstAttribute="trailing" secondItem="sSa-t2-vyG" secondAttribute="trailing" constant="0.10000000000000001" id="jVe-HL-aQs"/>
+                            <constraint firstAttribute="trailing" secondItem="N8T-0x-OYi" secondAttribute="trailing" constant="12" id="mx2-ts-geX"/>
+                            <constraint firstItem="TWw-az-CX0" firstAttribute="leading" secondItem="Pur-CR-RzT" secondAttribute="leading" constant="10" id="zCB-tp-6fX"/>
+                            <constraint firstItem="TWw-az-CX0" firstAttribute="top" secondItem="sSa-t2-vyG" secondAttribute="bottom" constant="10" id="zWO-hI-02p"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H3S-Wr-HY1">
+                        <rect key="frame" x="166" y="206" width="54" height="15"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <state key="normal">
+                            <color key="titleColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                    </button>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="Pur-CR-RzT" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="0.10000000000000001" id="IFu-CC-DSp"/>
+                <constraint firstAttribute="trailing" secondItem="Pur-CR-RzT" secondAttribute="trailing" constant="0.10000000000000001" id="Om8-SY-Jcf"/>
+                <constraint firstItem="Pur-CR-RzT" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="0.10000000000000001" id="Rpf-jF-iff"/>
+                <constraint firstAttribute="bottom" secondItem="Pur-CR-RzT" secondAttribute="bottom" constant="0.10000000000000001" id="v5P-hU-Xyo"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="z7x-RU-Bj2"/>
+            <size key="customSize" width="230" height="292"/>
+            <point key="canvasLocation" x="-233.33333333333334" y="135.26785714285714"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="首页课程图片" width="155" height="111"/>
+    </resources>
+</document>
