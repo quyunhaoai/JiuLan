@@ -8,6 +8,7 @@
 
 #import "CCMyInfoViewController.h"
 #import "CCBangDingMobileViewController.h"
+#import "BRAddressPickerView.h"
 @interface CCMyInfoViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSArray *titleArray;
@@ -106,22 +107,19 @@
         UITextField *titleTextField = [UITextField new];
         titleTextField.font = FONT_16;
         titleTextField.textAlignment = NSTextAlignmentLeft;
-        [titleTextField setValue:[UIColor colorWithRed:213/255.0 green:213/255.0 blue:213/255.0 alpha:1.0] forKeyPath:@"_placeholderLabel.textColor"];
+        titleTextField.textColor = COLOR_999999;
+        [titleTextField setValue:[UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0] forKeyPath:@"_placeholderLabel.textColor"];
         titleTextField.userInteractionEnabled = YES;
         [cell.contentView addSubview:titleTextField];
-        titleTextField.frame = CGRectMake(kWidth(94), 10, Window_W-94-15, 30);
+        titleTextField.frame = CGRectMake(Window_W-94-15, 10, 94, 30);
         titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
 //        titleTextField.delegate = self;
         titleTextField.tag = 100+indexPath.row;
-        titleTextField.placeholder = @"请输入昵称";
-
-//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kWidth(94), 20, Window_W-94-15, 16)];
-//        label.textColor = COLOR_999999;
-//        label.font = FONT_16;
-//        label.text = @"12345678911";
-//        label.textAlignment = NSTextAlignmentRight;
-//        [cell.contentView addSubview:label];
-//        label.tag = 110+indexPath.row;
+        NSMutableAttributedString *textColor = [[NSMutableAttributedString alloc] initWithString:@"请输入昵称"];
+        [textColor addAttribute:NSForegroundColorAttributeName
+                          value:COLOR_999999
+                          range:[@"请输入昵称" rangeOfString:@"请输入昵称"]];
+        titleTextField.attributedPlaceholder = textColor;
     } else if (indexPath.row == 2 && indexPath.section == 0) {
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kWidth(94), 10, Window_W-kWidth(94)-27, 30)];
         label.textColor = COLOR_999999;
@@ -184,28 +182,8 @@
     if (indexPath.row == 3 && indexPath.section == 0) {
         CCBangDingMobileViewController *vc = [CCBangDingMobileViewController new];
         [self.navigationController pushViewController:vc animated:YES];
-    } else if (indexPath.row == 2 && indexPath.section == 0) {
-        NSMutableArray *area = [ManagerModel openArrayModelOfPlistFileName:AREAPLIST];
-        NSMutableArray *arr = [NSMutableArray array];
-        if (self.cityDict.allKeys.count > 0 && [self.cityDict.allKeys containsObject:@"actingProvince"] && [self.cityDict.allKeys containsObject:@"actingCity"] && [self.cityDict.allKeys containsObject:@"actingRegion"]) {
-            arr = [@[self.cityDict[@"actingProvince"],self.cityDict[@"actingCity"],self.cityDict[@"actingRegion"]] mutableCopy];
-        }
-        [BRAddressPickerView showAddressPickerWithShowType:BRAddressPickerModeArea dataSource:area defaultSelected:arr isAutoSelect:NO themeColor:nil resultBlock:^(BRProvinceModel *province, BRCityModel *city, BRAreaModel *area) {
-            weakSelf.provinceID = [province.provinceID integerValue];
-            weakSelf.cityID = [city.cityID integerValue];
-            weakSelf.areaID = [area.regionID integerValue];
-            
-            weakSelf.cityDict = [@{
-                               @"actingProvince":province.provinceName,
-                               @"actingCity":city.cityName,
-                               @"actingRegion":area.regionName
-                               } mutableCopy];
-            
-            self->areaString = [NSString stringWithFormat:@"%@%@%@",province.provinceName,city.cityName,area.regionName];
-            self->areaTextColor = COLOR_333333;
-            [weakSelf.tableView reloadRow:0 inSection:1 withRowAnimation:UITableViewRowAnimationNone];
-        } cancelBlock:^{
-        }];
+    } else if (indexPath.row == 2 && indexPath.section == 0) {//更换微信
+
     }
 }
 

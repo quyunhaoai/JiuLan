@@ -5,12 +5,12 @@
 //  Created by GOOUC on 2020/4/7.
 //  Copyright © 2020 GOOUC. All rights reserved.
 //
-
+#import "CCModityAddressViewController.h"
 #import "BaseTableViewCell.h"
 #import "KKButton.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CCModifyArddressTableViewCell : BaseTableViewCell
+@interface CCModifyArddressTableViewCell : BaseTableViewCell<CCMyAddressViewControllerDelegate>
 @property (strong, nonatomic) UILabel *nameLab;
 @property (strong, nonatomic) UILabel *addressLab;
 @property (strong, nonatomic) UILabel *numberLab;

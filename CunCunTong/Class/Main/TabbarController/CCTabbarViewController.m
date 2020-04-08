@@ -12,7 +12,7 @@
 #import "CCHomeViewController.h"
 #import "CCPanDianViewController.h"
 #import "CCPersonCenterViewController.h"
-
+#import "CCSmallShopViewController.h"
 
 @interface CCTabbarViewController ()<UITabBarControllerDelegate>
 
@@ -53,7 +53,10 @@
     chatVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:[NSString stringWithFormat:@"盘点"]
                                     image:[[UIImage imageNamed:@"盘点图标灰"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                             selectedImage:[[UIImage imageNamed:@"盘点图标蓝"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
-    
+    CCBaseNavController *smallShop = [[CCBaseNavController alloc] initWithRootViewController:[CCSmallShopViewController new]];
+    smallShop.tabBarItem = [[UITabBarItem alloc] initWithTitle:[NSString stringWithFormat:@"小店"]
+                                    image:[[UIImage imageNamed:@"小店图标灰"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                            selectedImage:[[UIImage imageNamed:@"小店图标绿"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     CCBaseNavController *personalCenterVC = [[CCBaseNavController alloc] initWithRootViewController:[CCPersonCenterViewController new]];
     personalCenterVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:[NSString stringWithFormat:@"我的"]
                                     image:[[UIImage imageNamed:@"我的图标灰"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
@@ -67,7 +70,7 @@
     selectTextAttrs[NSForegroundColorAttributeName] = krgb(36,149,143);
     
     
-    NSArray *viewCtrlArray = @[navTabVC,   chatVC, personalCenterVC];
+    NSArray *viewCtrlArray = @[navTabVC,   chatVC, smallShop, personalCenterVC];
     // 创建可变数组，存放导航控制器
     NSMutableArray *navCtrls = [NSMutableArray array];
     // 遍历视图控制器数组

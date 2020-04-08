@@ -7,7 +7,7 @@
 //
 
 #import "CCSelectTimeView.h"
-
+#import "BRDatePickerView.h"
 @implementation CCSelectTimeView
 
 
@@ -33,6 +33,7 @@
     [forntBtn setImage:IMAGE_NAME(@"downImage_icon") forState:UIControlStateNormal];
     forntBtn.layer.cornerRadius = 10;
     forntBtn.layer.masksToBounds = YES;
+    [forntBtn addTarget:self action:@selector(timeSelect:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:forntBtn];
     
     UILabel *titleLab2 = ({
@@ -55,6 +56,7 @@
     [backBtn setImage:IMAGE_NAME(@"downImage_icon") forState:UIControlStateNormal];
     backBtn.layer.cornerRadius = 10;
     backBtn.layer.masksToBounds = YES;
+    [backBtn addTarget:self action:@selector(timeSelect:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:backBtn];
     
     [titleLab mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -81,11 +83,17 @@
         make.width.mas_equalTo(98);
         make.height.mas_equalTo(20);
     }];
-        [forntBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleRight imageTitleSpace:5];
-        [backBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleRight imageTitleSpace:5];
+    [forntBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleRight imageTitleSpace:5];
+    [backBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleRight imageTitleSpace:5];
 }
 
-
+- (void)timeSelect:(UIButton *)button {
+    NSString *str = [NSString getCurrentTime:@"yyyy-MM-dd"];
+    [BRDatePickerView showDatePickerWithTitle:@"请选择" dateType:BRDatePickerModeYMD defaultSelValue:str resultBlock:^(NSString *selectValue) {
+        [button setTitle:selectValue forState:UIControlStateNormal];
+    }];
+    
+}
 
 
 

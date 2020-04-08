@@ -31,7 +31,7 @@
     //添加小按钮
     [segC insertSegmentWithTitle:@"库存预警" atIndex:0 animated:NO];
     [segC insertSegmentWithTitle:@"临期预警" atIndex:1 animated:NO];
-    [segC insertSegmentWithTitle:@"活动预警" atIndex:1 animated:NO];
+//    [segC insertSegmentWithTitle:@"活动预警" atIndex:1 animated:NO];
     //设置样式
     [segC setTintColor:krgb(36,149,143)];
     

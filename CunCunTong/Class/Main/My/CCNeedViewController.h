@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CCNeedViewController : CCBaseViewController
 @property (weak, nonatomic) IBOutlet KKButton *photosBtn;
+@property (weak, nonatomic) IBOutlet UITextField *detailTextF;
+@property (weak, nonatomic) IBOutlet UITextField *needNumberTextF;
+@property (weak, nonatomic) IBOutlet UITextField *nametextField;
 
 @end
 

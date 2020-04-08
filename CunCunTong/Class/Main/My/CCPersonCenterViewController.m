@@ -18,6 +18,8 @@ static NSString *CellIdentifier = @"UITableViewCell";
 #import "CCWarningReminderViewController.h"
 #import "CCMyAddressViewController.h"
 #import "CCMyInfoViewController.h"
+#import "CCNeedViewController.h"
+#import "CCComplaintListTableViewController.h"
 @interface CCPersonCenterViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (strong,nonatomic)CCPersonHeaderView *headerView;
 @property (nonatomic,strong) UITableView *tableView;
@@ -129,6 +131,7 @@ static NSString *CellIdentifier = @"UITableViewCell";
     }
     return _titleArray;
 }
+
 - (NSArray *)controllerArray {
     if (!_controllerArray) {
         _controllerArray = @[@"CCBalanceViewController",
@@ -136,8 +139,8 @@ static NSString *CellIdentifier = @"UITableViewCell";
 //                        @"数据分析",
                         @"CCExpressKDFRViewController",
                         @"CCWarningReminderViewController",
-                        @"需求上报",
-                        @"投诉中心",
+                        @"CCNeedViewController",
+                        @"CCComplaintListTableViewController",
                         @"一键要货",
                         @"CCMyAddressViewController",
                         @"退出登录",

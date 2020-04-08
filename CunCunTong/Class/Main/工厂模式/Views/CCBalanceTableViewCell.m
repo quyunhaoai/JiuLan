@@ -25,7 +25,11 @@
 
     // Configure the view for the selected state
 }
-
+- (void)setModel:(BaseModel *)model {
+    self.titleLab.text = @"微信充值";
+    self.subtitleLab.text = @"12-10  09:50";
+    self.priceLab.text = @"+1000";
+}
 + (CGFloat)height {
     return 58.f;
 }

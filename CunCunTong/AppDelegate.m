@@ -10,7 +10,7 @@
 #import "CCBaseNavController.h"
 
 #import "CCTabbarViewController.h"
-#import "CCMyInfoViewController.h"
+#import "CCNewAddBuyGoodsViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -24,9 +24,9 @@
     [self.window makeKeyAndVisible];
     
 //    CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
-    self.window.rootViewController = [CCTabbarViewController getTabBarController];
-    CCBaseViewController *vc = [CCMyInfoViewController new];
-//    self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
+//    self.window.rootViewController = [CCTabbarViewController getTabBarController];
+    CCBaseViewController *vc = [CCNewAddBuyGoodsViewController new];
+    self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
 //
     return YES;
 }

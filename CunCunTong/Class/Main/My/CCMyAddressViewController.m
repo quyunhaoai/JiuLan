@@ -28,19 +28,7 @@
     }];
     
     self.tableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
-    
-//    self.hhhView.nameLab.text = @"王强";
-//    self.hhhView.numberLab.text = @"13145217111";
-//    self.hhhView.numberLab.textColor = COLOR_333333;
-//    self.hhhView.addressLab.text = @"河南省郑州市二七区长江路街道长江路与连云路交叉口正商城2号楼 ";
-//    self.hhhView.addressLab.textColor = COLOR_666666;
-//    self.hhhView.modifyBtn.hidden = NO;
-//    XYWeakSelf;
-//    [self.hhhView.modifyBtn addTapGestureWithBlock:^(UIView *gestureView) {
-//        CCModityAddressViewController *vc = [CCModityAddressViewController new];
-//        [weakSelf.navigationController pushViewController:vc animated:YES];
-//    }];
-//    
+
     [self initData];
 }
 - (void)initData {

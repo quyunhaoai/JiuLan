@@ -25,9 +25,9 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aml-Xb-giG">
-                        <rect key="frame" x="56" y="6.5" width="204" height="21"/>
+                        <rect key="frame" x="56" y="8.5" width="204" height="17"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="21" id="61U-r5-gjn"/>
+                            <constraint firstAttribute="height" constant="17" id="61U-r5-gjn"/>
                             <constraint firstAttribute="width" constant="204" id="zHo-X5-QJ0"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -45,9 +45,9 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jg2-bw-AyW">
-                        <rect key="frame" x="56" y="37.5" width="223" height="21"/>
+                        <rect key="frame" x="56" y="30.5" width="223" height="14"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="21" id="6f0-j2-tV4"/>
+                            <constraint firstAttribute="height" constant="14" id="6f0-j2-tV4"/>
                             <constraint firstAttribute="width" constant="223" id="9D7-b2-OYC"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -69,7 +69,7 @@
                     <constraint firstItem="esn-uw-u6u" firstAttribute="leading" secondItem="aml-Xb-giG" secondAttribute="leading" id="FmQ-2Y-zzs"/>
                     <constraint firstAttribute="bottom" secondItem="esn-uw-u6u" secondAttribute="bottom" constant="0.10000000000000001" id="GFH-MQ-xCa"/>
                     <constraint firstItem="lOo-aC-TLd" firstAttribute="trailing" secondItem="esn-uw-u6u" secondAttribute="trailing" constant="0.10000000000000001" id="TBD-Ez-n6W"/>
-                    <constraint firstItem="Jg2-bw-AyW" firstAttribute="top" secondItem="aml-Xb-giG" secondAttribute="bottom" constant="10" id="aeK-1D-HLv"/>
+                    <constraint firstItem="Jg2-bw-AyW" firstAttribute="top" secondItem="aml-Xb-giG" secondAttribute="bottom" constant="5" id="aeK-1D-HLv"/>
                     <constraint firstAttribute="trailing" secondItem="lOo-aC-TLd" secondAttribute="trailing" constant="20" id="lum-pe-SFW"/>
                     <constraint firstItem="lOo-aC-TLd" firstAttribute="centerY" secondItem="aml-Xb-giG" secondAttribute="centerY" id="oQH-oi-lDi"/>
                     <constraint firstItem="6qd-P1-TAZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="7" id="ppU-rT-Ub1"/>

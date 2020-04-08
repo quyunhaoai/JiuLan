@@ -95,22 +95,22 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oqi-Aa-0sK">
-                                <rect key="frame" x="240" y="106" width="176" height="16"/>
+                                <rect key="frame" x="180" y="106" width="236" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="16" id="RhM-kW-5OZ"/>
-                                    <constraint firstAttribute="width" constant="176" id="gbi-KM-zex"/>
+                                    <constraint firstAttribute="width" constant="236" id="gbi-KM-zex"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rZT-eP-ycR">
-                                <rect key="frame" x="240" y="127" width="176" height="16"/>
+                                <rect key="frame" x="180" y="127" width="236" height="16"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="176" id="Alm-rM-xo3"/>
+                                    <constraint firstAttribute="width" constant="236" id="Alm-rM-xo3"/>
                                     <constraint firstAttribute="height" constant="16" id="aTJ-VR-577"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -153,6 +153,15 @@
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="contentbgView" destination="uYh-Gl-ncR" id="BHa-jn-4rB"/>
+                <outlet property="goodsNameLab" destination="AU3-8T-Sre" id="VoW-FF-xrh"/>
+                <outlet property="iconImageView" destination="1U0-5L-Nqf" id="xSC-bg-GPK"/>
+                <outlet property="numberLabel" destination="KHL-x4-rcP" id="oth-mT-rJo"/>
+                <outlet property="orderNumberLab" destination="Z6G-eL-O7g" id="p31-GM-wrR"/>
+                <outlet property="salesTimeLab" destination="rZT-eP-ycR" id="Rjl-HF-xA2"/>
+                <outlet property="singePriceLab" destination="baO-bV-VGw" id="sjp-rO-L6T"/>
+                <outlet property="stateLab" destination="f0Z-L0-Fgo" id="2vW-On-FFG"/>
+                <outlet property="subTypeLab" destination="3Cc-Hh-YsP" id="gJ8-q5-H1M"/>
+                <outlet property="sumLab" destination="oqi-Aa-0sK" id="ISM-A6-zq7"/>
             </connections>
             <point key="canvasLocation" x="223.18840579710147" y="176.78571428571428"/>
         </tableViewCell>

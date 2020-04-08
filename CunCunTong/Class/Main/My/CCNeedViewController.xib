@@ -10,6 +10,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CCNeedViewController">
             <connections>
+                <outlet property="detailTextF" destination="5DH-n1-baZ" id="0i1-xt-Y4a"/>
+                <outlet property="nametextField" destination="dAX-xZ-vYQ" id="o9s-Dy-wHu"/>
+                <outlet property="needNumberTextF" destination="hjg-ks-Ryr" id="0x9-q0-2h6"/>
                 <outlet property="photosBtn" destination="sqn-tt-6M0" id="cSg-R5-KzI"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -51,7 +54,7 @@
                         <constraint firstAttribute="height" constant="44" id="Xme-an-UkS"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits"/>
+                    <textInputTraits key="textInputTraits" keyboardType="namePhonePad"/>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="请详细说明：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o15-kw-PuA">
                     <rect key="frame" x="10" y="298" width="394" height="21"/>
@@ -79,7 +82,7 @@
                     <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqn-tt-6M0" customClass="KKButton">
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqn-tt-6M0" customClass="KKButton">
                     <rect key="frame" x="10" y="424" width="100" height="100"/>
                     <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>

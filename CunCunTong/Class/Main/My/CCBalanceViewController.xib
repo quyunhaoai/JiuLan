@@ -11,7 +11,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CCBalanceViewController">
             <connections>
                 <outlet property="goPay" destination="YV2-QV-nA4" id="jsr-oO-zt3"/>
+                <outlet property="goPayBtn" destination="YV2-QV-nA4" id="Bvf-nN-58s"/>
                 <outlet property="headView" destination="lVX-Zs-Igt" id="ij9-sP-rhN"/>
+                <outlet property="monryLab" destination="bzZ-GF-hEE" id="WLR-MI-f9a"/>
                 <outlet property="priceLab" destination="bzZ-GF-hEE" id="GWz-kP-v29"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -59,6 +61,7 @@
                             <state key="normal" title="去充值" image="白箭头右"/>
                             <connections>
                                 <action selector="goChongZhi:" destination="-1" eventType="touchUpInside" id="soY-Pb-9iC"/>
+                                <action selector="payButton:" destination="-1" eventType="touchUpInside" id="9CM-Db-Ye3"/>
                             </connections>
                         </button>
                     </subviews>

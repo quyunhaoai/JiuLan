@@ -7,7 +7,7 @@
 //
 
 #import "CCModifyArddressTableViewCell.h"
-#import "CCModityAddressViewController.h"
+
 @implementation CCModifyArddressTableViewCell
 
 - (void)awakeFromNib {
@@ -139,9 +139,14 @@
 
 - (void)addBtnClick:(UIButton *)btn {
     CCModityAddressViewController *vc = [CCModityAddressViewController new];
+    vc.delegate = self;
     [self.superview.viewController.navigationController pushViewController:vc animated:YES];
 }
-
+- (void)clickViewWithAddress:(NSString *)address moblieNumber:(NSString *)moblie name:(NSString *)name {
+    self.addressLab.text = address;
+    self.numberLab.text = moblie;
+    self.nameLab.text = name;
+}
 + (CGFloat)height {
     return 85.0f;
 }
