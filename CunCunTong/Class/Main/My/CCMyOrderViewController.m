@@ -9,12 +9,13 @@
 #import "CCMyOrderViewController.h"
 #import "CCMyOrderModel.h"
 #import "CCOrderDetailViewController.h"
-
+#import "CCReturnGoodsDetailViewController.h"
+#import "CCOrderSearchViewController.h"
 @interface CCMyOrderViewController ()<SegmentTapViewDelegate>
 @property (nonatomic, strong)SegmentTapView *segment;
 @property (strong, nonatomic) NSMutableArray *titleArray;
 @property (strong, nonatomic) KKNoDataView *noDataView;
-
+@property (assign, nonatomic) NSInteger selectIndex;
 
 @end
 
@@ -92,7 +93,8 @@
 
 }
 - (void)rightBtAction:(UIButton *)btn {
-    
+    CCOrderSearchViewController *vc = [CCOrderSearchViewController new];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 - (void)segCChanged:(UISegmentedControl *)seg {
     NSInteger i = seg.selectedSegmentIndex;
@@ -103,6 +105,7 @@
 -(void)selectedIndex:(NSInteger)index
 {
     NSLog(@"%ld",index);
+    self.selectIndex = index;
 //    [self.flipView selectIndex:index];
 }
 #pragma mark  -  Get
@@ -126,8 +129,13 @@
 }
 
 - (void)tableViewDidSelect:(NSIndexPath *)indexPath {
-    CCOrderDetailViewController *VC = [CCOrderDetailViewController new];
-    [self.navigationController pushViewController:VC animated:YES];
+    if (self.selectIndex == 4) {
+        CCReturnGoodsDetailViewController *vc = [CCReturnGoodsDetailViewController new];
+        [self.navigationController pushViewController:vc animated:YES];
+    } else {
+        CCOrderDetailViewController *VC = [CCOrderDetailViewController new];
+        [self.navigationController pushViewController:VC animated:YES];
+    }
 }
 
 @end

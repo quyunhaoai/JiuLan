@@ -1,2 +1,3 @@
 ${PODS_ROOT}/Target Support Files/Pods-CunCunTong/Pods-CunCunTong-resources.sh
+${PODS_ROOT}/AMap2DMap-NO-IDFA/MAMapKit.framework/AMap.bundle
 ${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle

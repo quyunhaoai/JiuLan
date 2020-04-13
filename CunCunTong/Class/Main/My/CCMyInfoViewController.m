@@ -9,7 +9,7 @@
 #import "CCMyInfoViewController.h"
 #import "CCBangDingMobileViewController.h"
 #import "BRAddressPickerView.h"
-@interface CCMyInfoViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface CCMyInfoViewController ()<UITableViewDelegate,UITableViewDataSource,STPhotoKitDelegate,UIImagePickerControllerDelegate>
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSArray *titleArray;
 @end
@@ -112,7 +112,7 @@
         titleTextField.userInteractionEnabled = YES;
         [cell.contentView addSubview:titleTextField];
         titleTextField.frame = CGRectMake(Window_W-94-15, 10, 94, 30);
-        titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+//        titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
 //        titleTextField.delegate = self;
         titleTextField.tag = 100+indexPath.row;
         NSMutableAttributedString *textColor = [[NSMutableAttributedString alloc] initWithString:@"请输入昵称"];
@@ -184,6 +184,29 @@
         [self.navigationController pushViewController:vc animated:YES];
     } else if (indexPath.row == 2 && indexPath.section == 0) {//更换微信
 
+    } else if (indexPath.row == 0 ){
+        XYWeakSelf;
+        LCActionSheet *actionSheet = [LCActionSheet sheetWithTitle:@"" cancelButtonTitle:@"取消" clicked:^(LCActionSheet * _Nonnull actionSheet, NSInteger buttonIndex) {
+            NSLog(@"%ld",buttonIndex);
+            switch (buttonIndex) {
+                case 0:
+                    
+                    break;
+                case 1:
+                     [weakSelf presentImageView:1];
+                    break;
+                case 2:
+                     [weakSelf presentImageView:2];
+                    break;
+                case 3:
+                     [weakSelf saveImageMethod];
+                    break;
+                    
+                default:
+                    break;
+            }
+        } otherButtonTitles:@"拍照", @"从手机相册选择", @"保存图片", nil];
+        [actionSheet show];
     }
 }
 
@@ -194,12 +217,74 @@
     return _titleArray;
 }
 
+-(void)saveImageMethod{
+ 
+    UIImage* image = IMAGE_NAME(@"");
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+//        [MBManager showBriefAlert:@"保存成功"];
+    }];
 
+}
 
+- (void)presentImageView:(NSInteger )buttonIndex {
+    if (buttonIndex == 1) {
+        UIImagePickerController *controller = [UIImagePickerController imagePickerControllerWithSourceType:UIImagePickerControllerSourceTypeCamera];
 
+        if ([controller isAvailableCamera] && [controller isSupportTakingPhotos]) {
+            [controller setDelegate:self];
+            [self presentViewController:controller animated:YES completion:nil];
+        }else {
+            NSLog(@"%s %@", __FUNCTION__, @"相机权限受限");
+        }
+    } else if(buttonIndex == 2){
+        UIImagePickerController *controller = [UIImagePickerController imagePickerControllerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        [controller setDelegate:self];
+        if ([controller isAvailablePhotoLibrary]) {
+            [self presentViewController:controller animated:YES completion:nil];
+        }
+    }
+}
 
+#pragma mark - 1.STPhotoKitDelegate的委托
 
+- (void)photoKitController:(STPhotoKitController *)photoKitController resultImage:(UIImage *)resultImage
+{
+    NSLog(@"image:%@",resultImage);
+}
 
+#pragma mark - 2.UIImagePickerController的委托
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    [picker dismissViewControllerAnimated:YES completion:^{
+        UIImage *imageOriginal = [info objectForKey:UIImagePickerControllerOriginalImage];
+        STPhotoKitController *photoVC = [STPhotoKitController new];
+        [photoVC setDelegate:self];
+        [photoVC setImageOriginal:imageOriginal];
+
+        [photoVC setSizeClip:CGSizeMake(300,
+                                        300)];
+
+        [self presentViewController:photoVC animated:YES completion:nil];
+    }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:^(){
+    }];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.view endEditing:YES];
+}
+
+- (void)back {
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
 
 
 @end

@@ -20,6 +20,8 @@ static NSString *CellIdentifier = @"UITableViewCell";
 #import "CCMyInfoViewController.h"
 #import "CCNeedViewController.h"
 #import "CCComplaintListTableViewController.h"
+#import "CCMessageViewController.h"
+#import "CCBaseNavController.h"
 @interface CCPersonCenterViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (strong,nonatomic)CCPersonHeaderView *headerView;
 @property (nonatomic,strong) UITableView *tableView;
@@ -61,7 +63,8 @@ static NSString *CellIdentifier = @"UITableViewCell";
     XYWeakSelf;
     [self.headerView.headerImage addTapGestureWithBlock:^(UIView *gestureView) { 
         CCMyInfoViewController *vc = [CCMyInfoViewController new];
-        [weakSelf presentViewController:vc animated:YES completion:nil];
+        CCBaseNavController *nav = [[CCBaseNavController alloc] initWithRootViewController:vc];
+        [weakSelf presentViewController:nav animated:YES completion:nil];
     }];
     [self.headerView.moreButtonView addTapGestureWithBlock:^(UIView *gestureView) {//查看 更多
         CCMyOrderViewController *vc = [CCMyOrderViewController new];
@@ -76,6 +79,7 @@ static NSString *CellIdentifier = @"UITableViewCell";
          [btn setTitleColor:kWhiteColor forState:UIControlStateNormal];
          [btn setImage:IMAGE_NAME(@"消息图标-1") forState:UIControlStateNormal];
          btn.layer.masksToBounds = YES ;
+         btn.tag = 1;
          [btn addTarget:self action:@selector(rightBtAction:) forControlEvents:UIControlEventTouchUpInside];
          btn ;
      });
@@ -85,6 +89,7 @@ static NSString *CellIdentifier = @"UITableViewCell";
          [btn setTitleColor:kWhiteColor forState:UIControlStateNormal];
          [btn setImage:IMAGE_NAME(@"设置图标") forState:UIControlStateNormal];
          btn.layer.masksToBounds = YES ;
+         btn.tag = 2;
          [btn addTarget:self action:@selector(rightBtAction:) forControlEvents:UIControlEventTouchUpInside];
          btn ;
      });
@@ -96,6 +101,14 @@ static NSString *CellIdentifier = @"UITableViewCell";
 }
 
 - (void)rightBtAction:(UIButton *)btn {
+    if (btn.tag == 1) {
+        CCMessageViewController *vc = [CCMessageViewController new];
+        [self.navigationController pushViewController:vc
+                                             animated:YES];
+    }else {
+        
+    }
+
 }
 
 #pragma mark Get

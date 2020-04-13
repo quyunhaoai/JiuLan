@@ -15,8 +15,8 @@
     
     UILabel *titelLab = ({
         UILabel *view = [UILabel new];
-        view.textColor = color_textBg_C7C7D1;
-        view.font = FONT_10;
+        view.textColor = COLOR_333333;
+        view.font = FONT_15;
         view.lineBreakMode = NSLineBreakByTruncatingTail;
         view.backgroundColor = [UIColor clearColor];
         view.textAlignment = NSTextAlignmentLeft;
@@ -31,11 +31,11 @@
         make.width.mas_equalTo(Window_W-20);
         make.height.mas_equalTo(17);
     }];
-    
+    self.goodsTitleLab = titelLab;
     UILabel *pricelab = ({
         UILabel *view = [UILabel new];
-        view.textColor = color_textBg_C7C7D1;
-        view.font = FONT_10;
+        view.textColor = COLOR_999999;
+        view.font = FONT_13;
         view.lineBreakMode = NSLineBreakByTruncatingTail;
         view.backgroundColor = [UIColor clearColor];
         view.textAlignment = NSTextAlignmentLeft;
@@ -50,10 +50,11 @@
         make.width.mas_equalTo(Window_W/2);
         make.height.mas_equalTo(17);
     }];
+    self.priceLab = pricelab;
     UILabel *pricelab2 = ({
         UILabel *view = [UILabel new];
-        view.textColor = color_textBg_C7C7D1;
-        view.font = FONT_10;
+        view.textColor = COLOR_999999;
+        view.font = FONT_13;
         view.lineBreakMode = NSLineBreakByTruncatingTail;
         view.backgroundColor = [UIColor clearColor];
         view.textAlignment = NSTextAlignmentLeft;
@@ -68,11 +69,11 @@
         make.width.mas_equalTo(Window_W/2);
         make.height.mas_equalTo(17);
     }];
-    
+    self.priceLab2 = pricelab2;
     UILabel *kucunLab = ({
         UILabel *view = [UILabel new];
-        view.textColor = color_textBg_C7C7D1;
-        view.font = FONT_10;
+        view.textColor = COLOR_333333;
+        view.font = FONT_12;
         view.lineBreakMode = NSLineBreakByTruncatingTail;
         view.backgroundColor = [UIColor clearColor];
         view.textAlignment = NSTextAlignmentLeft;
@@ -87,7 +88,7 @@
         make.width.mas_equalTo(Window_W*0.3);
         make.height.mas_equalTo(17);
     }];
-    
+    self.kuCunLab = kucunLab;
     UIImageView *icon = ({
         UIImageView *view = [UIImageView new];
         view.contentMode = UIViewContentModeScaleAspectFill ;

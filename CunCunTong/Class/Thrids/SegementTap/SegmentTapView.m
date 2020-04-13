@@ -5,7 +5,7 @@
 #import "SegmentTapView.h"
 @interface SegmentTapView ()
 @property (nonatomic, strong)NSMutableArray *buttonsArray;
-@property (nonatomic, strong)UIImageView *lineImageView;
+
 @end
 @implementation SegmentTapView
 
@@ -91,7 +91,7 @@
         else{
             subButton.selected = YES;
             [UIView animateWithDuration:0.2 animations:^{
-                self.lineImageView.frame = CGRectMake(subButton.frame.origin.x, self.frame.size.height-1, subButton.frame.size.width, 1);
+                self.lineImageView.frame = self.imageFrame.size.width ? self.imageFrame:CGRectMake(subButton.frame.origin.x, self.frame.size.height-1, subButton.frame.size.width, 1);
             }];
         }
     }

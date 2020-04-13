@@ -89,6 +89,9 @@
                                 <state key="normal" title="退货">
                                     <color key="titleColor" red="1" green="0.53333333329999999" blue="0.1215686275" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="returnGoods:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="w3g-se-SLt"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>

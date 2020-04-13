@@ -6,11 +6,11 @@
 //  Copyright © 2020 GOOUC. All rights reserved.
 //
 
-#import "CCBaseViewController.h"
+#import "CCBaseTableViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CCPanDianViewController : CCBaseViewController
+@interface CCPanDianViewController : CCBaseTableViewController
 
 @end
 

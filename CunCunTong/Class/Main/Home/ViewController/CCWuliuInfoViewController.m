@@ -8,9 +8,9 @@
 //
 
 #import "CCWuliuInfoViewController.h"
-
-@interface CCWuliuInfoViewController ()
-
+#import <MAMapKit/MAMapKit.h>
+@interface CCWuliuInfoViewController ()<MAMapViewDelegate>
+@property (nonatomic, strong) MAMapView *mapView;
 @end
 
 @implementation CCWuliuInfoViewController
@@ -19,6 +19,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self customNavBarWithTitle:@"物流信息"];
+    
+    self.mapView = [[MAMapView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, Window_W, Window_H-NAVIGATION_BAR_HEIGHT)];
+    self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.mapView.delegate = self;
+    [self.view addSubview:self.mapView];
 }
 
 /*

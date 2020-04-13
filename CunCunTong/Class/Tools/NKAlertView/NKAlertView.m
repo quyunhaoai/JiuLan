@@ -9,7 +9,7 @@
 #import "NKAlertView.h"
 
 @interface NKAlertView ()
-@property (nonatomic, strong) UIView *bgView;
+
 @end
 
 @implementation NKAlertView
@@ -45,8 +45,13 @@
             self.alpha = 1.0;
             self.contentView.transform = CGAffineTransformMakeTranslation(0, -self.contentView.bounds.size.height);
         } completion:nil];
-    }else
-    {
+    }else if (self.type == NKAlertViewTypeTop){
+        self.y = NAVIGATION_BAR_HEIGHT;
+        self.contentView.y = 0;
+        [UIView animateWithDuration:0.25 animations:^{
+            self.alpha = 1.0;
+        } completion:nil];
+    } else {
         self.alpha = 1.0;
         CAKeyframeAnimation * animation;
         animation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
@@ -84,6 +89,9 @@
         shapeLayer.path = path.CGPath;
         _contentView.layer.mask = shapeLayer;
     }
+    if (_type == NKAlertViewTypeTop) {
+        
+    }
 }
 - (void)setMiddleView:(UIView *)middleView {
     _middleView = middleView;
@@ -105,7 +113,9 @@
         shapeLayer.frame = _contentView.bounds;
         shapeLayer.path = path.CGPath;
         _contentView.layer.mask = shapeLayer;
-    }else
+    } else if (_type == NKAlertViewTypeTop){
+        
+    } else
     {
         _contentView.center = self.center;
     }

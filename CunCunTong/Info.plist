@@ -57,5 +57,7 @@
     <string>&quot;村村惠&quot;需要您的同意，才能添加照片</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>&quot;村村惠&quot;需要您的同意，才能访问相册</string>
+    <key>UIUserInterfaceStyle</key>
+    <string>Light</string>
 </dict>
 </plist>

@@ -34,7 +34,7 @@
                             <constraint firstAttribute="height" constant="17" id="h5W-ha-SfP"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                        <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="右箭头灰" translatesAutoresizingMaskIntoConstraints="NO" id="UzA-0q-GPq">
@@ -55,6 +55,12 @@
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="jiantouimageView" destination="UzA-0q-GPq" id="TcP-Ga-dAL"/>
+                <outlet property="rightIcon" destination="C7R-nB-aXl" id="Q6j-Xu-MRq"/>
+                <outlet property="subLab" destination="UB4-BR-0eQ" id="k6j-Yb-LGa"/>
+                <outlet property="titleLab" destination="ION-Sc-3Of" id="CVX-cg-xvj"/>
+            </connections>
             <point key="canvasLocation" x="71.014492753623188" y="152.34375"/>
         </tableViewCell>
     </objects>

@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCMyOrderModel : BaseModel
-
+@property (assign, nonatomic) BOOL isSelectView; 
 @end
 
 NS_ASSUME_NONNULL_END

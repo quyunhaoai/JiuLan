@@ -19,6 +19,8 @@ static NSString *everDayCell = @"everDayCell";
 #import "XYMallClassifyViewcController.h"
 #import "CCActivityView.h"
 #import "NKAlertView.h"
+#import "CCMessageViewController.h"
+#import "CCActiveDivViewController.h"
 @interface CCHomeViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
 @property (nonatomic,strong) UICollectionView    *collectionView;
 @property (nonatomic,strong) CCHomeHeaderView               *headView;
@@ -31,9 +33,13 @@ static NSString *everDayCell = @"everDayCell";
     [super viewDidLoad];
     [self customSearchNavBar];
     
-    
-//    self.view.backgroundColor = [UIColor redColor];
     [self layoutCollectionView];
+    XYWeakSelf;
+    [self.searBarView.rightBtn addTapGestureWithBlock:^(UIView *gestureView) {
+        CCMessageViewController *vc = [CCMessageViewController new];
+        [weakSelf.navigationController pushViewController:vc
+                                             animated:YES];
+    }];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -87,11 +93,13 @@ static NSString *everDayCell = @"everDayCell";
                 break;
             case 1:
             {//活动专区
-                NKAlertView *alert = [[NKAlertView alloc] init];
-                alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];
-                alert.hiddenWhenTapBG = YES;
-                alert.type = NKAlertViewTypeDef;
-                [alert show];
+                CCActiveDivViewController *vc = [CCActiveDivViewController new];
+                [self.navigationController pushViewController:vc animated:YES];
+//                NKAlertView *alert = [[NKAlertView alloc] init];
+//                alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];
+//                alert.hiddenWhenTapBG = YES;
+//                alert.type = NKAlertViewTypeDef;
+//                [alert show];
             }
             break;
             case 2:
@@ -185,7 +193,8 @@ static NSString *everDayCell = @"everDayCell";
             view.moreBtn.hidden = NO;
             XYWeakSelf;
             if (indexPath.section == 1) {
-
+                CCActiveDivViewController *vc = [CCActiveDivViewController new];
+                [weakSelf.navigationController pushViewController:vc animated:YES];
             } else if (indexPath.section == 2){
                 [view.moreBtn addTapGestureWithBlock:^(UIView *gestureView) {
                     CCEverDayTeViewController *vc = [[CCEverDayTeViewController alloc] init];

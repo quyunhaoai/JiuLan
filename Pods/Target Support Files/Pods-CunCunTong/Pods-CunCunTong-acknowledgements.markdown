@@ -24,6 +24,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
+## AMap2DMap-NO-IDFA
+
+Copyright © 2014 AutoNavi. All Rights Reserved.
+
+
+## AMapFoundation-NO-IDFA
+
+Copyright © 2014 AutoNavi. All Rights Reserved.
+
+
 ## MBProgressHUD
 
 Copyright © 2009-2016 Matej Bukovinski

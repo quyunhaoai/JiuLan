@@ -7,7 +7,7 @@
 //
 
 #import "CCOrderDetailTableViewCell.h"
-
+#import "CCReturnGoodsViewController.h"
 @implementation CCOrderDetailTableViewCell
 
 - (void)awakeFromNib {
@@ -26,5 +26,9 @@
 }
 + (CGFloat)height {
     return 113;;
+}
+- (IBAction)returnGoods:(id)sender {
+    CCReturnGoodsViewController *vc = [CCReturnGoodsViewController new];
+    [self.superview.viewController.navigationController pushViewController:vc animated:YES];
 }
 @end

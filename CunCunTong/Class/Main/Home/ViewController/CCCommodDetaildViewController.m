@@ -20,6 +20,8 @@
 #import "CCBottomShareAlertContentView.h"
 #import "CCSharePicView.h"
 #import "CCSureOrderViewController.h"
+#import "CCGoodsDetailHeadTableViewCell.h"
+#import "CCYouHuiQuanViewController.h"
 @interface CCCommodDetaildViewController ()<UIScrollViewDelegate,SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) UIScrollView *scrollView;
 
@@ -31,6 +33,8 @@
 @property (strong, nonatomic) CCShopBottomView       *bottomView;
 @property (assign, nonatomic) BOOL                   isOpen;
 @property (strong, nonatomic) CCServiceMassageView   *massageView;
+@property (strong, nonatomic) CCGoodsHeadView        *headView;
+@property (strong, nonatomic) NSArray                *titleArray;
 
 
 @end
@@ -77,12 +81,15 @@
     self.tableView.estimatedSectionHeaderHeight = 0;
     self.tableView.estimatedSectionFooterHeight = 0;
     self.tableView.contentInset = UIEdgeInsetsMake(258, 0, 0, 0);
-    CCGoodsHeadView *headView = [[CCGoodsHeadView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 97)];
-    headView.backgroundColor = kWhiteColor;
-    self.tableView.tableHeaderView = headView;
-    self.tableView.contentOffset = CGPointMake(0, -500);
-    [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib forCellReuseIdentifier:@"CCGoodsDetail"];
-    
+//    CCGoodsHeadView *headView = [[CCGoodsHeadView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 97)];
+//    headView.backgroundColor = kWhiteColor;
+//    self.headView = headView;
+//    self.tableView.tableHeaderView = headView;
+//    self.tableView.contentOffset = CGPointMake(0, -500);
+    [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCGoodsDetail"];
+    [self.tableView registerClass:CCGoodsDetailHeadTableViewCell.class
+           forCellReuseIdentifier:@"CCGoodsDetailHeadTableViewCell"];
     [self.view addSubview:self.bottomView];
     [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
@@ -149,7 +156,7 @@
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _tableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
         adjustsScrollViewInsets_NO(self.tableView, self);
     }
@@ -176,23 +183,56 @@
 
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.dataSoureArray.count;
+    if (section == 0) {
+        return 4;
+    } else {
+        return 2;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail"];
+    UITableViewCell *cell = nil;
+    if (indexPath.section == 0 && indexPath.row == 0) {
+         cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetailHeadTableViewCell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        CCGoodsDetailHeadTableViewCell *ccc = (CCGoodsDetailHeadTableViewCell *)cell;
+        ccc.goodsTitleLab.text = @"网红猫衣服冬季亲子宠物装";
+        ccc.kuCunLab.text = @"库存量：1200件";
+        ccc.priceLab2.text = @"建议零售价：¥69.00";
+        NSMutableAttributedString *nameString = [[NSMutableAttributedString alloc] initWithString:@"¥" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:krgb(255,69,4)}];
+        NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:@"56.00" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
+        NSAttributedString *countString = [[NSAttributedString alloc] initWithString:@" 原价：" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999}];
+        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:@"¥59.00" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
+        [nameString appendAttributedString:nameString2];
+        [nameString appendAttributedString:countString];
+        [nameString appendAttributedString:attrStr];
+        ccc.priceLab.attributedText = nameString;
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail"];
+        CCGoodsDetailTableViewCell *cellll = (CCGoodsDetailTableViewCell *)cell;
+        NSArray *arr = (NSArray *)self.titleArray[indexPath.section];
+        if (indexPath.section == 0) {
+            [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row-1];
+            if (indexPath.row == 1 || indexPath.row == 2) {
+                cellll.jiantouimageView.hidden = YES;
+            }
+        } else {
+            [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row];
+        }
+    }
     return cell;
 }
 
 #pragma mark - Table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *modelName = NSStringFromClass([self.dataSoureArray[indexPath.row] class]);
-    Class CellClass = NSClassFromString([modelName stringByAppendingString:@"TableViewCell"]);
-    return [CellClass height];
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        return 97;
+    }
+    return [CCGoodsDetailTableViewCell height];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -200,7 +240,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0.0001f;
+    return 10.0001f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -208,25 +248,34 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [UIView new];
+    UIView *vvv = [UIView new];
+    vvv.backgroundColor = UIColorHex(0xf7f7f7);
+    return vvv;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (indexPath.row == 0) {
-        NKAlertView *alertView = [[NKAlertView alloc] init];
-        BottomAlertContentView *customContentView = [[BottomAlertContentView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 426)];
-        alertView.type = NKAlertViewTypeBottom;
-        alertView.contentView = customContentView;
-        alertView.hiddenWhenTapBG = YES;
-        [alertView show];
-    }else {
-        NKAlertView *alertView = [[NKAlertView alloc] init];
-        BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
-        alertView.type = NKAlertViewTypeBottom;
-        alertView.contentView = customContentView;
-        alertView.hiddenWhenTapBG = YES;
-        [alertView show];
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            NKAlertView *alertView = [[NKAlertView alloc] init];
+            BottomAlertContentView *customContentView = [[BottomAlertContentView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 426)];
+            alertView.type = NKAlertViewTypeBottom;
+            alertView.contentView = customContentView;
+            alertView.hiddenWhenTapBG = YES;
+            [alertView show];
+        }else {
+            NKAlertView *alertView = [[NKAlertView alloc] init];
+            BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
+            alertView.type = NKAlertViewTypeBottom;
+            alertView.contentView = customContentView;
+            alertView.hiddenWhenTapBG = YES;
+            [alertView show];
+        }
+    } else {
+        if (indexPath.row == 3) {
+            CCYouHuiQuanViewController *vc = [CCYouHuiQuanViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
     }
 }
 
@@ -247,6 +296,12 @@
     
 }
 #pragma mark - getters and setters
+- (NSArray *)titleArray {
+    if (!_titleArray) {
+        _titleArray =@[@[@"送至",@"运费",@"活动"],@[@"选择",@"参数"]];
+    }
+    return _titleArray;
+}
 - (SDCycleScrollView *)cycleScrollView {
     if (!_cycleScrollView) {
         _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, -258, Window_W, 258) delegate:self placeholderImage:IMAGE_NAME(@"")];
@@ -291,61 +346,6 @@
     }
     return _topBar;
 }
-
-
-/*#import "GoodsDetail1ViewController.h"
-@interface GoodsDetail1ViewController ()<UITableViewDelegate, UITableViewDataSource, APIRequestDelegate>
-@property (nonatomic, strong)UIScrollView *scrollView;
-@property (nonatomic, strong)UIView *topView;
-@property (nonatomic, strong)UIView *topBannerView;
-@implementation GoodsDetail1ViewController
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT +50)];
-    self.scrollView.contentSize = CGSizeMake(0, SCREEN_HEIGHT * 8);
-    self.scrollView.delegate = self;
-    self.scrollView.bounces = YES;
-    [self.view addSubview:self.scrollView];
-    self.topView = [[UIView alloc]initWithFrame: CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
-    self.topView.backgroundColor = [UIColor yellowColor];
-    self.topBannerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    self.topBannerView.backgroundColor = [UIColor whiteColor];
-    [self.topView addSubview:self.topBannerView];
-    [self.scrollView addSubview:self.topView];
-    self.goodsDataTableview1 = [[UITableView alloc]initWithFrame:CGRectMake(0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_HEIGHT * 9) style:UITableViewStylePlain];
-    self.goodsDataTableview1.backgroundColor = [UIColor colorWithHexColorString:@"ededed"];
-    self.goodsDataTableview1.delegate = self;
-    self.goodsDataTableview1.dataSource = self;
-    self.goodsDataTableview1.bounces = NO;
-    self.goodsDataTableview1.scrollEnabled = NO;
-    [self.scrollView addSubview:self.goodsDataTableview1];
-}
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView == self.scrollView) {//对其偏移量进行设置。
-        CGFloat offsetY = scrollView.contentOffset.y;
-        if (offsetY <= 0) {
-            CGRect rect = self.topView.frame;
-            rect.origin.y = offsetY;
-            self.topView.frame = rect;
-            rect = self.goodsDataTableview1.frame;
-            rect.origin.y = offsetY + SCREEN_WIDTH;
-            self.goodsDataTableview1.frame = rect;
-            rect = self.topBannerView.frame;
-            rect.origin.y = 0;
-            self.topBannerView.frame = rect;
-        } else  {
-            CGRect rect = self.topBannerView.frame;
-            rect.origin.y = offsetY / 2;
-            self.topBannerView.frame = rect;
-        }
-}
-}**/
-
-
-
-
-
-
 
 
 

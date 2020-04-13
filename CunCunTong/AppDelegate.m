@@ -7,10 +7,13 @@
 //
 
 #import "AppDelegate.h"
+#import <MAMapKit/MAMapKit.h>
+#import <AMapFoundationKit/AMapFoundationKit.h>
 #import "CCBaseNavController.h"
 
 #import "CCTabbarViewController.h"
-#import "CCNewAddBuyGoodsViewController.h"
+#import "CCInGoodsListViewController.h"
+
 @interface AppDelegate ()
 
 @end
@@ -24,12 +27,23 @@
     [self.window makeKeyAndVisible];
     
 //    CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
-//    self.window.rootViewController = [CCTabbarViewController getTabBarController];
-    CCBaseViewController *vc = [CCNewAddBuyGoodsViewController new];
-    self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
+    self.window.rootViewController = [CCTabbarViewController getTabBarController];
+//    CCBaseViewController *vc = [CCInGoodsListViewController new];
+//    self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
 //
+    
+//                NKAlertView *alert = [[NKAlertView alloc] init];
+//                alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];
+//                alert.hiddenWhenTapBG = YES;
+//                alert.type = NKAlertViewTypeDef;
+//                [alert show];
+    
+    [AMapServices sharedServices].apiKey = @"b82c30f9ff91789d674e36a044a42b40";
     return YES;
 }
+
+
+
 
 /*
 #pragma mark - UISceneSession lifecycle

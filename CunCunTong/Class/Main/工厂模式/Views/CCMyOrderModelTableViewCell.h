@@ -21,7 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *numberLabel;
 @property (weak, nonatomic) IBOutlet UILabel *sumLab;
 @property (weak, nonatomic) IBOutlet UILabel *salesTimeLab;
+@property (weak, nonatomic) IBOutlet UIButton *selectBtn;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageLeft;
 + (CGFloat )height;
 @end
 

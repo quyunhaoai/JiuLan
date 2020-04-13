@@ -14,6 +14,8 @@ pod 'SDWebImage'
 pod 'YYCategories'
 
 pod 'TYAttributedLabel', '~> 2.6.2'
-
+pod 'AMap2DMap-NO-IDFA' 
+#pod 'AMapSearch-NO-IDFA'
+#pod 'AMapLocation-NO-IDFA' 
 
 end

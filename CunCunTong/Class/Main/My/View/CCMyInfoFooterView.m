@@ -101,6 +101,8 @@
             }
         } otherButtonTitles:@"拍照", @"从手机相册选择", @"保存图片", nil];
         [actionSheet show];
+    } else {
+        [self.viewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

@@ -12,7 +12,9 @@ typedef enum : NSUInteger {
     // 从中间弹出
     NKAlertViewTypeDef,
     // 从底部弹出
-    NKAlertViewTypeBottom
+    NKAlertViewTypeBottom,
+    // 从底部弹出
+    NKAlertViewTypeTop
 } NKAlertViewType;
 
 @interface NKAlertView : UIView
@@ -20,7 +22,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) NKAlertViewType type;
 @property (nonatomic, strong) UIView *contentView;
 @property (strong, nonatomic) UIView *middleView;
-
+@property (nonatomic, strong) UIView *bgView;
 
 // 点击背景时候隐藏alert
 @property (nonatomic, assign) BOOL hiddenWhenTapBG;

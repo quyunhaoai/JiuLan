@@ -15,6 +15,10 @@
 #import "CCSureOrderTableViewCell.h"
 #import "CCOrderDetailTableViewCell.h"
 #import "CCModifyArddressTableViewCell.h"
+#import "CCMessageModelTableViewCell.h"
+#import "CCGoodsSelectModelTableViewCell.h"
+#import "CCYouHuiQuanTableViewCell.h"
+#import "CCMyGoodsListTableViewCell.h"
 @interface CCBaseTableViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,readonly) UITableViewStyle style;
 @end
@@ -56,6 +60,14 @@
          forCellReuseIdentifier:@"CCOrderDetail"];
     [self.tableView registerNib:CCModifyArddressTableViewCell.loadNib
          forCellReuseIdentifier:@"CCModifyArddress"];
+    [self.tableView registerNib:CCMessageModelTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCMessageModel"];
+    [self.tableView registerNib:CCGoodsSelectModelTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCGoodsSelectModel"];
+    [self.tableView registerNib:CCYouHuiQuanTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCYouHuiQuan"];
+    [self.tableView registerNib:CCMyGoodsListTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCMyGoodsList"];
 //    [self addTableViewRefresh];
 }
 #pragma mark  - Get
@@ -152,9 +164,9 @@
     return _dataSoureArray;
 }
 
-
-
-
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.view endEditing:YES];
+}
 
 
 

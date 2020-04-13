@@ -527,6 +527,7 @@ return shared##className; \
 #define kPurpleColor        [UIColor purpleColor]
 #define kClearColor         [UIColor clearColor]
 #define kMainColor          COLOR_HEX_RGB(0x22958F)//#22958F
+#define kTipYellowCOLOR     krgb(255,165,0)
 #define RGBHexColor(hexValue, alphaValue) [UIColor colorWithRed:((float)((hexValue & 0xFF0000) >> 16))/255.0 green:((float)((hexValue & 0xFF00) >> 8))/255.0 blue:((float)(hexValue & 0xFF))/255.0 alpha:alphaValue]
 //  FONT_ + 所属PT    参照：XIYUAN-5.0-UI 戏缘ui 通用规范
 #define FONT_18 [UIFont systemFontOfSize:RationEnlarge(18.f)]    //  T1  用在导航栏标题

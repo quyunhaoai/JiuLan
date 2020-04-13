@@ -153,25 +153,13 @@
                             <attributedString key="attributedText">
                                 <fragment content="请在此上传凭证">
                                     <attributes>
-                                        <font key="NSFont" size="17" name=".PingFangSC-Regular"/>
+                                        <font key="NSFont" metaFont="system" size="17"/>
                                     </attributes>
                                 </fragment>
-                                <fragment content="（最多">
+                                <fragment content="（最多8张）">
                                     <attributes>
                                         <color key="NSColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
-                                        <font key="NSFont" size="13" name=".PingFangSC-Regular"/>
-                                    </attributes>
-                                </fragment>
-                                <fragment content="8">
-                                    <attributes>
-                                        <color key="NSColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
-                                        <font key="NSFont" size="13" name=".SFNS-Regular"/>
-                                    </attributes>
-                                </fragment>
-                                <fragment content="张）">
-                                    <attributes>
-                                        <color key="NSColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
-                                        <font key="NSFont" size="13" name=".PingFangSC-Regular"/>
+                                        <font key="NSFont" metaFont="system"/>
                                     </attributes>
                                 </fragment>
                             </attributedString>

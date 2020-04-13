@@ -7,7 +7,7 @@
 //
 
 #import "CCMyOrderModelTableViewCell.h"
-
+#import "CCMyOrderModel.h"
 @implementation CCMyOrderModelTableViewCell
 
 - (void)awakeFromNib {
@@ -19,6 +19,7 @@
     [self.contentbgView setCornerRadius:10.0 withShadow:YES withOpacity:0.5];
 }
 - (void)setModel:(BaseModel *)model {
+    CCMyOrderModel *mymodel = (CCMyOrderModel *)model;
     self.orderNumberLab.text = @"订单号：123456789";
     self.iconImageView.image = IMAGE_NAME(@"首页课程图片 2");
     self.goodsNameLab.text = @"七色堇面包0蔗糖";
@@ -43,11 +44,18 @@
                       range:[str rangeOfString:@"合计："]];
     self.sumLab.attributedText = textColor;
     self.salesTimeLab.text = @"下单时间：2019-12-25 08:00:00";
+    if (mymodel.isSelectView) {
+        self.imageLeft.constant = 25;
+        self.selectBtn.hidden = NO;
+    }
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+- (IBAction)selectBtnActon:(UIButton *)sender {
+    sender.selected = !sender.isSelected;
 }
 
 + (CGFloat)height {

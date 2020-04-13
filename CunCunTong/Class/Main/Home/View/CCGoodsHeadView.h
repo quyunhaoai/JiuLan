@@ -11,7 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCGoodsHeadView : CCBaseView
-
+@property (strong, nonatomic) UILabel *goodsTitleLab;  
+@property (strong, nonatomic) UILabel *priceLab; 
+@property (strong, nonatomic) UILabel *priceLab2;
+@property (strong, nonatomic) UILabel *kuCunLab; 
 @end
 
 NS_ASSUME_NONNULL_END

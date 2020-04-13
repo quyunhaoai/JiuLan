@@ -8,8 +8,9 @@
 
 #import "CCWarningReminderViewController.h"
 #import "CCWarningReminderModel.h"
-@interface CCWarningReminderViewController ()
-
+#import "SegmentTapView.h"
+@interface CCWarningReminderViewController ()<SegmentTapViewDelegate>
+@property (nonatomic,strong) SegmentTapView *segment;
 @end
 
 @implementation CCWarningReminderViewController
@@ -46,11 +47,36 @@
     }];
     segC.selectedSegmentIndex = 0;
     [segC ensureiOS12Style];
+    UIView *style = [[UIView alloc] initWithFrame:CGRectZero];
+    style.layer.backgroundColor = [[UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:1.0f] CGColor];
+    style.alpha = 0.08;
+    [self.view addSubview:style];
+    [style mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.view);
+        make.height.mas_equalTo(1);
+        make.top.mas_equalTo(segC.mas_bottom).mas_offset(10);
+    }];
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT+90);
+        make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT+44);
     }];
     
-//    UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 40)];
+    UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 54)];
+    self.tableView.tableHeaderView = headView;
+
+    self.segment = [[SegmentTapView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 54) withDataArray:@[@"高库存预警",@"低库存预警"] withFont:15];
+    self.segment.backgroundColor = kWhiteColor;
+    self.segment.delegate = self;
+    self.segment.textSelectedColor = kMainColor;
+    self.segment.textNomalColor = COLOR_333333;
+    self.segment.lineColor = kClearColor;
+    self.segment.lineImageView.frame = CGRectMake(Window_W/4, 37, 9, 8);
+    self.segment.lineImageView.image = IMAGE_NAME(@"排序图标绿");
+    [headView addSubview:self.segment];
+}
+
+- (void)selectedIndex:(NSInteger)index {
+    NSLog(@"%ld",(long)index);
+    self.segment.lineImageView.frame = CGRectMake(index?Window_W*0.75:Window_W/4, 37, 9, 8);
 }
 
 - (void)segCChanged:(UISegmentedControl *)seg {

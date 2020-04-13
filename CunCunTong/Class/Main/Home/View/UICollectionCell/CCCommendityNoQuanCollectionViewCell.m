@@ -15,4 +15,6 @@
     [[CCTools sharedInstance] addShadowToView:self withColor:KKColor(0.0, 0.0, 0.0, 0.1)];
 }
 
+
+
 @end

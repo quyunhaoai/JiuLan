@@ -45,6 +45,11 @@
  字体大小
  */
 @property (nonatomic, assign)CGFloat titleFont;
+/*
+ 下划线**/
+@property (nonatomic, strong)UIImageView *lineImageView;
+
+@property (nonatomic, assign) CGRect imageFrame;  
 /**
 Initialization
  

@@ -20,5 +20,7 @@
 
     // Configure the view for the selected state
 }
-
++ (CGFloat)height {
+    return 126.f;
+}
 @end

@@ -98,7 +98,7 @@
             CGRect titleRect = rect;
             titleRect.origin.y += imgRect.size.height + _padding.height;
             titleRect.size.height -= imgRect.size.height + _padding.height;
-//            titleRect.size.width  = rect.size.width + 5;
+            titleRect.size.width  = rect.size.width + 5;
             self.titleLabel.frame = titleRect;
         }
             break;
