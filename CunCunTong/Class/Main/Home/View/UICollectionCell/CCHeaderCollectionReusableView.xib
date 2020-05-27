@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U6b-Vx-4bR" customClass="CCHeaderCollectionReusableView">
+            <rect key="frame" x="0.0" y="0.0" width="446" height="123"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cGN-fC-CLt">
+                    <rect key="frame" x="0.0" y="0.0" width="446" height="123"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pqZ-2h-yBb">
+                            <rect key="frame" x="25" y="51.5" width="111" height="20"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="111" id="We4-GT-HnV"/>
+                                <constraint firstAttribute="height" constant="20" id="ZN8-ru-F8M"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                            <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84705882352941175" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VfZ-A5-VBY">
+                            <rect key="frame" x="10" y="52.5" width="4" height="18"/>
+                            <color key="backgroundColor" red="0.14117647058823529" green="0.58431372549019611" blue="0.5607843137254902" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="4" id="aGI-8J-RYQ"/>
+                                <constraint firstAttribute="height" constant="18" id="xRM-b1-LqH"/>
+                            </constraints>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="luQ-Rl-J9F" customClass="KKButton">
+                            <rect key="frame" x="369" y="53.5" width="61" height="16"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                            <state key="normal" title="查看更多" image="右箭头灰">
+                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                            </state>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstItem="pqZ-2h-yBb" firstAttribute="centerY" secondItem="cGN-fC-CLt" secondAttribute="centerY" id="9kg-in-t2t"/>
+                        <constraint firstItem="pqZ-2h-yBb" firstAttribute="leading" secondItem="VfZ-A5-VBY" secondAttribute="trailing" constant="11" id="CUh-0D-08Q"/>
+                        <constraint firstItem="luQ-Rl-J9F" firstAttribute="centerY" secondItem="cGN-fC-CLt" secondAttribute="centerY" id="SgJ-8D-wk3"/>
+                        <constraint firstAttribute="trailing" secondItem="luQ-Rl-J9F" secondAttribute="trailing" constant="16" id="epx-9I-2am"/>
+                        <constraint firstItem="VfZ-A5-VBY" firstAttribute="centerY" secondItem="cGN-fC-CLt" secondAttribute="centerY" id="hNx-Xb-WvA"/>
+                        <constraint firstItem="VfZ-A5-VBY" firstAttribute="leading" secondItem="cGN-fC-CLt" secondAttribute="leading" constant="10" id="oJ5-X0-phx"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="cGN-fC-CLt" secondAttribute="bottom" constant="0.10000000000000001" id="J8H-VG-hZX"/>
+                <constraint firstItem="cGN-fC-CLt" firstAttribute="leading" secondItem="9Gg-ye-v9C" secondAttribute="leading" constant="0.10000000000000001" id="Ywh-Io-ngP"/>
+                <constraint firstItem="cGN-fC-CLt" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" constant="0.10000000000000001" id="jfc-Mm-0zV"/>
+                <constraint firstItem="9Gg-ye-v9C" firstAttribute="trailing" secondItem="cGN-fC-CLt" secondAttribute="trailing" constant="0.10000000000000001" id="zyT-TW-nXw"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="9Gg-ye-v9C"/>
+            <connections>
+                <outlet property="moreBtn" destination="luQ-Rl-J9F" id="ccD-jV-N8O"/>
+                <outlet property="titleLab" destination="pqZ-2h-yBb" id="fol-oN-Mv0"/>
+            </connections>
+            <point key="canvasLocation" x="223.18840579710147" y="166.40625"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="右箭头灰" width="6.5" height="12"/>
+    </resources>
+</document>

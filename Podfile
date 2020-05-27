@@ -11,7 +11,7 @@ pod 'MBProgressHUD', '~> 1.1.0'
 
 pod 'SDWebImage'
 
-pod 'YYCategories'
+pod "Qiniu", "~> 7.3"
 
 pod 'TYAttributedLabel', '~> 2.6.2'
 pod 'AMap2DMap-NO-IDFA' 
