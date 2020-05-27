@@ -56,7 +56,7 @@
                                                           @"text/javascript",
                                                           @"text/json",
                                                           @"text/html", nil];
-        
+        self.responseSerializer.acceptableContentTypes = [self.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
         self.securityPolicy.allowInvalidCertificates = YES;
     }
     return self;
@@ -69,23 +69,18 @@
           WithFailurBlock:(requestFailureBlock)failure
 {
     NSLog(@"params:%@\n",params);
-//    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
-//    [SVProgressHUD show];
-//    [SVProgressHUD setActivityIndicatorType:DDActivityIndicatorAnimationTypeBallPulse];
-//    [SVProgressHUD setActivityIndicatorTintColor:kWhiteColor];
-     NSString *urlstr = [NSString stringWithFormat:@"%@%@",KBaseLocation,path];
+    NSString *urlstr = [NSString stringWithFormat:@"%@%@",KBaseLocation,path];
     switch (method) {
         case GET:{
+            urlstr = [CCTools urlStringWithUrl:urlstr param:params];
             [self GET:urlstr
            parameters:params
              progress:nil
               success:^(NSURLSessionTask *task, NSDictionary * responseObject) {
                 NSLog(@"JSON: %@", responseObject);
-//                [SVProgressHUD dismiss];
                 success(responseObject);
             } failure:^(NSURLSessionTask *operation, NSError *error) {
                 NSLog(@"Error: %@", error);
-//                [SVProgressHUD dismiss];
                 failure(error);
             }];
             break;
@@ -96,11 +91,9 @@
               progress:nil
                success:^(NSURLSessionTask *task, NSDictionary * responseObject) {
                 NSLog(@"JSON: %@", responseObject);
-//                [SVProgressHUD dismiss];
                 success(responseObject);
             } failure:^(NSURLSessionTask *operation, NSError *error) {
                 NSLog(@"Error: %@", error);
-//                [SVProgressHUD dismiss];
                 failure(error);
             }];
             break;
@@ -109,26 +102,6 @@
             break;
     }
 }
-//- (void)UPLOADIMAGE:(NSString *)URL
-//             params:(NSDictionary *)params
-//        uploadImage:(UIImage *)image
-//            success:(void (^)(id response))success
-//            failure:(void (^)(NSError *error))Error
-//{
-//    NSMutableDictionary *dict = [params mutableCopy];
-//    [self POST:URL parameters:dict constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-//        NSData *imageData = UIImageJPEGRepresentation(image, 0.1);
-//        [formData appendPartWithFileData:imageData name:@"img" fileName:@"head.jpg" mimeType:@"image/jpeg"];
-//    } progress:^(NSProgress * _Nonnull uploadProgress) {
-//        CGFloat progress = uploadProgress.completedUnitCount/uploadProgress.totalUnitCount;
-//        [WSProgressHUD showProgress:progress];
-//    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-//        success(responseObject);
-//        [WSProgressHUD dismiss];
-//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        Error(error);
-//        [WSProgressHUD dismiss];
-//    }];
-//}
+
 
 @end

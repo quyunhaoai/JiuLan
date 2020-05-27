@@ -74,8 +74,6 @@
     }
     self.contentSize = CGSizeMake(CGRectGetMaxX([self.buttons.lastObject frame]),self.frame.size.height);
     UIButton *firstButton = self.buttons[_currentPage];
-//    firstButton.titleLabel.font = FONT_18;
-//    firstButton.titleLabel.textColor = self.buttonTitleSelectedColor;
     self.currentButton = firstButton;
     self.markView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(firstButton.frame)+4, 30, 2)];
     self.markView.centerX = firstButton.centerX;
@@ -93,26 +91,22 @@
                 if ([bun.titleLabel.text isEqualToString:button.titleLabel.text]) {
                     _currentButton = button;
                     button.selected = YES;
-//                    [button setTintColor:[UIColor clearColor]];
-//                    [button setTitleColor:self.buttonTitleSelectedColor forState:UIControlStateSelected];
-//                    [button.titleLabel setFont:FONT_18];
                     self.currentPage = [self.buttons indexOfObject:button];
-//                    if (self.dramaIdArray && self.dramaIdArray.count > 0) {
+                    if (self.dramaIdArray && self.dramaIdArray.count > 0) {
                         NSInteger dramaId = [self.dramaIdArray[self.currentPage] integerValue];
                         if (_blockHandler) {
                             _blockHandler(dramaId);
                         }
-//                    } else {
-//                        if (_blockHandler) {
-//                            _blockHandler(self.currentPage);
-//                        }
-//                    }
+                    } else {
+                        if (_blockHandler) {
+                            _blockHandler(self.currentPage);
+                        }
+                    }
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         self->_isEnable = YES;
                     });
                 } else {
                     bun.selected = NO;
-//                    bun.titleLabel.font = FONT_16;
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         self->_isEnable = YES;
                     });
@@ -158,9 +152,5 @@
     self.markView.frame = CGRectMake(button.frame.origin.x, self.height - 6, 30, 2);
     self.markView.centerX = button.centerX;
 
-//    [UIView animateWithDuration:0.0f animations:^{
-//        self.markView.frame = CGRectMake(button.frame.origin.x, self.height - 4, 30, 2);
-//        self.markView.centerX = button.centerX;
-//    }];
 }
 @end

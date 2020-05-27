@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 //字典转json
 -(NSString *)convertToJsonData:(NSDictionary *)dict;
+
+-(NSData *)dictToJsonData:(NSDictionary *)dict;
 @end
 
 NS_ASSUME_NONNULL_END
