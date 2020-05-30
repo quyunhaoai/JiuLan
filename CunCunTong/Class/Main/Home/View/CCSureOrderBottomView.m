@@ -9,8 +9,36 @@
 #import "CCSureOrderBottomView.h"
 #import "KKButton.h"
 @implementation CCSureOrderBottomView
+- (void)setupUI {
+    self.backgroundColor = kWhiteColor;
 
-
+    UILabel *sumLab = ({
+        UILabel *view = [UILabel new];
+        view.textColor =COLOR_333333;
+        view.font = STFont(12);
+        view.lineBreakMode = NSLineBreakByTruncatingTail;
+        view.backgroundColor = [UIColor clearColor];
+        view.textAlignment = NSTextAlignmentLeft;
+        view ;
+    });
+    self.sumLab = sumLab;
+    [self addSubview:sumLab];
+    [sumLab mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self).mas_offset(10);
+        make.size.mas_equalTo(CGSizeMake(217, 14));
+        make.bottom.mas_equalTo(self).mas_offset(-18);
+    }];
+    
+    [self addSubview:self.goPayBtn];
+    [self.goPayBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.mas_right).mas_offset(-5);
+        make.width.mas_equalTo(kWidth(118));
+        make.bottom.mas_equalTo(self).mas_offset(-7);
+        make.height.mas_equalTo(42);
+    }];
+    
+}
+/*
 - (void)setupUI {
     self.backgroundColor = kWhiteColor;
     
@@ -372,6 +400,7 @@
     
     
 }
+ */
 - (void)botBtnClick:(UIButton *)button {
     
 }

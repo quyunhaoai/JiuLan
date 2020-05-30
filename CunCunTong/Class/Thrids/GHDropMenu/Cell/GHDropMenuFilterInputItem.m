@@ -139,10 +139,10 @@
 }
 - (void)layoutSubviews {
     [super layoutSubviews];
-    CGFloat width = (self.frame.size.width - 2 * 10 - 10) / 2;
-    self.leftTextField.frame = CGRectMake(0, 0, width, self.frame.size.height);
-    self.line.frame = CGRectMake(width + 10, (self.frame.size.height - 1) * 0.5, 10, 1);
-    self.rightTextField.frame = CGRectMake(self.line.frame.origin.x+ self.line.frame.size.width + 10, 0, width, self.frame.size.height);
+    CGFloat width = (self.frame.size.width - 2 * 10 - 10 - 60) / 2;
+    self.leftTextField.frame = CGRectMake(10, 0, width, self.frame.size.height);
+    self.line.frame = CGRectMake(width + 20, (self.frame.size.height - 1) * 0.5, 10, 1);
+    self.rightTextField.frame = CGRectMake(self.line.frame.origin.x+ self.line.frame.size.width + 20, 0, width, self.frame.size.height);
 }
 - (UITextField *)rightTextField {
     if (_rightTextField == nil) {

@@ -12,6 +12,8 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
 #import "CCServiceMassageView.h"
 #import "CCShopCarView.h"
 #import "CCSureOrderViewController.h"
+
+#import "CCGoodsDetail.h"
 @interface CCEverDayTeViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) CCShopBottomView *bottomView;
 @property (assign, nonatomic) BOOL                   isOpen;
@@ -23,9 +25,102 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.page = 0;
     [self setupUI];
+    [self addTableViewRefresh];
+    [self initData];
 }
 
+- (void)initData {
+    XYWeakSelf;
+    if (self.goods_name.length >0) {
+        NSDictionary *params = @{@"limit":@(10),
+                                 @"goods_name":self.goods_name,
+                                  @"offset":@(self.page*10),
+         };
+         NSString *path = @"/app0/centergoodslist/";
+         [[STHttpResquest sharedManager] requestWithMethod:GET
+                                                  WithPath:path
+                                                WithParams:params
+                                          WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+             NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+             NSString *msg = [[dic objectForKey:@"errmsg"] description];
+             weakSelf.showErrorView = NO;
+             if(status == 0){
+                 NSDictionary *data = dic[@"data"];
+                 NSString *next = data[@"next"];
+                 NSArray *array = data[@"results"];
+                 if (weakSelf.page) {
+                     [weakSelf.dataSoureArray addObjectsFromArray:array];
+                 } else {
+                     weakSelf.dataSoureArray = array.mutableCopy;
+                     if (weakSelf.dataSoureArray.count) {
+                        weakSelf.showTableBlankView = NO;
+                    } else {
+                        weakSelf.showTableBlankView = YES;
+                    }
+                 }
+                 if ([next isKindOfClass:[NSNull class]] || next == nil) {
+                     [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+                 } else {
+                     [weakSelf.tableView.mj_footer resetNoMoreData];
+                 }
+                 [weakSelf.tableView.mj_header endRefreshing];
+                 [weakSelf.tableView.mj_footer endRefreshing];
+                 [weakSelf.tableView reloadData];
+             }else {
+                 if (msg.length>0) {
+                     [MBManager showBriefAlert:msg];
+                 }
+             }
+         } WithFailurBlock:^(NSError * _Nonnull error) {
+             weakSelf.showErrorView = YES;
+         }];
+    } else {
+        NSDictionary *params = @{@"limit":@(10),
+                                  @"offset":@(self.page*10),
+         };
+         NSString *path = @"/app0/listpromotegoods/";
+         [[STHttpResquest sharedManager] requestWithMethod:GET
+                                                  WithPath:path
+                                                WithParams:params
+                                          WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+             NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+             NSString *msg = [[dic objectForKey:@"errmsg"] description];
+             weakSelf.showErrorView = NO;
+             if(status == 0){
+                 NSDictionary *data = dic[@"data"];
+                 NSString *next = data[@"next"];
+                 NSArray *array = data[@"results"];
+                 if (weakSelf.page) {
+                     [weakSelf.dataSoureArray addObjectsFromArray:array];
+                 } else {
+                     weakSelf.dataSoureArray = array.mutableCopy;
+                     if (weakSelf.dataSoureArray.count) {
+                         weakSelf.showTableBlankView = NO;
+                     } else {
+                         weakSelf.showTableBlankView = YES;
+                     }
+                 }
+                 if ([next isKindOfClass:[NSNull class]] || next == nil) {
+                     [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+                 } else {
+                     [weakSelf.tableView.mj_footer resetNoMoreData];
+                 }
+                 [weakSelf.tableView.mj_header endRefreshing];
+                 [weakSelf.tableView.mj_footer endRefreshing];
+                 [weakSelf.tableView reloadData];
+             }else {
+                 if (msg.length>0) {
+                     [MBManager showBriefAlert:msg];
+                 }
+             }
+         } WithFailurBlock:^(NSError * _Nonnull error) {
+             weakSelf.showErrorView = YES;
+         }];
+    }
+ 
+}
 - (void)setupUI {
     [self customNavBarWithTitle:self.titleStr];
     self.tableView.delegate = self;
@@ -109,12 +204,13 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 20;
+    return self.dataSoureArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CCEverDayTeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    cell.model = [CCGoodsDetail modelWithJSON:self.dataSoureArray[indexPath.row]];
     return cell;
 }
 

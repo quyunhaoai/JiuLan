@@ -9,7 +9,7 @@ static NSString *cellReuseIdentifier = @"STRecommonPersonCollectionViewCell";
 #import "CCCommodDetaildViewController.h"
 #import "CCCommendityNoQuanCollectionViewCell.h"
 #import "CCCollectionViewLeftView.h"
-
+#import "CCGoodsDetail.h"
 @implementation CCCollectionViewLeftView
 
 - (void)setupUI {
@@ -22,13 +22,16 @@ static NSString *cellReuseIdentifier = @"STRecommonPersonCollectionViewCell";
     }];
 }
 
-- (NSMutableArray *)dataArray {
-    if (!_dataArray) {
-        _dataArray =[NSMutableArray arrayWithArray:@[@"",@"",@"",@"",@"",@"",@"",@""]];
-    }
-    return _dataArray;
+//- (NSMutableArray *)dataArray {
+//    if (!_dataArray) {
+//        _dataArray =[NSMutableArray arrayWithArray:@[@"",@"",@"",@"",@"",@"",@"",@""]];
+//    }
+//    return _dataArray;
+//}
+- (void)setDataArray:(NSMutableArray *)dataArray {
+    _dataArray = dataArray;
+    [self.collectView reloadData];
 }
-
 - (void)moreBtnClicked:(UIButton *)button {
     
     
@@ -67,11 +70,12 @@ static NSString *cellReuseIdentifier = @"STRecommonPersonCollectionViewCell";
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     CCCommendityNoQuanCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellReuseIdentifier forIndexPath:indexPath];
+    cell.model = [CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];
     return cell;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return CGSizeMake((Window_W-30)/2, 198);
+    return CGSizeMake(kWidth(155), 174);
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

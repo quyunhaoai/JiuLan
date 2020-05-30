@@ -8,6 +8,8 @@
 
 #import "CCLoginRViewController.h"
 #import "CCLonginTextInputVIew.h"
+#import "CCTabbarViewController.h"
+
 @interface CCLoginRViewController ()<UITextFieldDelegate,KKCommonDelegate>
 @property (weak, nonatomic) IBOutlet UIView *MiddeView;
 @property (strong,nonatomic) CCLonginTextInputVIew *inTextView;
@@ -91,18 +93,16 @@
                 NSString *token = data[@"jwtoken"];
                 NSString *centerID = data[@"centerID"];
                 NSString *marketID = data[@"marketID"];
-                NSString *name = data[@"name"];
+//                NSString *name = data[@"name"];
                 [[NSUserDefaults standardUserDefaults] setObject:centerID forKey:@"centerID"];
                 [[NSUserDefaults standardUserDefaults] setObject:marketID forKey:@"marketID"];
                 [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
-                [[NSUserDefaults standardUserDefaults] setObject:name forKey:@"name"];
+//                [[NSUserDefaults standardUserDefaults] setObject:name forKey:@"name"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                if (msg.length>0) {
-                    [MBManager showBriefAlert:msg];
-                }
-                [weakSelf.navigationController popViewControllerAnimated:YES];
-                [weakSelf dismissViewControllerAnimated:YES completion:nil];
-                [kNotificationCenter postNotificationName:@"refreshMyInfo" object:nil];
+                [UIApplication sharedApplication].delegate.window.rootViewController = [CCTabbarViewController getTabBarController];
+//                [weakSelf.navigationController popViewControllerAnimated:YES];
+//                [weakSelf dismissViewControllerAnimated:YES completion:nil];
+//                [kNotificationCenter postNotificationName:@"refreshMyInfo" object:nil];
             }else {
                 if (msg.length>0) {
                     [MBManager showBriefAlert:msg];

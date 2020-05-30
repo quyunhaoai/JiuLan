@@ -7,12 +7,12 @@
 //
 
 #import "CCBaseViewController.h"
-
+#import "BaseTableViewCell.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCBaseTableViewController : CCBaseViewController
 
-@property (strong, nonatomic) NSMutableArray *dataSoureArray;   
+
 
 @property (nonatomic,strong) UITableView *tableView;
 
@@ -28,7 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)tableViewDidSelect:(NSIndexPath *)indexPath;
 
+- (void)addTableViewHeadRefresh;
 
+- (void)addTableViewRefresh;
 
 
 

@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "CCGoodsDetailInfoModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BottomAlert2Contentview : UIView
-
+@property (nonatomic,strong)CCGoodsDetailInfoModel *model;
 @end
 
 NS_ASSUME_NONNULL_END

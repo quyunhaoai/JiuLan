@@ -33,7 +33,11 @@ typedef enum {
                WithParams:(NSDictionary*)params
          WithSuccessBlock:(requestSuccessBlock)success
           WithFailurBlock:(requestFailureBlock)failure;
-
+- (void)requestWithPUTMethod:(HTTPMethod)method
+        WithPath:(NSString *)path
+      WithParams:(id)params
+WithSuccessBlock:(requestSuccessBlock)success
+             WithFailurBlock:(requestFailureBlock)failure;
 - (void)UPLOADIMAGE:(NSString *)URL
      params:(NSDictionary *)params
 uploadImage:(UIImage *)image

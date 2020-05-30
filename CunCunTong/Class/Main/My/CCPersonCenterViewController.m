@@ -106,7 +106,8 @@ static NSString *CellIdentifier = @"UITableViewCell";
         [self.navigationController pushViewController:vc
                                              animated:YES];
     }else {
-        
+        CCMyInfoViewController *vc = [CCMyInfoViewController new];
+        [self.navigationController pushViewController:vc animated:YES];
     }
 
 }
@@ -116,7 +117,6 @@ static NSString *CellIdentifier = @"UITableViewCell";
     if (!_iconArray) {
         _iconArray = @[@"余额图标",
                        @"销售录入图标",
-//                       @"数据分析图标",
                        @"快递分润图标",
                        @"预警图标",
                        @"需求图标",
@@ -132,7 +132,6 @@ static NSString *CellIdentifier = @"UITableViewCell";
     if (!_titleArray) {
         _titleArray = @[@"账户余额",
                         @"日销售录入",
-//                        @"数据分析",
                         @"快递分润",
                         @"预警提醒",
                         @"需求上报",
@@ -149,7 +148,6 @@ static NSString *CellIdentifier = @"UITableViewCell";
     if (!_controllerArray) {
         _controllerArray = @[@"CCBalanceViewController",
                         @"CCDaySalesViewController",
-//                        @"数据分析",
                         @"CCExpressKDFRViewController",
                         @"CCWarningReminderViewController",
                         @"CCNeedViewController",
@@ -182,8 +180,6 @@ static NSString *CellIdentifier = @"UITableViewCell";
     }
     return _tableView;
 }
-
-
 
 - (void)refreshTableViewData {
     [self.tableView.mj_header beginRefreshing];

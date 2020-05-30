@@ -14,9 +14,17 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CCBaseViewController : UIViewController
 @property (strong, nonatomic) KKNavTitleView *navTitleView; //  视图
 @property (strong, nonatomic) KKSearchBar *searBarView;
-@property (assign, nonatomic) BOOL isShowErrorPageView;
-@property (assign, nonatomic) BOOL isShowNoDataPageView;
+@property (strong, nonatomic) NSMutableArray *dataSoureArray;
+@property (assign, nonatomic) BOOL showErrorView;
+@property (assign, nonatomic) BOOL showTableBlankView;
 @property (assign, nonatomic) NSInteger page;
+/********    无数据 空白  视图    ********/
+@property (nonatomic, strong) UIView *blankView;
+
+/********    page == 0时 请求失败  视图    ********/
+@property (nonatomic, strong) UIView *errorView;
+
+@property (strong, nonatomic) UITableView *baseTableView;
 
 - (void)setupUI;
 - (void)initData;

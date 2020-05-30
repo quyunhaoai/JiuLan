@@ -187,7 +187,7 @@
               //设置密码安全样式
               textfield.secureTextEntry = YES;
               //设置键盘样式
-              textfield.keyboardType = UIKeyboardTypeNumberPad;
+              textfield.keyboardType = UIKeyboardTypeDefault;
                
               textfield.backgroundColor = kClearColor;
               //设置输入的字体大小

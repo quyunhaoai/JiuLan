@@ -13,7 +13,7 @@
 
 #import "CCTabbarViewController.h"
 #import "CCLoginRViewController.h"
-#import "SH_MallSubclassificationViewController.h"
+#import "CCCommodDetaildViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -25,11 +25,18 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+//    NSString *token = [kUserDefaults objectForKey:@"token"];
+//    if (token.isNotBlank) {
+//        self.window.rootViewController = [CCTabbarViewController getTabBarController];
+//    } else {
+//        CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
+//        self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
+//    }
     
 //    CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
-    self.window.rootViewController = [CCTabbarViewController getTabBarController];
-//    CCBaseViewController *vc = [SH_MallSubclassificationViewController new];
-//    self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
+//    self.window.rootViewController = [CCTabbarViewController getTabBarController];
+    CCBaseViewController *vc = [CCCommodDetaildViewController new];
+    self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
 //
     
 //                NKAlertView *alert = [[NKAlertView alloc] init];

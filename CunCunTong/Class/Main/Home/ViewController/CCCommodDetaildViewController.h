@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCCommodDetaildViewController : CCBaseViewController
-
+@property (nonatomic,copy) NSString *goodsID;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -10,7 +10,7 @@
 #import "BaseTableViewCell.h"
 @interface CCExpressKDFRViewController ()<GroupShadowTableViewDelegate,GroupShadowTableViewDataSource>
 @property (nonatomic, strong) GroupShadowTableView *tableView;
-@property (strong, nonatomic) NSMutableArray *dataSoureArray;
+//@property (strong, nonatomic) NSMutableArray *dataSoureArray;
 @end
 
 @implementation CCExpressKDFRViewController
@@ -65,12 +65,12 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 }
-- (NSMutableArray *)dataSoureArray {
-    if (!_dataSoureArray) {
-        _dataSoureArray = [[NSMutableArray alloc] init];
-    }
-    return _dataSoureArray;
-}
+//- (NSMutableArray *)dataSoureArray {
+//    if (!_dataSoureArray) {
+//        _dataSoureArray = [[NSMutableArray alloc] init];
+//    }
+//    return _dataSoureArray;
+//}
 
 
 

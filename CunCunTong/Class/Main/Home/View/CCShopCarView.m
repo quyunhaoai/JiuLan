@@ -44,7 +44,7 @@
         [self addSubview:titleLab];
         titleLab.frame = CGRectMake(0, 0, CGRectGetWidth(frame), 31);
         titleLab.backgroundColor = krgb(232,255,254);
-        self.tableView.frame = CGRectMake(0, 71, CGRectGetWidth(frame), CGRectGetHeight(frame) - 71);
+        self.tableView.frame = CGRectMake(0, 71, CGRectGetWidth(frame), CGRectGetHeight(frame) - 71-66);
         [self.tableView registerNib:CCShopCarTableViewCell.loadNib forCellReuseIdentifier:@"cell12345"];
         KKButton *rightBtn = [KKButton buttonWithType:UIButtonTypeCustom];
         rightBtn.tag = 12;

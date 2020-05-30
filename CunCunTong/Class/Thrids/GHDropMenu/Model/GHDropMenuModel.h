@@ -32,6 +32,17 @@ typedef NS_ENUM (NSUInteger,GHDropMenuType ) {
     GHDropMenuTypeOptionCollection,
     GHDropMenuTypeWaterFall,
 };
+@interface ChildrenItem :NSObject
+@property (nonatomic , assign) NSInteger              specoption_id;
+@property (nonatomic , copy) NSString              * specoption_name;
+
+@end
+@interface GuGeModelName :NSObject
+@property (nonatomic , assign) NSInteger              spec_id;
+@property (nonatomic , copy) NSString              * spec_name;
+@property (nonatomic , strong) NSArray <ChildrenItem *>              * children;
+
+@end
 /** 筛选菜单模型 */
 @interface GHDropMenuModel : NSObject
 @property (nonatomic , strong) NSArray *waterFallTags;
@@ -104,7 +115,9 @@ typedef NS_ENUM (NSUInteger,GHDropMenuType ) {
 @property (nonatomic , copy) NSString *beginTime;
 /** 结束时间 */
 @property (nonatomic , copy) NSString *endTime;
-
+@property (strong, nonatomic) NSArray *brand_set;//品牌
+@property (strong, nonatomic) NSArray *package_set;//包装
+@property (strong, nonatomic) NSArray *spec_set;//规格
 /** 构造筛选菜单数据 */
 - (NSMutableArray *)creaDropMenuData;
 - (NSMutableArray *)creaFilterDropMenuData;

@@ -22,13 +22,15 @@
 #import "CCSureOrderViewController.h"
 #import "CCGoodsDetailHeadTableViewCell.h"
 #import "CCYouHuiQuanViewController.h"
+
+#import "CCGoodsDetailInfoModel.h"
 @interface CCCommodDetaildViewController ()<UIScrollViewDelegate,SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
     CGRect HeaderFrame;
 }
 @property (strong, nonatomic) UIScrollView *scrollView;
 
-@property (strong, nonatomic) NSMutableArray         *dataSoureArray;
+//@property (strong, nonatomic) NSMutableArray         *dataSoureArray;
 @property (nonatomic,strong) UITableView             *tableView;
 @property (nonatomic, strong) AJ_TopBar              *topBar;//  顶部筛选组件
 @property (strong, nonatomic) SDCycleScrollView      *cycleScrollView;
@@ -44,7 +46,8 @@
 @property (nonatomic, assign)CGFloat threshold;
 // 记录scrollView.contentInset.top
 @property (nonatomic, assign)CGFloat marginTop;
-
+@property (nonatomic,strong) CCGoodsDetailInfoModel *goodsDetailModel;
+@property (strong, nonatomic) UILabel *salesLab;
 
 @end
 
@@ -56,11 +59,6 @@
     NSLog(@"--%f",HeaderFrame.origin.y);
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-
-//    if (self.marginTop != scrollView.contentInset.top) {
-//        self.marginTop = scrollView.contentInset.top;
-//    }
-    
     CGFloat offsetY = scrollView.contentOffset.y;
     CGFloat newoffsetY = offsetY + self.marginTop;
     NSLog(@"newoffsetY:%f,offsetY%f",newoffsetY,offsetY);
@@ -79,7 +77,30 @@
     [self initData];
 }
 - (void)initData {
-    self.dataSoureArray = @[[CCGoodsDetail new],[CCGoodsDetail new]].mutableCopy;
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/goodsdetail/10/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            weakSelf.goodsDetailModel = [CCGoodsDetailInfoModel modelWithJSON:data];
+            weakSelf.salesLab.text = [NSString stringWithFormat:@"销量：%ld",(long)weakSelf.goodsDetailModel.sales];
+            weakSelf.cycleScrollView.imageURLStringsGroup = weakSelf.goodsDetailModel.goodsimage_set;
+            [weakSelf.tableView reloadData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 - (void)setupUI {
     UIButton *rightBtn = ({
@@ -159,6 +180,14 @@
         make.width.mas_equalTo(152);
         make.height.mas_equalTo(78);
     }];
+    UILabel *style = [[UILabel alloc] initWithFrame:CGRectMake(Window_W-90, 228, 79, 18)];
+    style.layer.cornerRadius = 3;
+    style.layer.backgroundColor = [[UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:0.3f] CGColor];
+    style.font = FONT_12;
+    style.textColor = kWhiteColor;
+    style.textAlignment = NSTextAlignmentCenter;
+    self.salesLab = style;
+    [_cycleScrollView addSubview:style];
 }
 
 #pragma mark  - Get
@@ -193,6 +222,7 @@
     NKAlertView *alertView = [[NKAlertView alloc] init];
      CCBottomShareAlertContentView *customContentView = [[CCBottomShareAlertContentView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 133+49+5)];
     CCSharePicView *customImageView = [[CCSharePicView alloc] initWithFrame:CGRectMake(0, 0, Window_W-106, 370)];
+    
     alertView.type = NKAlertViewTypeBottom;
     alertView.contentView = customContentView;
     alertView.middleView = customImageView;
@@ -221,13 +251,15 @@
          cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetailHeadTableViewCell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         CCGoodsDetailHeadTableViewCell *ccc = (CCGoodsDetailHeadTableViewCell *)cell;
-        ccc.goodsTitleLab.text = @"网红猫衣服冬季亲子宠物装";
-        ccc.kuCunLab.text = @"库存量：1200件";
-        ccc.priceLab2.text = @"建议零售价：¥69.00";
+        ccc.goodsTitleLab.text = self.goodsDetailModel.goods_name;
+        ccc.kuCunLab.text =[NSString stringWithFormat:@"库存量：%ld件",(long)self.goodsDetailModel.stock];
+        ccc.priceLab2.text =[NSString stringWithFormat:@"建议零售价：¥%ld",(long)self.goodsDetailModel.retail_price];
+        NSString *pricestr = self.goodsDetailModel.promote == nil ? STRING_FROM_INTAGER(self.goodsDetailModel.play_price):STRING_FROM_INTAGER(self.goodsDetailModel.promote.now_price);
+        NSString *price = [NSString stringWithFormat:@"￥%@",pricestr];
         NSMutableAttributedString *nameString = [[NSMutableAttributedString alloc] initWithString:@"¥" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:krgb(255,69,4)}];
-        NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:@"56.00" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
+        NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:STRING_FROM_INTAGER(self.goodsDetailModel.promote.old_price) attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
         NSAttributedString *countString = [[NSAttributedString alloc] initWithString:@" 原价：" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999}];
-        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:@"¥59.00" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
+        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:price attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
         [nameString appendAttributedString:nameString2];
         [nameString appendAttributedString:countString];
         [nameString appendAttributedString:attrStr];
@@ -243,7 +275,6 @@
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         cell.textLabel.text = [NSString stringWithFormat:@"%@%ld",[self class],indexPath.row];
-        
         return cell;
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail"];
@@ -253,12 +284,22 @@
             [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row-1];
             if (indexPath.row == 1 || indexPath.row == 2) {
                 cellll.jiantouimageView.hidden = YES;
+                if (indexPath.row == 1) {
+                    cellll.subLab.text = [NSString stringWithFormat:@"%@%@%@",self.goodsDetailModel.address.place1,self.goodsDetailModel.address.place2,self.goodsDetailModel.address.place3];
+                } else if (indexPath.row == 2){
+                    cellll.subLab.text = @"包邮";
+                }
             }
         } else if(indexPath.section == 1) {
             NSArray *arr = (NSArray *)self.titleArray[indexPath.section];
             [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row];
+            if (indexPath.row == 0) {
+                cellll.subLab.text = @"选择颜色、数量、尺码";
+            } else {
+                cellll.subLab.text = @"生产日期、品牌...";
+            }
         } else {
-
+            
         }
     }
     return cell;
@@ -307,9 +348,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 1) {
-        if (indexPath.row == 0) {
+        if (indexPath.row == 1) {
             NKAlertView *alertView = [[NKAlertView alloc] init];
             BottomAlertContentView *customContentView = [[BottomAlertContentView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 426)];
+            customContentView.model = self.goodsDetailModel;
             alertView.type = NKAlertViewTypeBottom;
             alertView.contentView = customContentView;
             alertView.hiddenWhenTapBG = YES;
@@ -317,6 +359,7 @@
         }else {
             NKAlertView *alertView = [[NKAlertView alloc] init];
             BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
+            customContentView.model = self.goodsDetailModel;
             alertView.type = NKAlertViewTypeBottom;
             alertView.contentView = customContentView;
             alertView.hiddenWhenTapBG = YES;
@@ -330,12 +373,6 @@
     }
 }
 
-- (NSMutableArray *)dataSoureArray {
-    if (!_dataSoureArray) {
-        _dataSoureArray = [[NSMutableArray alloc] init];
-    }
-    return _dataSoureArray;
-}
 #pragma mark  -  SDCycleScrollViewDelegate
 /** 点击图片回调 */
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
@@ -356,17 +393,9 @@
 - (SDCycleScrollView *)cycleScrollView {
     if (!_cycleScrollView) {
         _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, Window_W, 258) delegate:self placeholderImage:IMAGE_NAME(@"")];
-        _cycleScrollView.localizationImageNamesGroup = @[@"详情页图片",@"详情页图片",@"详情页图片",@"详情页图片"];
         _cycleScrollView.currentPageDotColor = kMainColor;
         _cycleScrollView.pageDotColor = kWhiteColor;
-        UILabel *style = [[UILabel alloc] initWithFrame:CGRectMake(Window_W-90, 228, 79, 18)];
-        style.layer.cornerRadius = 3;
-        style.layer.backgroundColor = [[UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:0.3f] CGColor];
-        style.text = @"销量：3340";
-        style.font = FONT_12;
-        style.textColor = kWhiteColor;
-        style.textAlignment = NSTextAlignmentCenter;
-        [_cycleScrollView addSubview:style];
+
     }
     return _cycleScrollView;
 }

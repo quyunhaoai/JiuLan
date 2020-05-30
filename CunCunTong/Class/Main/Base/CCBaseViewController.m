@@ -258,10 +258,100 @@
     [self.view endEditing:YES];
 }
 
+- (NSMutableArray *)dataSoureArray {
+    if (!_dataSoureArray) {
+        _dataSoureArray = [[NSMutableArray alloc] init];
+    }
+    return _dataSoureArray;
+}
 
-
-
-
+- (void)setShowTableBlankView:(BOOL)showTableBlankView {
+    _showTableBlankView = showTableBlankView;
+    if (_showTableBlankView) {
+        if ([self.view.subviews containsObject:self.blankView]) {
+            [self.blankView removeFromSuperview];
+        }
+        self.blankView = [[UIView alloc] init];
+        self.blankView.frame = self.baseTableView.frame;
+        [self.view addSubview:self.blankView];
+        UIImage *loadingImage = [UIImage imageNamed:@"无订单缺省页图标"];
+        UIImageView *customBackgournd = [[UIImageView alloc] initWithImage:loadingImage];
+        customBackgournd.frame = CGRectMake((Window_W-160)/2, 0, 160, 125);
+        customBackgournd.centerY = self.view.centerY - 125 ;
+        [self.blankView addSubview:customBackgournd];
+        customBackgournd.contentMode = UIViewContentModeScaleAspectFit;
+        LWExtendButton *requestButton = [LWExtendButton buttonWithType:UIButtonTypeCustom];
+        requestButton.frame = customBackgournd.frame;
+        [requestButton addTarget:self action:@selector(initData) forControlEvents:UIControlEventTouchUpInside];
+        [self.blankView addSubview:requestButton];
+        UILabel * tipLabel = ({
+            UILabel *label = [UILabel new];
+            label.textColor = UIColorHex(0x999999);
+            label.textAlignment = NSTextAlignmentCenter;
+            label.font = [UIFont systemFontOfSize:14];
+            label.backgroundColor = [UIColor clearColor];
+            label.numberOfLines = 0 ;
+            label.text = @"暂无数据";
+            label;
+        });
+        [self.blankView addSubview:tipLabel];
+        [tipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.mas_equalTo(self.view.mas_centerX);
+            make.top.mas_equalTo(customBackgournd.mas_bottom).mas_offset(5);
+            make.width.mas_equalTo(200);
+        }];
+        tipLabel.textAlignment = NSTextAlignmentCenter;
+        self.baseTableView.hidden = YES;
+    } else {
+        [self.blankView removeFromSuperview];
+        [self.errorView removeFromSuperview];
+        self.baseTableView.hidden = NO;
+    }
+}
+- (void)setShowErrorView:(BOOL)showErrorView {
+    _showErrorView = showErrorView;
+    if (_showErrorView ) {
+        if ([self.view.subviews containsObject:self.errorView]) {
+            [self.errorView removeFromSuperview];
+        }
+        self.errorView = [[UIView alloc] init];
+        self.errorView.frame = self.baseTableView.frame;
+        self.errorView.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:self.errorView];
+        [self.view sendSubviewToBack:self.errorView];
+        UIImage *errorImage = [UIImage imageNamed:@"无网络图标"];//noNetimage
+        UIImageView *customBackgournd = [[UIImageView alloc] initWithImage:errorImage];
+        customBackgournd.frame = CGRectMake((Window_W-160)/2, 0, 160, 125);
+        customBackgournd.centerY = self.errorView.centerY - 65;
+        customBackgournd.contentMode = UIViewContentModeScaleAspectFit;
+        [self.errorView addSubview:customBackgournd];
+        LWExtendButton *requestButton = [LWExtendButton buttonWithType:UIButtonTypeCustom];
+        requestButton.frame = customBackgournd.frame;
+        [requestButton addTarget:self action:@selector(initData) forControlEvents:UIControlEventTouchUpInside];
+        [self.errorView addSubview:requestButton];
+        UILabel * tipLabel = ({
+            UILabel *label = [UILabel new];
+            label.textColor = UIColorHex(0x999999);
+            label.textAlignment = NSTextAlignmentCenter;
+            label.font = [UIFont systemFontOfSize:14];
+            label.backgroundColor = [UIColor clearColor];
+            label.numberOfLines = 0 ;
+            label.text = @"啊哦 网络开小车";
+            label;
+        });
+        [self.errorView addSubview:tipLabel];
+        [tipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.mas_equalTo(self.errorView.mas_centerX);
+            make.top.mas_equalTo(customBackgournd.mas_bottom).mas_offset(5);
+            make.width.mas_equalTo(self.errorView).mas_offset(- 2 * 10).priority(998);
+        }];
+        self.baseTableView.hidden = YES;
+    } else {
+        [self.blankView removeFromSuperview];
+        [self.errorView removeFromSuperview];
+        self.baseTableView.hidden = NO;
+    }
+}
 
 
 

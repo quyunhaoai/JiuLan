@@ -11,7 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCEverDayTeViewController : CCBaseTableViewController
-@property (nonatomic,copy) NSString *titleStr;  
+@property (nonatomic,copy) NSString *titleStr;
+@property (copy, nonatomic) NSString *goods_name;  
 @end
 
 NS_ASSUME_NONNULL_END

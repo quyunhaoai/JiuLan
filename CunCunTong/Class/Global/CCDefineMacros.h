@@ -8,7 +8,7 @@
 
 #ifndef CCDefineMacros_h
 #define CCDefineMacros_h
-#define kUrl @"http://192.168.110.104:8000"
+#define kUrl @"http://192.168.0.125:8000"
 #define KBaseLocation @""
 #define kPrintPathLog (1)           //  打印页面path debug 模式下
 /*================================常用宏===============================*/
@@ -528,6 +528,7 @@ return shared##className; \
 #define kClearColor         [UIColor clearColor]
 #define kMainColor          COLOR_HEX_RGB(0x22958F)//#22958F
 #define kTipYellowCOLOR     krgb(255,165,0)
+#define kPriceRedCOLOR      krgb(255,69,4)
 #define RGBHexColor(hexValue, alphaValue) [UIColor colorWithRed:((float)((hexValue & 0xFF0000) >> 16))/255.0 green:((float)((hexValue & 0xFF00) >> 8))/255.0 blue:((float)(hexValue & 0xFF))/255.0 alpha:alphaValue]
 //  FONT_ + 所属PT    参照：XIYUAN-5.0-UI 戏缘ui 通用规范
 #define FONT_18 [UIFont systemFontOfSize:RationEnlarge(18.f)]    //  T1  用在导航栏标题

@@ -89,7 +89,6 @@
 }
 - (void)setUI {
    UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 128)];
-//        self.tableView.tableHeaderView = headView;
     [self addSubview:headView];
     
     UIImageView *goodsImageView = ({
@@ -180,6 +179,7 @@
         make.width.mas_equalTo(Window_W/2);
         make.height.mas_equalTo(17);
     }];
+//    goodsImageView sd_setImageWithURL:[NSURL URLWithString:self.model.goo] placeholderImage:<#(nullable UIImage *)#>
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {

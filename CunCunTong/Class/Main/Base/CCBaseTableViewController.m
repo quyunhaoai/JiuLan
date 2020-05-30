@@ -90,24 +90,6 @@
     [self.tableView.mj_header beginRefreshing];
 }
 
-/// 添加下拉刷新
-- (void)addTableViewRefresh {
-    __weak typeof (self) weakSelf = self;
-    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.tableView reloadData];
-            [weakSelf.tableView.mj_header endRefreshing];
-        });
-    }];
-    
-    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.tableView reloadData];
-            [weakSelf.tableView.mj_footer endRefreshing];
-        });
-    }];
-}
-
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -157,18 +139,31 @@
     
 }
 
-- (NSMutableArray *)dataSoureArray {
-    if (!_dataSoureArray) {
-        _dataSoureArray = [[NSMutableArray alloc] init];
-    }
-    return _dataSoureArray;
-}
+
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
 
 
+/// 添加下拉刷新
+- (void)addTableViewHeadRefresh {
+    __weak typeof (self) weakSelf = self;
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [weakSelf initData];
+    }];
+}
+/// 添加下拉刷新
+- (void)addTableViewRefresh {
+    __weak typeof (self) weakSelf = self;
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [weakSelf initData];
+    }];
+    
+    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+        [weakSelf initData];
+    }];
+}
 
 
 

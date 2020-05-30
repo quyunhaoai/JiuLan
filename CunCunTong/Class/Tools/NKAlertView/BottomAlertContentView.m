@@ -13,17 +13,25 @@
 
 @interface BottomAlertContentView ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
-
+@property (strong, nonatomic) NSArray *titlesArray;
 @end
 
 @implementation BottomAlertContentView
-
+- (NSArray *)titlesArray {
+    if (!_titlesArray) {
+        _titlesArray = @[@"品牌 ",@"生产日期",@"货号 ",@"颜色分类",@"尺码 "];
+    }
+    return _titlesArray;
+}
 - (UITableView *)tableView
 {
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] init];
         _tableView.dataSource = self;
         _tableView.delegate = self;
+        _tableView.estimatedRowHeight = 40;
+        _tableView.estimatedSectionFooterHeight = 0.001;
+        _tableView.estimatedSectionHeaderHeight = 0.001;
         [self addSubview:_tableView];
     }
     return _tableView;
@@ -43,6 +51,7 @@
         titleLab.frame = CGRectMake(0, 0, CGRectGetWidth(frame), 50);
         
         self.tableView.frame = CGRectMake(0, CGRectGetMaxY(titleLab.frame), CGRectGetWidth(frame), CGRectGetHeight(frame) - 126);
+        self.tableView.backgroundColor = kWhiteColor;
         [self.tableView registerNib:CCTextCustomTableViewCell.loadNib forCellReuseIdentifier:@"cell1234"];
         UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         rightBtn.backgroundColor = krgb(255,157,52);
@@ -66,17 +75,23 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.model.arguments_set.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CCTextCustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell1234"];
-    cell.titleLab.text = @"UITableViewCell";
-    cell.subTitleLab.text = @"UITableViewCell";
+    Arguments_setItem *model = self.model.arguments_set[indexPath.row];
+    cell.titleLab.text = model.name;
+    cell.subTitleLab.text = model.value;
     return cell;
 }
-
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 0.0001f;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.0001f;
+}
 - (void)botBtnClick:(UIButton *)btn
 {
     NKAlertView *alertView = (NKAlertView *)self.superview;

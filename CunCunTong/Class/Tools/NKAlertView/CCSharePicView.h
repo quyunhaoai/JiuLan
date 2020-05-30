@@ -7,10 +7,11 @@
 //
 
 #import "CCBaseView.h"
-
+#import "CCGoodsDetailInfoModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCSharePicView : CCBaseView
+@property (strong,nonatomic) CCGoodsDetailInfoModel *model;
 
 @end
 

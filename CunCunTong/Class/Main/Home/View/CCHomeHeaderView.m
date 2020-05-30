@@ -8,8 +8,9 @@
 
 #import "CCHomeHeaderView.h"
 #import "ImageTitleButton.h"
+#import "SDCycleScrollView.h"
 @interface CCHomeHeaderView()
-@property (strong, nonatomic) UIImageView *bgImage;
+//@property (strong, nonatomic) SDCycleScrollView *bgImage;
 
 @end
 
@@ -74,21 +75,25 @@
 
 #pragma mark  -  GET
 
-- (UIImageView *)bgImage {
+- (SDCycleScrollView *)bgImage {
     if (!_bgImage) {
         _bgImage = ({
-            UIImageView *view = [UIImageView new];
-            view.contentMode = UIViewContentModeScaleAspectFill;
-            view.image = [[UIImage imageNamed:@"banner图"] imageByRoundCornerRadius:0];
-            view.layer.masksToBounds = YES ;
+            SDCycleScrollView *view = [[SDCycleScrollView alloc] init];
+//            view.clickItemOperationBlock = ^(NSInteger currentIndex) {
+//
+//            };
+//            view.placeholderImage = IMAGE_NAME(@"banner图");
             view ;
         });
     }
     return _bgImage;
 }
 
-
-
-
+- (void)setDataArray:(NSArray *)dataArray {
+    _dataArray = dataArray;
+    for (NSDictionary *dict in _dataArray) {
+        
+    }
+}
 
 @end

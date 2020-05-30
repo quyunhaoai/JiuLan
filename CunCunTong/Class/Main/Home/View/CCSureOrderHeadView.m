@@ -55,7 +55,7 @@
     [self addSubview:nameLab];
     [nameLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self).mas_offset(50);
-        make.size.mas_equalTo(CGSizeMake(77, 14));
+        make.size.mas_equalTo(CGSizeMake(177, 14));
         make.top.mas_equalTo(self).mas_offset(10);
     }];
     self.nameLab = nameLab;
@@ -81,7 +81,7 @@
         view.font = STFont(12);
         view.lineBreakMode = NSLineBreakByTruncatingTail;
         view.backgroundColor = [UIColor clearColor];
-        view.textAlignment = NSTextAlignmentLeft;
+        view.textAlignment = NSTextAlignmentRight;
         view ;
     });
     

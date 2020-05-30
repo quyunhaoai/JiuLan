@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CCBaseGroupShadowTableViewController : CCBaseViewController
 @property (nonatomic, strong) GroupShadowTableView *tableView;
-@property (strong, nonatomic) NSMutableArray *dataSoureArray;
+//@property (strong, nonatomic) NSMutableArray *dataSoureArray;
 @end
 
 NS_ASSUME_NONNULL_END
