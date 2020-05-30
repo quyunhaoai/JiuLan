@@ -7,6 +7,8 @@
 //
 
 #import "CCGoodsDetail.h"
+@implementation photoInfo
+@end
 @implementation ReduceItem
 @end
 @implementation Promote

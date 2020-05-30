@@ -48,6 +48,7 @@
 @property (nonatomic, assign)CGFloat marginTop;
 @property (nonatomic,strong) CCGoodsDetailInfoModel *goodsDetailModel;
 @property (strong, nonatomic) UILabel *salesLab;
+@property (strong,nonatomic) NSMutableArray  *photoArr;
 
 @end
 
@@ -58,7 +59,21 @@
     self.marginTop = self.view.size.height-NAVIGATION_BAR_HEIGHT-48-20;
     NSLog(@"--%f",HeaderFrame.origin.y);
 }
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    CGFloat offsetY = scrollView.contentOffset.y;
+//    CGFloat newoffsetY = offsetY + self.marginTop;
+//    NSLog(@"newoffsetY:%f,offsetY%f",newoffsetY,offsetY);
+//
+//    if (newoffsetY >= HeaderFrame.origin.y) {
+//        NSLog(@"-----============----------商品详情");
+//        [self.topBar setCurrentPage:1];
+//    }else if (newoffsetY < HeaderFrame.origin.y){
+//        NSLog(@"信息");
+//        [self.topBar setCurrentPage:0];
+//    }
+//}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGFloat offsetY = scrollView.contentOffset.y;
     CGFloat newoffsetY = offsetY + self.marginTop;
     NSLog(@"newoffsetY:%f,offsetY%f",newoffsetY,offsetY);
@@ -92,6 +107,7 @@
             weakSelf.goodsDetailModel = [CCGoodsDetailInfoModel modelWithJSON:data];
             weakSelf.salesLab.text = [NSString stringWithFormat:@"销量：%ld",(long)weakSelf.goodsDetailModel.sales];
             weakSelf.cycleScrollView.imageURLStringsGroup = weakSelf.goodsDetailModel.goodsimage_set;
+            [weakSelf downImage:weakSelf.goodsDetailModel.detailimage_set];
             [weakSelf.tableView reloadData];
         }else {
             if (msg.length>0) {
@@ -101,6 +117,27 @@
     } WithFailurBlock:^(NSError * _Nonnull error) {
         weakSelf.showErrorView = YES;
     }];
+}
+- (void)downImage:(NSArray *)array {
+    XYWeakSelf;
+    self.photoArr = [NSMutableArray array];
+    for (int i= 0; i<array.count; i++) {
+        photoInfo *info = [photoInfo new];
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:array[i]] options:SDWebImageDownloaderUseNSURLCache progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+
+         } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+             //这边就能拿到图片了
+             CGFloat width = image.size.width;
+             CGFloat height = image.size.height;
+             CGFloat cellHeight = height/width *Window_W;
+             info.width = width;
+             info.height = cellHeight;
+             info.image = image;
+             [weakSelf.photoArr addObject:info];
+             [weakSelf.tableView reloadData];
+        }];
+    }
+
 }
 - (void)setupUI {
     UIButton *rightBtn = ({
@@ -241,7 +278,7 @@
     } else if(section == 1){
         return 2;
     } else {
-        return 20;
+        return self.goodsDetailModel.detailimage_set.count;
     }
 }
 
@@ -270,11 +307,25 @@
         if(cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
             cell.backgroundColor = [UIColor clearColor];
-            cell.textLabel.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
-            cell.textLabel.font = [UIFont systemFontOfSize:16];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
-        cell.textLabel.text = [NSString stringWithFormat:@"%@%ld",[self class],indexPath.row];
+        [cell.contentView removeAllSubviews];
+        UIImageView *imageBgView = ({
+             UIImageView *view = [UIImageView new];
+             view.contentMode = UIViewContentModeScaleToFill ;
+             view.layer.masksToBounds = YES ;
+             view.userInteractionEnabled = YES ;
+             view;
+         });
+        [cell.contentView addSubview:imageBgView];
+         [imageBgView mas_updateConstraints:^(MASConstraintMaker *make) {
+             make.left.top.mas_equalTo(cell.contentView);
+             make.width.mas_equalTo(cell.contentView);
+             make.height.mas_equalTo(cell.contentView);
+         }];
+        if (_photoArr.count) {
+            photoInfo *model = self.photoArr[indexPath.row];
+            imageBgView.image = model.image;
+        }
         return cell;
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail"];
@@ -309,6 +360,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && indexPath.row == 0) {
         return 97;
+    } else if (indexPath.section == 2) {
+        if (self.photoArr.count) {
+            photoInfo *model = self.photoArr[indexPath.row];
+            return model.height;
+        }else {
+            return 500;
+        }
     }
     return [CCGoodsDetailTableViewCell height];
 }

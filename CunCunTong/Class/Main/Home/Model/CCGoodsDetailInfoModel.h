@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , assign) NSInteger              play_price;
 @property (nonatomic , strong) Sku_promote              * sku_promote;
 @property (nonatomic , strong) NSArray <NSNumber *>              * specoption_id_set;
-
+@property (nonatomic,copy) NSString *specoption_str;  
 @end
 
 

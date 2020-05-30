@@ -7,6 +7,11 @@
 //
 
 #import "STBaseModel.h"
+@interface photoInfo :NSObject
+@property (nonatomic , assign) CGFloat              width;
+@property (nonatomic , assign) CGFloat              height;
+@property (nonatomic , strong) UIImage              *image;
+@end
 @interface ReduceItem :NSObject
 @property (nonatomic , assign) NSInteger              types;
 @property (nonatomic , assign) NSInteger              full;

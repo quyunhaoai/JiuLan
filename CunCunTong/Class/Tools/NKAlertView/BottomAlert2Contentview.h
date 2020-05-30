@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CCGoodsDetailInfoModel.h"
+#import "GBTagListView.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BottomAlert2Contentview : UIView
