@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "AKSearchHotDataTypeView.h"
+#import "GBTagListView.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface STSearchHistoryTableViewCell : UITableViewCell
-@property (strong, nonatomic) NSMutableArray *recommendModelArray;    // 搜索热词 array
 @property (strong, nonatomic) NSMutableArray *historyArray;  //  数组
+@property (strong, nonatomic) GBTagListView *taglistView; 
+
 
 @property (strong, nonatomic) AKSearchHotDataTypeView *searchHotDataTypeView; // hot 视图
 
@@ -21,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  *  AKSearchHotCell label click block
  */
-@property (copy, nonatomic) void(^searchHotCellLabelClickButton)(NSInteger tag);
+@property (copy, nonatomic) void(^searchHotCellLabelClickButton)(NSArray *arr);
 @end
 
 NS_ASSUME_NONNULL_END

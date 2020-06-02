@@ -63,7 +63,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" 满券  满168减10" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b8U-ka-3bw">
-                                <rect key="frame" x="11" y="170.5" width="87" height="12"/>
+                                <rect key="frame" x="15" y="170.5" width="87" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -75,7 +75,7 @@
                             <constraint firstItem="sp7-hz-ozL" firstAttribute="leading" secondItem="Lun-xa-8U9" secondAttribute="leading" id="7ld-55-cyO"/>
                             <constraint firstItem="9jF-bF-nm9" firstAttribute="leading" secondItem="qhr-vM-pjd" secondAttribute="leading" constant="11" id="EBb-CA-XU0"/>
                             <constraint firstItem="b8U-ka-3bw" firstAttribute="width" secondItem="sp7-hz-ozL" secondAttribute="width" id="I8i-4p-rxf"/>
-                            <constraint firstItem="b8U-ka-3bw" firstAttribute="leading" secondItem="qhr-vM-pjd" secondAttribute="leading" constant="11" id="OYd-Ru-DbY"/>
+                            <constraint firstItem="b8U-ka-3bw" firstAttribute="leading" secondItem="qhr-vM-pjd" secondAttribute="leading" constant="15" id="OYd-Ru-DbY"/>
                             <constraint firstItem="b8U-ka-3bw" firstAttribute="centerY" secondItem="sp7-hz-ozL" secondAttribute="centerY" id="Orw-ls-R6s"/>
                             <constraint firstItem="b8U-ka-3bw" firstAttribute="height" secondItem="sp7-hz-ozL" secondAttribute="height" multiplier="0.705882" id="RaQ-vy-TDQ"/>
                             <constraint firstAttribute="trailing" secondItem="Er8-zd-wbB" secondAttribute="trailing" constant="24" id="V4j-Ur-CbD"/>

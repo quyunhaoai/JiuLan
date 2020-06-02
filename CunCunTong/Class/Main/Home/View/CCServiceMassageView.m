@@ -7,7 +7,7 @@
 //
 
 #import "CCServiceMassageView.h"
-#import "KKButton/KKButton.h"
+
 @implementation CCServiceMassageView
 
 
@@ -26,7 +26,7 @@
     [self addSubview:rightBtn];
     rightBtn.frame = CGRectMake(0, 0, 152, 39);
     [rightBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleLeft imageTitleSpace:10];
-    
+    self.weixinBtn = rightBtn;
     KKButton *telBtn = [KKButton buttonWithType:UIButtonTypeCustom];
     telBtn.tag = 12;
     [telBtn setTitle:@"12345678911" forState:UIControlStateNormal];
@@ -37,8 +37,16 @@
     [self addSubview:telBtn];
     telBtn.frame = CGRectMake(0, 39, 152, 39);
     [telBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleLeft imageTitleSpace:10];
+    self.telBtn = telBtn;
 }
 - (void)botBtnClick:(UIButton *)button {
-    
+    if (button.tag == 12) {
+        NSString *telephoneNumber=button.titleLabel.text;
+        NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"tel:%@",telephoneNumber];
+        UIApplication *application = [UIApplication sharedApplication];
+        NSURL *URL = [NSURL URLWithString:str];
+        [application openURL:URL];
+    }
+
 }
 @end

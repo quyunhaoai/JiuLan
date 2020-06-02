@@ -72,7 +72,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface Coupon_setItem :NSObject
-
+@property (assign, nonatomic) NSInteger cut;
+@property (assign, nonatomic) NSInteger types;
+@property (nonatomic,copy) NSString *discount; 
 @end
 @interface CCGoodsDetailInfoModel : BaseModel
 @property (nonatomic , assign) NSInteger              ccid;

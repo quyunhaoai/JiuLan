@@ -44,7 +44,9 @@ alpha:1.0]
     
 }
 -(void)setTagWithTagArray:(NSArray*)arr{
-    
+
+    [_tagArr removeAllObjects];
+    [self removeAllSubviews];
     previousFrame = CGRectZero;
     [_tagArr addObjectsFromArray:arr];
     [arr enumerateObjectsUsingBlock:^(NSString*str, NSUInteger idx, BOOL *stop) {
@@ -73,8 +75,6 @@ alpha:1.0]
         [tagBtn setTitle:str forState:UIControlStateNormal];
         tagBtn.tag=KBtnTag+idx;
         tagBtn.layer.cornerRadius=5;
-//        tagBtn.layer.borderColor=R_G_B_16(0x818181).CGColor;
-//        tagBtn.layer.borderWidth=0.3;
         tagBtn.clipsToBounds=YES;
         NSDictionary *attrs = @{NSFontAttributeName : [UIFont boldSystemFontOfSize:12]};
         CGSize Size_str=[str sizeWithAttributes:attrs];
@@ -140,14 +140,18 @@ alpha:1.0]
         if(button.selected){
             
             button.selected=!button.selected;
-            
+
         }else{
             
             _tempBtn.selected=NO;
             _tempBtn.backgroundColor=[UIColor whiteColor];
+            _tempBtn.layer.borderWidth = 0.001f;
+            _tempBtn.layer.borderColor = kClearColor.CGColor;
              button.selected=YES;
+             button.layer.borderColor = krgb(255,157,52).CGColor;
+             button.layer.borderWidth = 1;
             _tempBtn=button;
-            
+
         }
         
     }else{
@@ -156,16 +160,9 @@ alpha:1.0]
     }
     
     if(button.selected==YES){
-//        button.backgroundColor=[UIColor orangeColor];
-        button.layer.borderColor = krgb(255,157,52).CGColor;
-        button.layer.borderWidth = 1;
-//        [button setTitleColor:krgb(255,157,52) forState:UIControlStateNormal];
         button.backgroundColor = kWhiteColor;
     }else if (button.selected==NO){
-//        button.backgroundColor=[UIColor whiteColor];
-        button.layer.borderWidth = 0;
         button.backgroundColor = krgb(245,245,245);
-//        [button setTitleColor:COLOR_333333 forState:UIControlStateNormal];
     }
     
     [self didSelectItems];

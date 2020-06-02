@@ -20,7 +20,7 @@
     self.titleLab.text = _model.goods_name;
     [self.icon_imageView sd_setImageWithURL:[NSURL URLWithString:_model.goods_image]
                           placeholderImage:IMAGE_NAME(@"")];
-     NSString *price = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.old_price);
+     NSString *price = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.now_price);
     //46-90
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"￥%@",price]];
     [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:13.0f] range:NSMakeRange(0, 1)];

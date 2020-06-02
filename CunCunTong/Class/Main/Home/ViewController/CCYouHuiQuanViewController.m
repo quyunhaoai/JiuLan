@@ -23,14 +23,45 @@
         make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT);
     }];
     [self initData];
+    [kNotificationCenter addObserver:self selector:@selector(initData) name:@"refreshYouHuiQuan" object:nil];
 }
 
 - (void)initData {
-    self.dataSoureArray = @[[CCYouHuiQuan new],[CCYouHuiQuan new]].mutableCopy;
+    XYWeakSelf;
+    [self.dataSoureArray removeAllObjects];
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/coupon/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSArray *data = dic[@"data"];
+            if (data.count) {
+                for (NSDictionary *dict in data) {
+                    CCYouHuiQuan *model = [CCYouHuiQuan modelWithJSON:dict];
+                    [weakSelf.dataSoureArray addObject:model];
+                }
+            }
+            [weakSelf.tableView reloadData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleDefault;
+}
+- (void)dealloc {
+    [kNotificationCenter removeObserver:self];
 }
 /*
 #pragma mark - Navigation

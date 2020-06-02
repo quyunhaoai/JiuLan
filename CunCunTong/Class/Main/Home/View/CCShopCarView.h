@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCShopCarView : CCBaseView
-
+@property (strong, nonatomic) NSMutableDictionary * DataDic;    
 @end
 
 NS_ASSUME_NONNULL_END

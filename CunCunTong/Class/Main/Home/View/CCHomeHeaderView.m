@@ -79,6 +79,7 @@
     if (!_bgImage) {
         _bgImage = ({
             SDCycleScrollView *view = [[SDCycleScrollView alloc] init];
+            view.showPageControl = NO;
 //            view.clickItemOperationBlock = ^(NSInteger currentIndex) {
 //
 //            };

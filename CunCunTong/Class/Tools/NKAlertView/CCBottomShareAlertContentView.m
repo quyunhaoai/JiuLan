@@ -14,7 +14,7 @@
 
 - (void)setupUI {
 
-    self.backgroundColor = kWhiteColor;
+    self.backgroundColor = krgb(241,241,241);
     NSArray *arr = @[@"微信",@"朋友圈",@"QQ"];
     NSArray *aaa = @[@"微信logo",@"朋友圈logo",@"QQlogo"];
     NSMutableArray *tolAry = [NSMutableArray new];
@@ -54,8 +54,8 @@
 
 }
 - (void)botBtnClick:(UIButton *)button {
-    NKAlertView *alertView = (NKAlertView *)self.superview;
-    [alertView hide];
+//    NKAlertView *alertView = (NKAlertView *)self.superview;
+//    [alertView hide];
 }
 
 @end

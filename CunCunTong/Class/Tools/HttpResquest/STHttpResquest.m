@@ -44,7 +44,8 @@
     self = [super initWithBaseURL:url];
     if (self) {
         // 请求超时设定
-        self.requestSerializer.timeoutInterval = 5;
+        self.requestSerializer = [AFJSONRequestSerializer serializer];
+        self.requestSerializer.timeoutInterval = 20;
         self.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         [self.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
         [self.requestSerializer setValue:url.absoluteString forHTTPHeaderField:@"Referer"];
@@ -57,7 +58,6 @@
                                                           @"text/javascript",
                                                           @"text/json",
                                                           @"text/html", nil];
-        self.responseSerializer.acceptableContentTypes = [self.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
         self.securityPolicy.allowInvalidCertificates = YES;
     }
     return self;
@@ -107,6 +107,16 @@
             }];
             break;
         }
+        case DELETE:{
+            [self DELETE:urlstr parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                NSLog(@"JSON: %@", responseObject);
+                success(responseObject);
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"Error: %@", error);
+                failure(error);
+            }];
+            break;
+        }
         default:
             break;
     }
@@ -137,9 +147,11 @@
         if (error) {
             failure(error);
         } else {
-            success(@{});
+            NSError *error;
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            NSLog(@"%@",dic);
+            success(dic);
         }
-        NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     }] resume];
 }
 
@@ -155,7 +167,5 @@
     NSString *supplierID = [kUserDefaults objectForKey:@"marketID"];//marketID
     return checkNull(supplierID);
 }
-//[[NSUserDefaults standardUserDefaults] setObject:centerID forKey:@"centerID"];
-//[[NSUserDefaults standardUserDefaults] setObject:marketID forKey:@"marketID"];
-//[[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
+
 @end

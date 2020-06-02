@@ -7,7 +7,7 @@
 //
 
 #import "BaseTableViewCell.h"
-
+#import "CCYouHuiQuan.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCYouHuiQuanTableViewCell : BaseTableViewCell
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 
 
-
+@property (nonatomic,strong) CCYouHuiQuan *modelddd;
 
 
 

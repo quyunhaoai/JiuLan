@@ -280,11 +280,11 @@
     [self.view endEditing:YES];
 }
 
-- (void)back {
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
-}
+//- (void)back {
+//    [self dismissViewControllerAnimated:YES completion:^{
+//
+//    }];
+//}
 
 
 @end

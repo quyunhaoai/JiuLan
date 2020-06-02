@@ -12,7 +12,7 @@
 
 
 - (void)setupUI {
-    
+//    [CCTools sharedInstance] addShadowToView:self withColor:
     self.backgroundColor = [UIColor whiteColor];
     self.layer.cornerRadius = 10;
     self.clipsToBounds = YES;
@@ -24,15 +24,15 @@
     imgView.clipsToBounds = YES;
     [self addSubview:imgView];
     imgView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame) - (65));
-    
+    self.coverImage = imgView;
     UILabel *titleLab = [[UILabel alloc] init];
     titleLab.textAlignment = NSTextAlignmentLeft;
     titleLab.text = @"Restaurant";
     titleLab.textColor = COLOR_333333;
     titleLab.font = [UIFont systemFontOfSize:16];
     [self addSubview:titleLab];
-    titleLab.frame = CGRectMake(0, CGRectGetHeight(imgView.frame), CGRectGetWidth(self.frame), 15);
-    
+    titleLab.frame = CGRectMake(10, CGRectGetHeight(imgView.frame)+10, CGRectGetWidth(self.frame), 15);
+    self.titleLab = titleLab;
     UILabel *selectLab = ({
         UILabel *view = [UILabel new];
         view.textColor = COLOR_999999;
@@ -46,12 +46,12 @@
     });
     [self addSubview:selectLab];
     [selectLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self).mas_offset(-15);
+        make.top.mas_equalTo(titleLab.mas_bottom).mas_offset(10);
         make.left.mas_equalTo(self).mas_offset(10);
-        make.width.mas_equalTo(Window_W/2);
+        make.width.mas_equalTo(self);
         make.height.mas_equalTo(17);
     }];
-
+    self.subLab = selectLab;
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     rightBtn.backgroundColor = [UIColor whiteColor];
     rightBtn.tag = 12;
@@ -77,7 +77,22 @@
 }
 
 
-
+- (void)setModel:(CCGoodsDetailInfoModel *)model {
+    _model = model;
+    [self.coverImage sd_setImageWithURL:[NSURL URLWithString:_model.goodsimage_set[0]]
+                       placeholderImage:IMAGE_NAME(@"")];
+    self.titleLab.text = _model.goods_name;
+    NSString *pricestr = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.now_price);
+    NSString *price = [NSString stringWithFormat:@"￥%@",pricestr];
+    NSMutableAttributedString *nameString = [[NSMutableAttributedString alloc] initWithString:@"¥" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:krgb(255,69,4)}];
+    NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:STRING_FROM_INTAGER(_model.promote.old_price) attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
+    NSAttributedString *countString = [[NSAttributedString alloc] initWithString:@" 原价：" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999}];
+    NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:price attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
+    [nameString appendAttributedString:nameString2];
+    [nameString appendAttributedString:countString];
+    [nameString appendAttributedString:attrStr];
+    self.subLab.attributedText = nameString;
+}
 
 
 

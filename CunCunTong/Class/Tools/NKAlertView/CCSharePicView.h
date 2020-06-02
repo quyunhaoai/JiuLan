@@ -12,6 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CCSharePicView : CCBaseView
 @property (strong,nonatomic) CCGoodsDetailInfoModel *model;
+@property (strong, nonatomic) UIImageView *coverImage;
+@property (strong, nonatomic) UILabel *titleLab;
+@property (strong, nonatomic) UILabel *subLab;  
+
+
 
 @end
 

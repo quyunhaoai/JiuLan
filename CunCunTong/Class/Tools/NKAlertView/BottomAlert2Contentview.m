@@ -22,6 +22,7 @@
 @property (strong, nonatomic) UILabel *selectLab;
 @property (nonatomic,copy) NSString *center_sku_id;
 @property (nonatomic,copy) NSString *count;
+@property (nonatomic,strong) NSMutableString *selectGuGe;
 @end
 
 @implementation BottomAlert2Contentview
@@ -33,6 +34,8 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.rowHeight = UITableViewAutomaticDimension;
+        _tableView.estimatedRowHeight = 92;
+        
         [self addSubview:_tableView];
     }
     return _tableView;
@@ -44,7 +47,7 @@
         self.backgroundColor = [UIColor whiteColor];
 
         [self setUI];
-        
+        self.selectGuGe = [[NSMutableString alloc]init];
         self.tableView.frame = CGRectMake(0, 128, CGRectGetWidth(frame), CGRectGetHeight(frame) - 128-66);
         [self.tableView registerNib:CCTextCustomTableViewCell.loadNib forCellReuseIdentifier:@"cell1234"];
         UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -86,8 +89,8 @@
         numberButton.decreaseImage = [UIImage imageNamed:@"减号"];
         XYWeakSelf;
         numberButton.resultBlock = ^(PPNumberButton *ppBtn, CGFloat number, BOOL increaseStatus){
-            NSLog(@"%f",number);
-            weakSelf.count = [NSString stringWithFormat:@"%f",number];
+            NSLog(@"%d",(int)number);
+            weakSelf.count = [NSString stringWithFormat:@"%d",(int)number];
         };
         
         [footerView addSubview:numberButton];
@@ -97,7 +100,6 @@
 - (void)setUI {
    UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 128)];
     [self addSubview:headView];
-    
     UIImageView *goodsImageView = ({
         UIImageView *view = [UIImageView new];
         view.contentMode = UIViewContentModeScaleAspectFill ;
@@ -133,7 +135,6 @@
         make.height.mas_equalTo(17);
     }];
     self.pricelab = pricelab;
-    
     UIImageView *icon = ({
           UIImageView *view = [UIImageView new];
           view.contentMode = UIViewContentModeScaleAspectFill ;
@@ -172,7 +173,6 @@
         make.height.mas_equalTo(17);
     }];
     self.kucunLab = kucunLab;
-
     UILabel *selectLab = ({
         UILabel *view = [UILabel new];
         view.textColor = COLOR_333333;
@@ -194,16 +194,17 @@
     self.selectLab = selectLab;
 
 }
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.model.spec_set.count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 92;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"CellIdentifier";
@@ -249,19 +250,21 @@
         [tagList setDidselectItemBlock:^(NSArray *arr) {
             NSLog(@"选中的标签%@",arr);
             NSString *str = [NSString stringWithFormat:@"\"%@\"",arr[0]];
-            weakSelf.selectLab.text = [NSString stringWithFormat:@"已选择：%@",str];
-            [weakSelf selectGuge:str];
+            [weakSelf.selectGuGe appendString:str];
+            weakSelf.selectLab.text = [NSString stringWithFormat:@"已选择：%@",weakSelf.selectGuGe];
+            [weakSelf selectGuge:weakSelf.selectGuGe];
         }];
         [cell.contentView addSubview:tagList];
     }
     return cell;
 }
+
 - (void)selectGuge:(NSString *)str {
     for (Sku_setItem *item in self.model.sku_set) {
         if ([str isEqualToString:item.specoption_str]) {
             self.center_sku_id = STRING_FROM_INTAGER(item.sku_id);
             [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:item.image] placeholderImage:IMAGE_NAME(@"")];
-             NSString *price = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.old_price);
+             NSString *price = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.now_price);
             //46-90
             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"￥%@",price]];
             [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:13.0f] range:NSMakeRange(0, 1)];
@@ -273,15 +276,25 @@
             self.kucunLab.text = [NSString stringWithFormat:@"库存%ld件",item.stock];
         }
     }
-    
 }
+
 - (void)botBtnClick:(UIButton *)btn
 {
+    NSArray *array= [self.selectGuGe componentsSeparatedByString:@"\"\""];
+    if (array.count==self.model.spec_set.count) {
+
+    }else {
+//        [MBManager showBriefAlert:@"请选择商品属性！"];
+        return;
+    }
+    if (![self.count intValue]) {
+       return;
+    }
     NSDictionary *params = @{@"center_sku_id":checkNull(self.center_sku_id),
                              @"count":checkNull(self.count),
     };
     NSString *path = @"/app0/mcarts/";
-    [[STHttpResquest sharedManager] requestWithMethod:GET
+    [[STHttpResquest sharedManager] requestWithMethod:POST
                                              WithPath:path
                                            WithParams:params
                                      WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
@@ -297,13 +310,13 @@
         }
     } WithFailurBlock:^(NSError * _Nonnull error) {
     }];
-
 }
+
 - (void)setModel:(CCGoodsDetailInfoModel *)model {
     _model = model;
     NSString *url = self.model.goodsimage_set[0];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:url] placeholderImage:IMAGE_NAME(@"")];
-    NSString *price = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.old_price);
+    NSString *price = _model.promote == nil ? STRING_FROM_INTAGER(_model.play_price):STRING_FROM_INTAGER(_model.promote.now_price);
        //46-90
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"￥%@",price]];
     [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:13.0f] range:NSMakeRange(0, 1)];
@@ -321,6 +334,7 @@
     self.selectLab.text = string;
     [self.tableView reloadData];
 }
+
 @end
 
 

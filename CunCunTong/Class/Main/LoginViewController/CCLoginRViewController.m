@@ -41,10 +41,16 @@
 
 - (void)setupUI {
     self.MiddeView.layer.cornerRadius = 5;
-    self.MiddeView.layer.backgroundColor = [[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f] CGColor];
+    self.MiddeView.layer.backgroundColor = [[UIColor colorWithRed:255.0f/255.0f
+                                                            green:255.0f/255.0f
+                                                             blue:255.0f/255.0f
+                                                            alpha:1.0f] CGColor];
     self.MiddeView.alpha = 1;
 
-    [[CCTools sharedInstance] addShadowToView:self.MiddeView withColor: [UIColor colorWithRed:16.0f/255.0f green:117.0f/255.0f blue:113.0f/255.0f alpha:0.2f]];
+    [[CCTools sharedInstance] addShadowToView:self.MiddeView withColor: [UIColor colorWithRed:16.0f/255.0f
+                                                                                        green:117.0f/255.0f
+                                                                                         blue:113.0f/255.0f
+                                                                                        alpha:0.2f]];
     [self.MiddeView addSubview:self.inTextView];
     [self.inTextView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.bottom.top.equalTo(self.MiddeView);
@@ -58,13 +64,10 @@
     [_inTextView.moblieTextField addTarget:self
                                           action:@selector(textFieldDidChange:)
                                 forControlEvents:UIControlEventEditingChanged];
-    NSLog(@"width:%.f",self.view.frame.size.width);
-    
 }
 - (void)jumpBtnClicked:(id)item {
   UIButton *button = (UIButton *)item;
     if (button.tag == BUTTON_TAG(7)) {//登录
-        XYWeakSelf;
         NSDictionary *params = @{};
         NSString *path = @"";
         _mobleNumber = checkNull(_mobleNumber);
@@ -93,16 +96,11 @@
                 NSString *token = data[@"jwtoken"];
                 NSString *centerID = data[@"centerID"];
                 NSString *marketID = data[@"marketID"];
-//                NSString *name = data[@"name"];
                 [[NSUserDefaults standardUserDefaults] setObject:centerID forKey:@"centerID"];
                 [[NSUserDefaults standardUserDefaults] setObject:marketID forKey:@"marketID"];
                 [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
-//                [[NSUserDefaults standardUserDefaults] setObject:name forKey:@"name"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [UIApplication sharedApplication].delegate.window.rootViewController = [CCTabbarViewController getTabBarController];
-//                [weakSelf.navigationController popViewControllerAnimated:YES];
-//                [weakSelf dismissViewControllerAnimated:YES completion:nil];
-//                [kNotificationCenter postNotificationName:@"refreshMyInfo" object:nil];
             }else {
                 if (msg.length>0) {
                     [MBManager showBriefAlert:msg];
@@ -152,6 +150,9 @@
                         }
                     });
                 dispatch_resume(weakSelf.timer);
+                if (msg.length>0) {
+                    [MBManager showBriefAlert:msg];
+                }
             }else {
                 if (msg.length>0) {
                     [MBManager showBriefAlert:msg];
@@ -229,9 +230,6 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
 }
 
 @end

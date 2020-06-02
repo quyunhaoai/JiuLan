@@ -82,6 +82,8 @@ static NSString *cellReuseIdentifier = @"STRecommonPersonCollectionViewCell";
 
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+    CCGoodsDetail *model =[CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];;
+    vc.goodsID = STRING_FROM_INTAGER(model.ccid);
     [self.viewController.navigationController pushViewController:vc animated:YES];
 }
 

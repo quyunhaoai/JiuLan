@@ -315,8 +315,8 @@ typedef NS_ENUM (NSUInteger,GHDropMenuShowType) {
         self.filter.frame = CGRectMake(kWidth(95), 0, kGHScreenWidth -kWidth(95), kGHScreenHeight  - kGHSafeAreaBottomHeight);
         [self.filterCover addSubview:self.sure];
         [self.filterCover addSubview:self.reset];
-        self.reset.frame = CGRectMake(self.filter.x+30, Window_H , 86, 34);
-        self.sure.frame = CGRectMake(MaxX(self.reset.frame)+40 , Window_H , 86, 34);
+        self.reset.frame = CGRectMake(self.filter.x+30, Window_H-74 , 86, 34);
+        self.sure.frame = CGRectMake(MaxX(self.reset.frame)+40 , Window_H-74 , 86, 34);
         self.sure.alpha = 1;
         self.reset.alpha = 1;
     }

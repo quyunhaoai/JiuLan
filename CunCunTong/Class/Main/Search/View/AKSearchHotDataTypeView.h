@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface AKSearchHotDataTypeView : UIView
-@property (assign, nonatomic) BOOL isShowAll; 
+
 /******类方法创建对象*******/
 + (id)searchHotDataTypeViewWithFrame:(CGRect)frame category:(NSArray *)category;
 
@@ -17,7 +17,5 @@
  *  AKSearchHotCell label click block
  */
 @property (copy, nonatomic) void(^searchHotCellLabelClickButton)(NSInteger tag);
-
-@property (strong, nonatomic) NSMutableArray *categortArray;  //  数组
 
 @end

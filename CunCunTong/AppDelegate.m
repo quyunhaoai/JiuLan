@@ -13,7 +13,7 @@
 
 #import "CCTabbarViewController.h"
 #import "CCLoginRViewController.h"
-#import "CCCommodDetaildViewController.h"
+#import "CCSureOrderViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -35,9 +35,9 @@
     
 //    CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
 //    self.window.rootViewController = [CCTabbarViewController getTabBarController];
-    CCBaseViewController *vc = [CCCommodDetaildViewController new];
+    CCBaseViewController *vc = [CCSureOrderViewController new];
     self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
-//
+
     
 //                NKAlertView *alert = [[NKAlertView alloc] init];
 //                alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];

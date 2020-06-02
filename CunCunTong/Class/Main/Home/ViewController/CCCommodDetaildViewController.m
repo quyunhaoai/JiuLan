@@ -29,18 +29,14 @@
     CGRect HeaderFrame;
 }
 @property (strong, nonatomic) UIScrollView *scrollView;
-
-//@property (strong, nonatomic) NSMutableArray         *dataSoureArray;
 @property (nonatomic,strong) UITableView             *tableView;
 @property (nonatomic, strong) AJ_TopBar              *topBar;//  顶部筛选组件
 @property (strong, nonatomic) SDCycleScrollView      *cycleScrollView;
-
 @property (strong, nonatomic) CCShopBottomView       *bottomView;
 @property (assign, nonatomic) BOOL                   isOpen;
 @property (strong, nonatomic) CCServiceMassageView   *massageView;
 @property (strong, nonatomic) CCGoodsHeadView        *headView;
 @property (strong, nonatomic) NSArray                *titleArray;
-
 @property (nonatomic,strong) UICollectionView    *collectionView;
 // 监测范围的临界点,>0代表向上滑动多少距离,<0则是向下滑动多少距离
 @property (nonatomic, assign)CGFloat threshold;
@@ -59,19 +55,6 @@
     self.marginTop = self.view.size.height-NAVIGATION_BAR_HEIGHT-48-20;
     NSLog(@"--%f",HeaderFrame.origin.y);
 }
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//    CGFloat offsetY = scrollView.contentOffset.y;
-//    CGFloat newoffsetY = offsetY + self.marginTop;
-//    NSLog(@"newoffsetY:%f,offsetY%f",newoffsetY,offsetY);
-//
-//    if (newoffsetY >= HeaderFrame.origin.y) {
-//        NSLog(@"-----============----------商品详情");
-//        [self.topBar setCurrentPage:1];
-//    }else if (newoffsetY < HeaderFrame.origin.y){
-//        NSLog(@"信息");
-//        [self.topBar setCurrentPage:0];
-//    }
-//}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGFloat offsetY = scrollView.contentOffset.y;
@@ -86,15 +69,17 @@
         [self.topBar setCurrentPage:0];
     }
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupUI];
     [self initData];
 }
+
 - (void)initData {
     XYWeakSelf;
     NSDictionary *params = @{};
-    NSString *path = @"/app0/goodsdetail/10/";
+    NSString *path = [NSString stringWithFormat:@"/app0/goodsdetail/%@/",self.goodsID];
     [[STHttpResquest sharedManager] requestWithMethod:GET
                                              WithPath:path
                                            WithParams:params
@@ -109,6 +94,7 @@
             weakSelf.cycleScrollView.imageURLStringsGroup = weakSelf.goodsDetailModel.goodsimage_set;
             [weakSelf downImage:weakSelf.goodsDetailModel.detailimage_set];
             [weakSelf.tableView reloadData];
+            [weakSelf requestShopCarData1];
         }else {
             if (msg.length>0) {
                 [MBManager showBriefAlert:msg];
@@ -118,12 +104,15 @@
         weakSelf.showErrorView = YES;
     }];
 }
+
 - (void)downImage:(NSArray *)array {
     XYWeakSelf;
     self.photoArr = [NSMutableArray array];
     for (int i= 0; i<array.count; i++) {
         photoInfo *info = [photoInfo new];
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:array[i]] options:SDWebImageDownloaderUseNSURLCache progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:array[i]]
+                                                              options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
 
          } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
              //这边就能拿到图片了
@@ -159,11 +148,11 @@
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
-
     [self.view addSubview:self.tableView];
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT);
-        make.left.bottom.right.mas_equalTo(self.view);
+        make.left.right.mas_equalTo(self.view);
+        make.bottom.mas_equalTo(self.view).mas_offset(-60-HOME_INDICATOR_HEIGHT);
     }];
     self.tableView.backgroundColor = COLOR_f5f5f5;
     self.tableView.estimatedRowHeight = 97;
@@ -173,24 +162,21 @@
          forCellReuseIdentifier:@"CCGoodsDetail"];
     [self.tableView registerClass:CCGoodsDetailHeadTableViewCell.class
            forCellReuseIdentifier:@"CCGoodsDetailHeadTableViewCell"];
-    self.bottomView.frame = CGRectMake(0, 0, Window_W, 60);
-    [self.tableView setTableFooterView:self.bottomView];
+    self.bottomView.frame = CGRectMake(0, Window_H-60-HOME_INDICATOR_HEIGHT, Window_W, 60);
+    [self.view addSubview:self.bottomView];
     self.isOpen = NO;
     XYWeakSelf;
     _bottomView.clickCallBack = ^(NSInteger tag) {
         if (tag ==2) {
             if (!weakSelf.bottomView.isOpen) {
-                CCShopCarView *customContentView = [[CCShopCarView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 554)];
-                weakSelf.bottomView.contentView = customContentView;
-                weakSelf.bottomView.hiddenWhenTapBG = YES;
-                [weakSelf.bottomView show];
-                weakSelf.bottomView.isOpen = YES;
+                [weakSelf requestShopCarData];
             } else {
                 [weakSelf.bottomView hide];
                 weakSelf.bottomView.isOpen = NO;
             }
         } else if(tag == 1){
             if (!weakSelf.isOpen) {
+                [weakSelf requestService];
                 weakSelf.isOpen = YES;
                 [UIView animateWithDuration:0.25 animations:^{
                     weakSelf.massageView.alpha = 1.0;
@@ -219,14 +205,139 @@
     }];
     UILabel *style = [[UILabel alloc] initWithFrame:CGRectMake(Window_W-90, 228, 79, 18)];
     style.layer.cornerRadius = 3;
-    style.layer.backgroundColor = [[UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:0.3f] CGColor];
+    style.layer.backgroundColor = [[UIColor colorWithRed:0.0f/255.0f
+                                                   green:0.0f/255.0f
+                                                    blue:0.0f/255.0f
+                                                   alpha:0.3f] CGColor];
     style.font = FONT_12;
     style.textColor = kWhiteColor;
     style.textAlignment = NSTextAlignmentCenter;
     self.salesLab = style;
     [_cycleScrollView addSubview:style];
 }
-
+- (void)requestService {
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/service/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            [weakSelf.massageView.telBtn setTitle:BACKINFO_DIC_2_STRING(data, @"mobile") forState:UIControlStateNormal];
+            [weakSelf.massageView.weixinBtn setTitle:BACKINFO_DIC_2_STRING(data, @"wx_num") forState:UIControlStateNormal];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+}
+- (void)requestShopCarData1 {
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/mcarts/?limit=10";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            NSArray *results = data[@"results"];
+            [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
+                                                       value:results.count
+                                               animationType:WBadgeAnimTypeNone];
+//            weakSelf.bottomView.shopCarImage.badgeCenterOffset = CGPointMake(24, 2);
+            float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
+            NSString *price = [NSString stringWithFormat:@"￥%.2f",toal_price];
+            //189-00
+            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
+                                     range:NSMakeRange(0, 1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(0, 1)];
+            //189-00 text-style1
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            weakSelf.bottomView.priceLab.attributedText = attributedString;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+}
+- (void)requestShopCarData {
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/mcarts/?limit=10";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            CCShopCarView *customContentView = [[CCShopCarView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 554)];
+            customContentView.DataDic = data.mutableCopy;
+            NSArray *results = data[@"results"];
+            [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
+                                                       value:results.count
+                                               animationType:WBadgeAnimTypeNone];
+            float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
+            NSString *price = [NSString stringWithFormat:@"￥%.2f",toal_price];
+            //189-00
+            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
+                                     range:NSMakeRange(0, 1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(0, 1)];
+            //189-00 text-style1
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            weakSelf.bottomView.priceLab.attributedText = attributedString;
+            weakSelf.bottomView.contentView = customContentView;
+            weakSelf.bottomView.hiddenWhenTapBG = YES;
+            [weakSelf.bottomView show];
+            weakSelf.bottomView.isOpen = YES;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+}
 #pragma mark  - Get
 - (CCServiceMassageView *)massageView {
     if (!_massageView) {
@@ -250,16 +361,19 @@
 
 - (CCShopBottomView *)bottomView {
     if (!_bottomView) {
-        _bottomView = [[CCShopBottomView alloc] initWithFrame:CGRectMake(0, Window_H-66, Window_W, 66) inView:self.view];
+        _bottomView = [[CCShopBottomView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 66) inView:self.view];
     }
     return _bottomView;
 }
 
 - (void)rightBtAction:(UIButton *)btn {//分享
     NKAlertView *alertView = [[NKAlertView alloc] init];
-     CCBottomShareAlertContentView *customContentView = [[CCBottomShareAlertContentView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 133+49+5)];
+    CCBottomShareAlertContentView *customContentView = [[CCBottomShareAlertContentView alloc] initWithFrame:CGRectMake(0,
+                                                                                                                        0,
+                                                                                                                        self.view.bounds.size.width,
+                                                                                                                        133+49+5)];
     CCSharePicView *customImageView = [[CCSharePicView alloc] initWithFrame:CGRectMake(0, 0, Window_W-106, 370)];
-    
+    customImageView.model = self.goodsDetailModel;
     alertView.type = NKAlertViewTypeBottom;
     alertView.contentView = customContentView;
     alertView.middleView = customImageView;
@@ -274,7 +388,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return 3;
+        return 4;
     } else if(section == 1){
         return 2;
     } else {
@@ -285,18 +399,18 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = nil;
     if (indexPath.section == 0 && indexPath.row == 0) {
-         cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetailHeadTableViewCell"];
+        cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetailHeadTableViewCell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         CCGoodsDetailHeadTableViewCell *ccc = (CCGoodsDetailHeadTableViewCell *)cell;
         ccc.goodsTitleLab.text = self.goodsDetailModel.goods_name;
         ccc.kuCunLab.text =[NSString stringWithFormat:@"库存量：%ld件",(long)self.goodsDetailModel.stock];
         ccc.priceLab2.text =[NSString stringWithFormat:@"建议零售价：¥%ld",(long)self.goodsDetailModel.retail_price];
+        NSString *oldPriceStr =[NSString stringWithFormat:@"￥%@",STRING_FROM_INTAGER(self.goodsDetailModel.promote.old_price)];
         NSString *pricestr = self.goodsDetailModel.promote == nil ? STRING_FROM_INTAGER(self.goodsDetailModel.play_price):STRING_FROM_INTAGER(self.goodsDetailModel.promote.now_price);
-        NSString *price = [NSString stringWithFormat:@"￥%@",pricestr];
         NSMutableAttributedString *nameString = [[NSMutableAttributedString alloc] initWithString:@"¥" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:krgb(255,69,4)}];
-        NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:STRING_FROM_INTAGER(self.goodsDetailModel.promote.old_price) attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
+        NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:pricestr attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
         NSAttributedString *countString = [[NSAttributedString alloc] initWithString:@" 原价：" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999}];
-        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:price attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
+        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:oldPriceStr attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
         [nameString appendAttributedString:nameString2];
         [nameString appendAttributedString:countString];
         [nameString appendAttributedString:attrStr];
@@ -333,12 +447,30 @@
         if (indexPath.section == 0) {
             NSArray *arr = (NSArray *)self.titleArray[indexPath.section];
             [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row-1];
-            if (indexPath.row == 1 || indexPath.row == 2) {
+            if (indexPath.row == 1 || indexPath.row == 2 || indexPath.row ==3) {
                 cellll.jiantouimageView.hidden = YES;
                 if (indexPath.row == 1) {
                     cellll.subLab.text = [NSString stringWithFormat:@"%@%@%@",self.goodsDetailModel.address.place1,self.goodsDetailModel.address.place2,self.goodsDetailModel.address.place3];
                 } else if (indexPath.row == 2){
                     cellll.subLab.text = @"包邮";
+                } else if (indexPath.row == 3){
+                    if (self.goodsDetailModel.coupon_set.count) {
+                        Coupon_setItem *item = self.goodsDetailModel.coupon_set[0];
+                        if (item.types == 0) {
+                            NSString *string = [NSString stringWithFormat:@"领！%ld元红包",(long)item.cut];
+                            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:string];
+                            // 创建图片图片附件
+                            NSTextAttachment *attach = [[NSTextAttachment alloc] init];
+                            attach.image = [UIImage imageNamed:@"红包图标"];
+                            attach.bounds = CGRectMake(5, -2.5, 13, 15);
+                            NSAttributedString *attachString2 = [NSAttributedString attributedStringWithAttachment:attach];
+                            [attributedString appendAttributedString:attachString2];
+                            cellll.subLab.attributedText =attributedString;
+                        } else {
+                            cellll.subLab.text =[NSString stringWithFormat:@"%@",item.discount];
+                        }
+                        cellll.subLab.textColor = krgb(255,63,62);
+                    }
                 }
             }
         } else if(indexPath.section == 1) {

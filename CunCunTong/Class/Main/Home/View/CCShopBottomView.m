@@ -42,7 +42,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.parentView = parentView;
-
+        self.backgroundColor = kWhiteColor;
         [self setupUI];
         self.tag = 10000;
     }
@@ -52,7 +52,7 @@
 - (void)show
 {
     [self.parentView insertSubview:self.bgView belowSubview:self.mainView.superview];
-    _contentView.frame = CGRectMake((CGRectGetMaxX(self.frame) - CGRectGetWidth(_contentView.frame)) * 0.5, CGRectGetMaxY(self.frame), CGRectGetWidth(_contentView.frame), CGRectGetHeight(_contentView.frame));
+    _contentView.frame = CGRectMake((CGRectGetMaxX(self.parentView.frame) - CGRectGetWidth(_contentView.frame)) * 0.5, CGRectGetMaxY(self.parentView.frame), CGRectGetWidth(_contentView.frame), CGRectGetHeight(_contentView.frame));
     UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:_contentView.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(10, 10)];
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
     shapeLayer.frame = _contentView.bounds;
@@ -75,11 +75,10 @@
     }];
 }
 
-
 - (void)setContentView:(UIView *)contentView
 {
     _contentView = contentView;
-    _contentView.frame = CGRectMake((CGRectGetMaxX(self.frame) - CGRectGetWidth(_contentView.frame)) * 0.5, CGRectGetMaxY(self.frame), CGRectGetWidth(_contentView.frame), CGRectGetHeight(_contentView.frame));
+    _contentView.frame = CGRectMake((CGRectGetMaxX(self.parentView.frame) - CGRectGetWidth(_contentView.frame)) * 0.5, CGRectGetMaxY(self.parentView.frame), CGRectGetWidth(_contentView.frame), CGRectGetHeight(_contentView.frame));
     /*
      利用贝塞尔曲线为contentView的左上角、右上角设置圆角；
      如果不需要可以注释下边代码
@@ -164,6 +163,15 @@
         make.bottom.mas_equalTo(self).mas_offset(-10);
     }];
     
+    //189-00
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"¥0"];
+    [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f] range:NSMakeRange(0, 1)];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 1)];
+
+    //189-00 text-style1
+    [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f] range:NSMakeRange(1, 1)];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f] range:NSMakeRange(1, 1)];
+    self.priceLab.attributedText = attributedString;
 }
 #pragma mark  -  get
 - (UIButton *)goPayBtn {

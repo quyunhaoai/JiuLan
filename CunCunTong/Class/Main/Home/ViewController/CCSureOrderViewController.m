@@ -13,6 +13,7 @@
 #import "BottomAlert3ContentView.h"
 #import "CCCententAlertErWeiMaView.h"
 #import "CCAddBlankCarViewController.h"
+#import "CCOrderListModel.h"
 @interface CCSureOrderViewController ()
 {
     
@@ -25,7 +26,7 @@
 @property (assign, nonatomic) BOOL isSlect;
 @property (strong, nonatomic) UIView *temView;
 
-
+@property (strong, nonatomic) CCOrderListModel *orderModel;
 @end
 
 @implementation CCSureOrderViewController
@@ -61,6 +62,31 @@
 //    [alert show];
 }
 - (void)initData {
+    XYWeakSelf;
+    NSDictionary *params = @{@"coupon_id":@"",
+    };
+    NSString *path = @"/app0/makeordermcarts/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            weakSelf.orderModel = [CCOrderListModel modelWithJSON:data];
+            weakSelf.hhhView.nameLab.text = [NSString stringWithFormat:@"收货人:%@",weakSelf.orderModel.name];;
+            weakSelf.hhhView.addressLab.text = [NSString stringWithFormat:@"收货地址：%@%@%@%@",weakSelf.orderModel.place1,weakSelf.orderModel.place2,weakSelf.orderModel.place3, weakSelf.orderModel.address];
+            weakSelf.hhhView.numberLab.text = weakSelf.orderModel.mobile;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
     self.dataSoureArray = @[[CCSureOrder new],[CCSureOrder new]].mutableCopy;
 }
 
@@ -108,7 +134,6 @@
             cell.textLabel.text = [NSString stringWithFormat:@"商品金额"];
             cell.detailTextLabel.text = @"¥234.00";
         }
-
         return cell;
     }
 
@@ -149,17 +174,12 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return [UIView new];
 }
-
-
  
 #pragma mark  -  get
 -(CCSureOrderHeadView *)hhhView {
     if (!_hhhView) {
         _hhhView = [[CCSureOrderHeadView alloc] init];
         _hhhView.backgroundColor = kWhiteColor;
-        _hhhView.nameLab.text = @"收货人：王强";;
-        _hhhView.addressLab.text = @"收货地址：河南省 郑州市 二七区 长江路街道长江路与连云路交叉口正商城2号楼 ";
-        _hhhView.numberLab.text = @"13145217111";
     }
     return _hhhView;
 }
@@ -265,9 +285,9 @@
          view.lineBreakMode = NSLineBreakByTruncatingTail;
          view.backgroundColor = [UIColor clearColor];
          view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"可用余额：";
          view ;
      });
+    yuEtitlelab.text = [NSString stringWithFormat:@"可用余额：%ld",(long)self.orderModel.balance];
      [contentView addSubview:yuEtitlelab];
      [yuEtitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
          make.left.mas_equalTo(contentView).mas_offset(10);

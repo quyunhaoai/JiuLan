@@ -8,11 +8,12 @@
 
 #import "CCBaseView.h"
 #import "KKButton.h"
+#import "CCCustomLabel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCSureOrderHeadView : CCBaseView
 @property (strong, nonatomic) UILabel *nameLab;
-@property (strong, nonatomic) UILabel *addressLab;
+@property (strong, nonatomic) CCCustomLabel *addressLab;
 @property (strong, nonatomic) UILabel *numberLab;  
 
 

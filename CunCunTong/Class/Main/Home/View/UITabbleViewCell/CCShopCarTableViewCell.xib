@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,13 +20,13 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z0v-2L-HAW">
                         <rect key="frame" x="0.0" y="0.0" width="358" height="151"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="首页特价商品图片" translatesAutoresizingMaskIntoConstraints="NO" id="EXg-68-Ihj">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="首页特价商品图片" translatesAutoresizingMaskIntoConstraints="NO" id="EXg-68-Ihj">
                                 <rect key="frame" x="10" y="12" width="127" height="127"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1c0-Am-qOM">
-                                <rect key="frame" x="147" y="18" width="199" height="35"/>
+                                <rect key="frame" x="147" y="37" width="199" height="15"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="MxW-Y5-oCo"/>
+                                    <constraint firstAttribute="height" constant="15" id="MxW-Y5-oCo"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
@@ -43,7 +43,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OOE-R9-Rf8">
-                                <rect key="frame" x="172" y="64" width="101" height="15"/>
+                                <rect key="frame" x="172" y="63" width="101" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="B09-c9-FKG"/>
                                     <constraint firstAttribute="width" constant="101" id="tt3-02-epz"/>
@@ -53,12 +53,21 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="库存图标" translatesAutoresizingMaskIntoConstraints="NO" id="6An-26-eRc">
-                                <rect key="frame" x="147" y="63" width="15" height="17"/>
+                                <rect key="frame" x="147" y="62" width="15" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="15" id="8Jc-oc-zkE"/>
                                     <constraint firstAttribute="height" constant="17" id="Nca-v6-xto"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CDc-eh-uxj">
+                                <rect key="frame" x="147" y="12" width="199" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="XrL-XY-Tah"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -66,13 +75,16 @@
                             <constraint firstItem="OOE-R9-Rf8" firstAttribute="centerY" secondItem="6An-26-eRc" secondAttribute="centerY" id="39M-Dz-ZHy"/>
                             <constraint firstItem="6An-26-eRc" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="3fj-OA-uD5"/>
                             <constraint firstItem="EXg-68-Ihj" firstAttribute="width" secondItem="z0v-2L-HAW" secondAttribute="height" constant="-24" id="7mx-L2-r9p"/>
+                            <constraint firstItem="CDc-eh-uxj" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="O2S-Mq-YLN"/>
+                            <constraint firstItem="1c0-Am-qOM" firstAttribute="top" secondItem="CDc-eh-uxj" secondAttribute="bottom" constant="10" id="QGY-Wd-Zok"/>
                             <constraint firstItem="OOE-R9-Rf8" firstAttribute="leading" secondItem="6An-26-eRc" secondAttribute="trailing" constant="10" id="SjI-YR-a1B"/>
-                            <constraint firstItem="1c0-Am-qOM" firstAttribute="top" secondItem="z0v-2L-HAW" secondAttribute="top" constant="18" id="Vuy-kr-zTb"/>
                             <constraint firstItem="hjb-ue-LMl" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="Wfv-t7-TdJ"/>
                             <constraint firstItem="EXg-68-Ihj" firstAttribute="leading" secondItem="z0v-2L-HAW" secondAttribute="leading" constant="10" id="adr-r1-Gxo"/>
                             <constraint firstAttribute="trailing" secondItem="1c0-Am-qOM" secondAttribute="trailing" constant="12" id="eEM-lH-QuV"/>
                             <constraint firstItem="6An-26-eRc" firstAttribute="top" secondItem="1c0-Am-qOM" secondAttribute="bottom" constant="10" id="jIT-T9-c7i"/>
                             <constraint firstItem="1c0-Am-qOM" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="jhJ-jK-y5G"/>
+                            <constraint firstItem="CDc-eh-uxj" firstAttribute="top" secondItem="z0v-2L-HAW" secondAttribute="top" constant="12" id="lFe-dL-sVp"/>
+                            <constraint firstAttribute="trailing" secondItem="CDc-eh-uxj" secondAttribute="trailing" constant="12" id="lhm-x3-ESe"/>
                             <constraint firstAttribute="bottom" secondItem="EXg-68-Ihj" secondAttribute="bottom" constant="12" id="qND-Ai-fjn"/>
                             <constraint firstItem="hjb-ue-LMl" firstAttribute="bottom" secondItem="EXg-68-Ihj" secondAttribute="bottom" id="z69-qU-bLt"/>
                         </constraints>
@@ -86,6 +98,13 @@
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="gugeLab" destination="1c0-Am-qOM" id="D2H-IV-6aF"/>
+                <outlet property="headImageView" destination="EXg-68-Ihj" id="5iJ-tn-WmF"/>
+                <outlet property="kucunLab" destination="OOE-R9-Rf8" id="DcS-kq-Gr1"/>
+                <outlet property="pricelab" destination="hjb-ue-LMl" id="Vv0-1y-72t"/>
+                <outlet property="titleLab" destination="CDc-eh-uxj" id="oEK-fh-2cy"/>
+            </connections>
             <point key="canvasLocation" x="159.42028985507247" y="170.42410714285714"/>
         </tableViewCell>
     </objects>

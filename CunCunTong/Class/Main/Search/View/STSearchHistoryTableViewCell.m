@@ -8,6 +8,7 @@
 
 #import "STSearchHistoryTableViewCell.h"
 #import "AKSearchHotDataTypeView.h"
+#import "GBTagListView.h"
 @implementation STSearchHistoryTableViewCell
 + (instancetype)initializationCellWithTableView:(UITableView *)tableView {
     static NSString *ID  = @"STSearchHistoryTableViewCell";
@@ -22,21 +23,28 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [self initCell];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.backgroundColor = kClearColor;
     }
     return self;
 }
 
 - (void)initCell {
-    _searchHotDataTypeView = [[AKSearchHotDataTypeView alloc] initWithFrame:CGRectMake(0,
-                                                                                       5,
-                                                                                       Window_W,
-                                                                                       self.frame.size.height)];
-    XYWeakSelf;
-    _searchHotDataTypeView.searchHotCellLabelClickButton = ^(NSInteger tag) {
-        weakSelf.searchHotCellLabelClickButton(tag);
-    };
-    [self addSubview:_searchHotDataTypeView];
+    GBTagListView *tagList=[[GBTagListView alloc]initWithFrame:CGRectMake(0, 0, Window_W, 200)];
+    /**允许点击 */
+    tagList.canTouch=YES;
+    /**可以控制允许点击的标签数 */
+    tagList.canTouchNum=5;
+    /**控制是否是单选模式 */
+    tagList.isSingleSelect=YES;
+    tagList.signalTagColor=krgb(245,245,245);
+    __weak __typeof(self)weakSelf = self;
+    [tagList setDidselectItemBlock:^(NSArray *arr) {
+        NSLog(@"选中的标签%@",arr);
+        if (weakSelf.searchHotCellLabelClickButton) {
+            weakSelf.searchHotCellLabelClickButton(arr);
+        }
+    }];
+    [self.contentView addSubview:tagList];
+    self.taglistView = tagList;
 }
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -50,19 +58,7 @@
 }
 - (void)setHistoryArray:(NSMutableArray *)historyArray {
     _historyArray = historyArray;
-    self.searchHotDataTypeView.categortArray = _historyArray;
+    [self.taglistView setTagWithTagArray:_historyArray];
 }
-#pragma mark - model
-- (void)setRecommendModelArray:(NSMutableArray *)recommendModelArray {
-    _recommendModelArray = recommendModelArray;
-    if (self.searchHotDataTypeView) {
-        [self.searchHotDataTypeView removeFromSuperview];
-    }
-    _searchHotDataTypeView = [AKSearchHotDataTypeView searchHotDataTypeViewWithFrame:CGRectMake(0, 5, Window_W, self.frame.size.height) category:_recommendModelArray];
-    XYWeakSelf;
-    _searchHotDataTypeView.searchHotCellLabelClickButton = ^(NSInteger tag) {
-        weakSelf.searchHotCellLabelClickButton(tag);
-    };
-    [self addSubview:self.searchHotDataTypeView];
-}
+
 @end

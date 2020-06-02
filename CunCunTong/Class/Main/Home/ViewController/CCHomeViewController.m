@@ -132,6 +132,7 @@ static NSString *everDayCell = @"everDayCell";
         requestisScu(NO);
     }];
 }
+
 - (void)getCetagoryDataRequestisScu:(void(^)(BOOL isScu))requestisScu {
     XYWeakSelf;
     NSDictionary *params = @{};
@@ -232,27 +233,28 @@ static NSString *everDayCell = @"everDayCell";
 
 - (void)layoutCollectionView {
     _headView = [[CCHomeHeaderView alloc] initWithFrame:CGRectMake(0, -256, Window_W, 265)];
-    
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
     flowLayout.minimumLineSpacing = 12;
     flowLayout.minimumInteritemSpacing = 10;
-    
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, Window_W, Window_H - 49 - NAVIGATION_BAR_HEIGHT-HOME_INDICATOR_HEIGHT) collectionViewLayout:flowLayout];
     _collectionView.backgroundColor = [UIColor whiteColor];
     _collectionView.delegate   = self;
     _collectionView.dataSource = self;
     [self.view addSubview:_collectionView];
-    
-    
     [self.collectionView addSubview:_headView];
     self.collectionView.contentInset = UIEdgeInsetsMake(256, 0, 0, 0);
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.collectionView registerNib:[UINib nibWithNibName:CCCommodityCollectionViewCell.className bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:CellInder];
-    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"footer"];
-    [self.collectionView registerNib:[UINib nibWithNibName:CCHeaderCollectionReusableView.className bundle:[NSBundle mainBundle]] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
-    [self.collectionView registerClass:CCBigCommendCollectionViewCell.class forCellWithReuseIdentifier:@"ccbigCell"];
+    [self.collectionView registerClass:[UICollectionReusableView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                   withReuseIdentifier:@"footer"];
+    [self.collectionView registerNib:[UINib nibWithNibName:CCHeaderCollectionReusableView.className bundle:[NSBundle mainBundle]]
+          forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                 withReuseIdentifier:@"header"];
+    [self.collectionView registerClass:CCBigCommendCollectionViewCell.class
+            forCellWithReuseIdentifier:@"ccbigCell"];
     [self.collectionView registerNib:[UINib nibWithNibName:CCEverDayTeCollectionViewCell.className bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:everDayCell];
     self.collectionView.contentOffset = CGPointMake(0, - 256);
     XYWeakSelf;
@@ -315,20 +317,23 @@ static NSString *everDayCell = @"everDayCell";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        CCBigCommendCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ccbigCell" forIndexPath:indexPath];
+        CCBigCommendCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ccbigCell"
+                                                                                         forIndexPath:indexPath];
         cell.collectionLeftView.dataArray = self.hotArray.mutableCopy;
         return cell;
     } else if (indexPath.section == 2){
-        CCEverDayTeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:everDayCell forIndexPath:indexPath];
-        XYWeakSelf;
-        [cell.sureSales addTapGestureWithBlock:^(UIView *gestureView) {
-            CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
-            [weakSelf.navigationController pushViewController:vc animated:YES];
-        }];
+        CCEverDayTeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:everDayCell
+                                                                                        forIndexPath:indexPath];
         cell.model = [CCGoodsDetail modelWithJSON:self.teJiaArray[indexPath.row]];
+//        XYWeakSelf;
+//        [cell.sureSales addTapGestureWithBlock:^(UIView *gestureView) {
+//            CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+//            [weakSelf.navigationController pushViewController:vc animated:YES];
+//        }];
         return cell;
     } else if (indexPath.section == 1){
-        CCCommodityCollectionViewCell *cell =  [collectionView dequeueReusableCellWithReuseIdentifier:CellInder forIndexPath:indexPath];
+        CCCommodityCollectionViewCell *cell =  [collectionView dequeueReusableCellWithReuseIdentifier:CellInder
+                                                                                         forIndexPath:indexPath];
         cell.model = [CCGoodsDetail modelWithJSON:self.activeArray[indexPath.row]];
         return cell;
     }
@@ -349,10 +354,15 @@ static NSString *everDayCell = @"everDayCell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    if (indexPath.section == 2) {
-    
-    } else {
+    if (indexPath.section == 2 ) {
+        CCGoodsDetail *model = [CCGoodsDetail modelWithJSON:self.teJiaArray[indexPath.row]];
         CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+        vc.goodsID = STRING_FROM_INTAGER(model.ccid);
+        [self.navigationController pushViewController:vc animated:YES];
+    } else if( indexPath.section ==1) {
+        CCGoodsDetail *model = [CCGoodsDetail modelWithJSON:self.activeArray[indexPath.row]];
+        CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+        vc.goodsID = STRING_FROM_INTAGER(model.ccid);
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
@@ -426,7 +436,6 @@ static NSString *everDayCell = @"everDayCell";
         return UIEdgeInsetsMake(0, 0, 0, 10);
     }
     return UIEdgeInsetsMake(0, 10, 0, 10);
-    
 }
     
 @end

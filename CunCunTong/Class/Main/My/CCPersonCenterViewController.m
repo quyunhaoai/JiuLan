@@ -62,9 +62,9 @@ static NSString *CellIdentifier = @"UITableViewCell";
     [self.tableView registerNib:[UINib nibWithNibName:CCPersonCenterTableViewCell.className bundle:[NSBundle mainBundle]] forCellReuseIdentifier:CellIdentifier];
     XYWeakSelf;
     [self.headerView.headerImage addTapGestureWithBlock:^(UIView *gestureView) { 
-        CCMyInfoViewController *vc = [CCMyInfoViewController new];
-        CCBaseNavController *nav = [[CCBaseNavController alloc] initWithRootViewController:vc];
-        [weakSelf presentViewController:nav animated:YES completion:nil];
+//        CCMyInfoViewController *vc = [CCMyInfoViewController new];
+//        CCBaseNavController *nav = [[CCBaseNavController alloc] initWithRootViewController:vc];
+//        [weakSelf presentViewController:nav animated:YES completion:nil];
     }];
     [self.headerView.moreButtonView addTapGestureWithBlock:^(UIView *gestureView) {//查看 更多
         CCMyOrderViewController *vc = [CCMyOrderViewController new];

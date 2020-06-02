@@ -19,16 +19,10 @@
 */
 
 - (CGRect)leftViewRectForBounds:(CGRect)bounds {
-CGRect rect = [super leftViewRectForBounds:bounds];
+    CGRect rect = [super leftViewRectForBounds:bounds];
 
     // 这个注释掉的是可以的
- rect = CGRectMake(rect.origin.x + 12, rect.origin.y, rect.size.width, rect.size.height);
-return rect;
-
-//没有注释的这个无论数值怎么调都不行
-// UIEdgeInsets insets = UIEdgeInsetsMake(0, 0, 0, 0);
-//
-// return UIEdgeInsetsInsetRect(rect, insets);
-
+    rect = CGRectMake(rect.origin.x + 12, rect.origin.y, rect.size.width, rect.size.height);
+    return rect;
 }
 @end

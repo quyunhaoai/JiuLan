@@ -117,6 +117,8 @@
 		D530D27F241CBBB5008EB2CE /* STBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D530D27D241CBBB5008EB2CE /* STBaseModel.m */; };
 		D530D285241CC4B9008EB2CE /* KKButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D530D281241CC4B9008EB2CE /* KKButton.m */; };
 		D530D286241CC4B9008EB2CE /* ImageTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D530D282241CC4B9008EB2CE /* ImageTitleButton.m */; };
+		D53824E72485F855001E1764 /* CCOrderListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D53824E62485F855001E1764 /* CCOrderListModel.m */; };
+		D53824EA24864262001E1764 /* CCCustomLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D53824E924864262001E1764 /* CCCustomLabel.m */; };
 		D53895C4244428AB009E0F23 /* YYDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D5389515244428A9009E0F23 /* YYDiskCache.m */; };
 		D53895C5244428AB009E0F23 /* YYCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D5389517244428A9009E0F23 /* YYCache.m */; };
 		D53895C6244428AB009E0F23 /* YYKVStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = D538951B244428A9009E0F23 /* YYKVStorage.m */; };
@@ -236,7 +238,6 @@
 		D547D146241CD5D00061557D /* CCCommodityCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D547D144241CD5D00061557D /* CCCommodityCollectionViewCell.xib */; };
 		D547D14A241CDAD20061557D /* KKSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = D547D148241CDAD10061557D /* KKSearchBar.m */; };
 		D54867DE247B9B20001C2F1D /* STSearchResultTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867C5247B9B20001C2F1D /* STSearchResultTableViewController.m */; };
-		D54867DF247B9B20001C2F1D /* STSearchAllViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867C6247B9B20001C2F1D /* STSearchAllViewController.m */; };
 		D54867E0247B9B20001C2F1D /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867C9247B9B20001C2F1D /* UIImage+Extension.m */; };
 		D54867E1247B9B20001C2F1D /* FLJSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867CA247B9B20001C2F1D /* FLJSearchBar.m */; };
 		D54867E2247B9B20001C2F1D /* icon_search@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D54867CD247B9B20001C2F1D /* icon_search@3x.png */; };
@@ -245,10 +246,7 @@
 		D54867E5247B9B20001C2F1D /* icon_search_clear@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D54867D0247B9B20001C2F1D /* icon_search_clear@3x.png */; };
 		D54867E6247B9B20001C2F1D /* STSearchHistoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867D3247B9B20001C2F1D /* STSearchHistoryTableViewCell.m */; };
 		D54867E7247B9B20001C2F1D /* STSearchTextFildeView.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867D4247B9B20001C2F1D /* STSearchTextFildeView.m */; };
-		D54867E8247B9B20001C2F1D /* STSearchHotTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867D5247B9B20001C2F1D /* STSearchHotTableViewCell.m */; };
-		D54867E9247B9B20001C2F1D /* AKSearchHotDataTypeView.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867DA247B9B20001C2F1D /* AKSearchHotDataTypeView.m */; };
 		D54867EA247B9B20001C2F1D /* STSearchTableViewSetionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867DB247B9B20001C2F1D /* STSearchTableViewSetionHeaderView.m */; };
-		D54867EB247B9B20001C2F1D /* STSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = D54867DD247B9B20001C2F1D /* STSearchView.m */; };
 		D549CA33241F0CF1002267A7 /* CCHomeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D549CA32241F0CF1002267A7 /* CCHomeHeaderView.m */; };
 		D549CA37241F214F002267A7 /* CCHeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D549CA35241F214F002267A7 /* CCHeaderCollectionReusableView.m */; };
 		D549CA38241F214F002267A7 /* CCHeaderCollectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D549CA36241F214F002267A7 /* CCHeaderCollectionReusableView.xib */; };
@@ -386,6 +384,7 @@
 		D5C047492431C9D1003832CB /* CCBalanceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C047472431C9D1003832CB /* CCBalanceTableViewCell.m */; };
 		D5C0474A2431C9D1003832CB /* CCBalanceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5C047482431C9D1003832CB /* CCBalanceTableViewCell.xib */; };
 		D5C0474D2431C9F7003832CB /* CCBalance.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C0474C2431C9F7003832CB /* CCBalance.m */; };
+		D5C25C782485E3C20002CEBF /* AKSearchHotDataTypeView.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C25C762485E3C10002CEBF /* AKSearchHotDataTypeView.m */; };
 		D5C917B42435781300034085 /* XYMallClassifyViewcController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C917A62435781300034085 /* XYMallClassifyViewcController.m */; };
 		D5C917B52435781300034085 /* SH_MallCategoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C917AA2435781300034085 /* SH_MallCategoryModel.m */; };
 		D5C917CA243579DB00034085 /* XYMallClassifyCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C917C4243579DA00034085 /* XYMallClassifyCollectionReusableView.m */; };
@@ -410,6 +409,7 @@
 		D5C9180B2435DCEB00034085 /* CCCheXiaoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C918092435DCEB00034085 /* CCCheXiaoCollectionViewCell.m */; };
 		D5C9180C2435DCEB00034085 /* CCCheXiaoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5C9180A2435DCEB00034085 /* CCCheXiaoCollectionViewCell.xib */; };
 		D5C9180F2435E28E00034085 /* CCActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = D5C9180E2435E28E00034085 /* CCActivityView.m */; };
+		D5CE76CA248492A9009570C0 /* CCShopCarListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CE76C9248492A9009570C0 /* CCShopCarListModel.m */; };
 		D5D5914D24415A73009FFDCE /* HXBarChart.m in Sources */ = {isa = PBXBuildFile; fileRef = D5D5914724415A73009FFDCE /* HXBarChart.m */; };
 		D5D5914E24415A73009FFDCE /* HXCircleChart.m in Sources */ = {isa = PBXBuildFile; fileRef = D5D5914824415A73009FFDCE /* HXCircleChart.m */; };
 		D5D5914F24415A73009FFDCE /* HXGaugeChart.m in Sources */ = {isa = PBXBuildFile; fileRef = D5D5914924415A73009FFDCE /* HXGaugeChart.m */; };
@@ -651,6 +651,10 @@
 		D530D282241CC4B9008EB2CE /* ImageTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageTitleButton.m; sourceTree = "<group>"; };
 		D530D283241CC4B9008EB2CE /* KKButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KKButton.h; sourceTree = "<group>"; };
 		D530D284241CC4B9008EB2CE /* ImageTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageTitleButton.h; sourceTree = "<group>"; };
+		D53824E52485F855001E1764 /* CCOrderListModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCOrderListModel.h; sourceTree = "<group>"; };
+		D53824E62485F855001E1764 /* CCOrderListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCOrderListModel.m; sourceTree = "<group>"; };
+		D53824E824864262001E1764 /* CCCustomLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCCustomLabel.h; sourceTree = "<group>"; };
+		D53824E924864262001E1764 /* CCCustomLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCCustomLabel.m; sourceTree = "<group>"; };
 		D5389515244428A9009E0F23 /* YYDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYDiskCache.m; sourceTree = "<group>"; };
 		D5389516244428A9009E0F23 /* YYKVStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYKVStorage.h; sourceTree = "<group>"; };
 		D5389517244428A9009E0F23 /* YYCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYCache.m; sourceTree = "<group>"; };
@@ -886,10 +890,8 @@
 		D547D144241CD5D00061557D /* CCCommodityCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CCCommodityCollectionViewCell.xib; sourceTree = "<group>"; };
 		D547D148241CDAD10061557D /* KKSearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KKSearchBar.m; sourceTree = "<group>"; };
 		D547D149241CDAD10061557D /* KKSearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KKSearchBar.h; sourceTree = "<group>"; };
-		D54867C3247B9B20001C2F1D /* STSearchAllViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchAllViewController.h; sourceTree = "<group>"; };
 		D54867C4247B9B20001C2F1D /* STSearchResultTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchResultTableViewController.h; sourceTree = "<group>"; };
 		D54867C5247B9B20001C2F1D /* STSearchResultTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchResultTableViewController.m; sourceTree = "<group>"; };
-		D54867C6247B9B20001C2F1D /* STSearchAllViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchAllViewController.m; sourceTree = "<group>"; };
 		D54867C8247B9B20001C2F1D /* FLJSearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLJSearchBar.h; sourceTree = "<group>"; };
 		D54867C9247B9B20001C2F1D /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
 		D54867CA247B9B20001C2F1D /* FLJSearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLJSearchBar.m; sourceTree = "<group>"; };
@@ -898,18 +900,12 @@
 		D54867CE247B9B20001C2F1D /* icon_search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_search@2x.png"; sourceTree = "<group>"; };
 		D54867CF247B9B20001C2F1D /* icon_search_clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_search_clear@2x.png"; sourceTree = "<group>"; };
 		D54867D0247B9B20001C2F1D /* icon_search_clear@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_search_clear@3x.png"; sourceTree = "<group>"; };
-		D54867D2247B9B20001C2F1D /* AKSearchHotDataTypeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKSearchHotDataTypeView.h; sourceTree = "<group>"; };
 		D54867D3247B9B20001C2F1D /* STSearchHistoryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchHistoryTableViewCell.m; sourceTree = "<group>"; };
 		D54867D4247B9B20001C2F1D /* STSearchTextFildeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchTextFildeView.m; sourceTree = "<group>"; };
-		D54867D5247B9B20001C2F1D /* STSearchHotTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchHotTableViewCell.m; sourceTree = "<group>"; };
 		D54867D6247B9B20001C2F1D /* STSearchTableViewSetionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchTableViewSetionHeaderView.h; sourceTree = "<group>"; };
-		D54867D7247B9B20001C2F1D /* STSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchView.h; sourceTree = "<group>"; };
 		D54867D8247B9B20001C2F1D /* STSearchTextFildeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchTextFildeView.h; sourceTree = "<group>"; };
 		D54867D9247B9B20001C2F1D /* STSearchHistoryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchHistoryTableViewCell.h; sourceTree = "<group>"; };
-		D54867DA247B9B20001C2F1D /* AKSearchHotDataTypeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKSearchHotDataTypeView.m; sourceTree = "<group>"; };
 		D54867DB247B9B20001C2F1D /* STSearchTableViewSetionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchTableViewSetionHeaderView.m; sourceTree = "<group>"; };
-		D54867DC247B9B20001C2F1D /* STSearchHotTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSearchHotTableViewCell.h; sourceTree = "<group>"; };
-		D54867DD247B9B20001C2F1D /* STSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSearchView.m; sourceTree = "<group>"; };
 		D549CA31241F0CF1002267A7 /* CCHomeHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCHomeHeaderView.h; sourceTree = "<group>"; };
 		D549CA32241F0CF1002267A7 /* CCHomeHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCHomeHeaderView.m; sourceTree = "<group>"; };
 		D549CA34241F214F002267A7 /* CCHeaderCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCHeaderCollectionReusableView.h; sourceTree = "<group>"; };
@@ -1168,6 +1164,8 @@
 		D5C047482431C9D1003832CB /* CCBalanceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CCBalanceTableViewCell.xib; sourceTree = "<group>"; };
 		D5C0474B2431C9F7003832CB /* CCBalance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCBalance.h; sourceTree = "<group>"; };
 		D5C0474C2431C9F7003832CB /* CCBalance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCBalance.m; sourceTree = "<group>"; };
+		D5C25C762485E3C10002CEBF /* AKSearchHotDataTypeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKSearchHotDataTypeView.m; sourceTree = "<group>"; };
+		D5C25C772485E3C10002CEBF /* AKSearchHotDataTypeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKSearchHotDataTypeView.h; sourceTree = "<group>"; };
 		D5C917A62435781300034085 /* XYMallClassifyViewcController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYMallClassifyViewcController.m; sourceTree = "<group>"; };
 		D5C917A72435781300034085 /* XYMallClassifyViewcController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYMallClassifyViewcController.h; sourceTree = "<group>"; };
 		D5C917A92435781300034085 /* SH_MallCategoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SH_MallCategoryModel.h; sourceTree = "<group>"; };
@@ -1216,6 +1214,8 @@
 		D5C9180A2435DCEB00034085 /* CCCheXiaoCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CCCheXiaoCollectionViewCell.xib; sourceTree = "<group>"; };
 		D5C9180D2435E28E00034085 /* CCActivityView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCActivityView.h; sourceTree = "<group>"; };
 		D5C9180E2435E28E00034085 /* CCActivityView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCActivityView.m; sourceTree = "<group>"; };
+		D5CE76C8248492A9009570C0 /* CCShopCarListModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCShopCarListModel.h; sourceTree = "<group>"; };
+		D5CE76C9248492A9009570C0 /* CCShopCarListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCShopCarListModel.m; sourceTree = "<group>"; };
 		D5D5914224415A73009FFDCE /* HXCharts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HXCharts.h; sourceTree = "<group>"; };
 		D5D5914324415A73009FFDCE /* HXGaugeChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HXGaugeChart.h; sourceTree = "<group>"; };
 		D5D5914424415A73009FFDCE /* HXCircleChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HXCircleChart.h; sourceTree = "<group>"; };
@@ -1792,6 +1792,8 @@
 				D530D249241C7B50008EB2CE /* ZFJPermissionManager.m */,
 				D530D262241CA94A008EB2CE /* CCTools.h */,
 				D530D263241CA94A008EB2CE /* CCTools.m */,
+				D53824E824864262001E1764 /* CCCustomLabel.h */,
+				D53824E924864262001E1764 /* CCCustomLabel.m */,
 			);
 			path = QYHTools;
 			sourceTree = "<group>";
@@ -2318,8 +2320,6 @@
 				D53CBE47243ED16100DB106C /* CCOrderSearchViewController.m */,
 				D54867C4247B9B20001C2F1D /* STSearchResultTableViewController.h */,
 				D54867C5247B9B20001C2F1D /* STSearchResultTableViewController.m */,
-				D54867C3247B9B20001C2F1D /* STSearchAllViewController.h */,
-				D54867C6247B9B20001C2F1D /* STSearchAllViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2328,9 +2328,9 @@
 			isa = PBXGroup;
 			children = (
 				D54867C8247B9B20001C2F1D /* FLJSearchBar.h */,
-				D54867C9247B9B20001C2F1D /* UIImage+Extension.m */,
 				D54867CA247B9B20001C2F1D /* FLJSearchBar.m */,
 				D54867CB247B9B20001C2F1D /* UIImage+Extension.h */,
+				D54867C9247B9B20001C2F1D /* UIImage+Extension.m */,
 				D54867CC247B9B20001C2F1D /* resource */,
 			);
 			path = FLJSearchBar;
@@ -2350,18 +2350,14 @@
 		D54867D1247B9B20001C2F1D /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D5C25C772485E3C10002CEBF /* AKSearchHotDataTypeView.h */,
+				D5C25C762485E3C10002CEBF /* AKSearchHotDataTypeView.m */,
 				D54867D9247B9B20001C2F1D /* STSearchHistoryTableViewCell.h */,
 				D54867D3247B9B20001C2F1D /* STSearchHistoryTableViewCell.m */,
 				D54867D8247B9B20001C2F1D /* STSearchTextFildeView.h */,
 				D54867D4247B9B20001C2F1D /* STSearchTextFildeView.m */,
-				D54867DC247B9B20001C2F1D /* STSearchHotTableViewCell.h */,
-				D54867D5247B9B20001C2F1D /* STSearchHotTableViewCell.m */,
-				D54867D2247B9B20001C2F1D /* AKSearchHotDataTypeView.h */,
-				D54867DA247B9B20001C2F1D /* AKSearchHotDataTypeView.m */,
 				D54867D6247B9B20001C2F1D /* STSearchTableViewSetionHeaderView.h */,
 				D54867DB247B9B20001C2F1D /* STSearchTableViewSetionHeaderView.m */,
-				D54867D7247B9B20001C2F1D /* STSearchView.h */,
-				D54867DD247B9B20001C2F1D /* STSearchView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2384,6 +2380,10 @@
 				D5788307247F9DAC00503DAB /* CCLunboTuModel.m */,
 				D50C237324810B1000EA0C23 /* CCGoodsDetailInfoModel.h */,
 				D50C237424810B1000EA0C23 /* CCGoodsDetailInfoModel.m */,
+				D5CE76C8248492A9009570C0 /* CCShopCarListModel.h */,
+				D5CE76C9248492A9009570C0 /* CCShopCarListModel.m */,
+				D53824E52485F855001E1764 /* CCOrderListModel.h */,
+				D53824E62485F855001E1764 /* CCOrderListModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3266,6 +3266,7 @@
 				D57B0726243D864500ADCE74 /* TZAssetCell.m in Sources */,
 				D549CA33241F0CF1002267A7 /* CCHomeHeaderView.m in Sources */,
 				D53895D5244428AB009E0F23 /* NSObject+YYModel.m in Sources */,
+				D5C25C782485E3C20002CEBF /* AKSearchHotDataTypeView.m in Sources */,
 				D50180FD241B3D1800E08A7F /* CCHomeViewController.m in Sources */,
 				D543414B241B76E300A93162 /* CCLoginRViewController.m in Sources */,
 				D5C917EE2435A18B00034085 /* SH_MallSubclassificationViewControllerCell.m in Sources */,
@@ -3361,12 +3362,11 @@
 				D5101DAF24209FE000344A3E /* CCShopBottomView.m in Sources */,
 				D53895E8244428AB009E0F23 /* YYTextAttribute.m in Sources */,
 				D50C73AA2434336700B8D02A /* UILabel+GHome.m in Sources */,
-				D54867E9247B9B20001C2F1D /* AKSearchHotDataTypeView.m in Sources */,
 				D5101D782420710F00344A3E /* SDCycleScrollView.m in Sources */,
 				D53CBE45243EC53300DB106C /* CCReturnGoodsDetailHeadView.m in Sources */,
-				D54867DF247B9B20001C2F1D /* STSearchAllViewController.m in Sources */,
 				D53CBE49243ED16100DB106C /* CCOrderSearchViewController.m in Sources */,
 				D57B06DE243D826C00ADCE74 /* UIView+PYExtension.m in Sources */,
+				D53824E72485F855001E1764 /* CCOrderListModel.m in Sources */,
 				D57B05F3243D60D100ADCE74 /* CalendarPickerView.m in Sources */,
 				D526DB0A243C102D00CB1083 /* CCMyAddressViewController.m in Sources */,
 				D5C918052435D2E300034085 /* GHDropMenuFilterInputItem.m in Sources */,
@@ -3398,7 +3398,6 @@
 				D5101D5A242057A900344A3E /* UIView+ViewController.m in Sources */,
 				D5389614244428AB009E0F23 /* YYReachability.m in Sources */,
 				D59B497824406FC400E0C001 /* CCSmallShopViewController.m in Sources */,
-				D54867E8247B9B20001C2F1D /* STSearchHotTableViewCell.m in Sources */,
 				D5101D7E2420710F00344A3E /* TAAbstractDotView.m in Sources */,
 				D555EBBE24334B5600CB98C8 /* BottomAlert2Contentview.m in Sources */,
 				D53895DA244428AB009E0F23 /* YYTextEffectWindow.m in Sources */,
@@ -3406,6 +3405,7 @@
 				D538960A244428AB009E0F23 /* YYAsyncLayer.m in Sources */,
 				D5C918062435D2E300034085 /* GHDropMenuFilterTimeChoseItem.m in Sources */,
 				D5A127E9241F661B001D7FD2 /* CCCollectionViewLeftView.m in Sources */,
+				D5CE76CA248492A9009570C0 /* CCShopCarListModel.m in Sources */,
 				D53895CE244428AB009E0F23 /* _YYWebImageSetter.m in Sources */,
 				D53CBE64243F242E00DB106C /* CCSelectGoodsViewController.m in Sources */,
 				D56F3FF1243C84660094B8B9 /* UITableView+EverPath.m in Sources */,
@@ -3456,6 +3456,7 @@
 				D530D285241CC4B9008EB2CE /* KKButton.m in Sources */,
 				D538960E244428AB009E0F23 /* YYDispatchQueuePool.m in Sources */,
 				D526DB58243C694400CB1083 /* UIView+ST.m in Sources */,
+				D53824EA24864262001E1764 /* CCCustomLabel.m in Sources */,
 				D59B497B244078CA00E0C001 /* CCMubltylabView.m in Sources */,
 				D5434155241B7A6D00A93162 /* CCBaseViewController.m in Sources */,
 				D57B0729243D864500ADCE74 /* NSBundle+TZImagePicker.m in Sources */,
@@ -3546,7 +3547,6 @@
 				D538960B244428AB009E0F23 /* YYThreadSafeDictionary.m in Sources */,
 				D57B0608243D60D100ADCE74 /* FSCalendarAppearance.m in Sources */,
 				D526DB55243C694400CB1083 /* STConst.m in Sources */,
-				D54867EB247B9B20001C2F1D /* STSearchView.m in Sources */,
 				D50C73E12434A1F300B8D02A /* CCSureOrderViewController.m in Sources */,
 				D5C918022435D2E300034085 /* GHDropMenuOptionCell.m in Sources */,
 				D526DB3E243C63C400CB1083 /* LCActionSheetConfig.m in Sources */,
@@ -3768,6 +3768,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XN57LYQMV5;
 				GCC_PREFIX_HEADER = /Users/goouc/Desktop/CCH/CunCunTong/CunCunTong/Class/Global/PrefixHeader.pch;
 				INFOPLIST_FILE = CunCunTong/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -3787,6 +3788,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XN57LYQMV5;
 				GCC_PREFIX_HEADER = /Users/goouc/Desktop/CCH/CunCunTong/CunCunTong/Class/Global/PrefixHeader.pch;
 				INFOPLIST_FILE = CunCunTong/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

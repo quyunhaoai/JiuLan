@@ -7,7 +7,6 @@
 //
 
 #import "CCOrderSearchViewController.h"
-#import "STSearchHotTableViewCell.h"
 #import "STSearchHistoryTableViewCell.h"
 
 #import "STSearchTableViewSetionHeaderView.h"
@@ -18,9 +17,14 @@
 @property (nonatomic,strong) UIButton *rightNavBtn; //  按钮
 @property (strong, nonatomic) UITextField *searchTextField;  // 文本框
 @property (strong, nonatomic) NSMutableArray *historyArray;  // 历史 数组
+@property (nonatomic,copy) NSString *searchRelustStr;
 @end
 
 @implementation CCOrderSearchViewController
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
+}
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleDefault;;
 }
@@ -78,7 +82,7 @@
     titleTextField.placeholder = self.searchStr.length>0?self.searchStr : @"搜索我的订单";
     titleTextField.delegate = self;
     titleTextField.placeholderColor = [UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:1.0f] ;
-    titleTextField.borderStyle = UITextBorderStyleBezel;
+    titleTextField.borderStyle = UITextBorderStyleNone;
     titleTextField.clearButtonMode = UITextFieldViewModeAlways;
     titleTextField.layer.masksToBounds = YES;
     titleTextField.layer.cornerRadius = 17.5;
@@ -98,7 +102,7 @@
 }
 
 - (void)textField1TextChange:(UITextField *)field {
-    
+    self.searchRelustStr = field.text;
 }
 
 - (void)black:(UIButton *)button {
@@ -111,20 +115,20 @@
 
 - (void)rightBtnClick:(UIButton *)button {
     [self.searchTextField resignFirstResponder];
-    [self addItem:self.searchTextField.text];
-    if (self.searchStr.length>0) {
-//        SH_MallSubclassificationViewController *vc = [SH_MallSubclassificationViewController new];
-//        [self.navigationController pushViewController:vc animated:YES];
-
-        CCEverDayTeViewController *vc = [CCEverDayTeViewController new];
-        vc.goods_name = self.searBarView.searchTextField.text;
-        [self.navigationController pushViewController:vc animated:YES];
-
-    } else {
-        CCMyOrderViewController *vc = [CCMyOrderViewController new];
-        [self.navigationController pushViewController:vc animated:YES];
+    [self searchStr:self.searchRelustStr];
+}
+- (void)searchStr:(NSString *)searchString {
+    if (searchString.length>0) {
+        [self addItem:searchString];
+        if (self.searchStr.length>0) {
+            CCEverDayTeViewController *vc = [CCEverDayTeViewController new];
+            vc.goods_name = self.searchRelustStr;
+            [self.navigationController pushViewController:vc animated:YES];
+        } else {
+            CCMyOrderViewController *vc = [CCMyOrderViewController new];
+            [self.navigationController pushViewController:vc animated:YES];
+        }
     }
-    
 }
 -(void)addItem:(NSString *)text{
     if (![self containsText:text]) {
@@ -136,7 +140,7 @@
     if (self.historyArray.count > 10) {
         [self.historyArray removeLastObject];
     }
-    
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[NSArray arrayWithArray:self.historyArray] forKey:@"history"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -157,8 +161,8 @@
    STSearchHistoryTableViewCell *  cell = [STSearchHistoryTableViewCell initializationCellWithTableView:tableView];
     cell.historyArray = self.historyArray;
     XYWeakSelf;
-    cell.searchHotCellLabelClickButton = ^(NSInteger tag) {
-//        [weakSelf searchTitleToPushResultWithString:weakSelf.historyArray[tag]];
+    cell.searchHotCellLabelClickButton = ^(NSArray * _Nonnull arr) {
+        [weakSelf searchStr:arr[0]];
     };
     return cell;
 }
@@ -171,14 +175,12 @@
     return 1;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 40;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 40;
 }
-
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 200.f;
+}
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     STSearchTableViewSetionHeaderView *headerView = [[STSearchTableViewSetionHeaderView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 40)];
     headerView.itemLabel.text = @"搜索历史";
@@ -210,6 +212,13 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self.searchTextField resignFirstResponder];
+}
+
+- (NSMutableArray *)historyArray {
+    if (!_historyArray) {
+        _historyArray = [NSMutableArray arrayWithArray:[kUserDefaults objectForKey:@"history"]];
+    }
+    return _historyArray;
 }
 
 

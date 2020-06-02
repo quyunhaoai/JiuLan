@@ -59,8 +59,8 @@
         make.top.mas_equalTo(self).mas_offset(10);
     }];
     self.nameLab = nameLab;
-    UILabel *addressLab = ({
-        UILabel *view = [UILabel new];
+    CCCustomLabel *addressLab = ({
+        CCCustomLabel *view = [CCCustomLabel new];
         view.textColor =COLOR_333333;
         view.font = STFont(13);
         view.lineBreakMode = NSLineBreakByTruncatingTail;
