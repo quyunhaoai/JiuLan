@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , assign) NSInteger              ccid;
 @property (nonatomic , copy) NSString              * image;
 @property (nonatomic , assign) NSInteger              types;
+@property (assign, nonatomic) NSInteger center_goods_id;
+@property (assign, nonatomic) NSInteger category_id;
 @end
 
 NS_ASSUME_NONNULL_END

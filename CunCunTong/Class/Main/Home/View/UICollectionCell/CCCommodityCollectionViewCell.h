@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CCGoodsDetail.h"
+#import "GBTagListView2.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCCommodityCollectionViewCell : UICollectionViewCell
@@ -18,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) CCGoodsDetail *model;
 @property (weak, nonatomic) IBOutlet UIImageView *manjianBgImage;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *manjianBGWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageViewWidth;
+@property (weak, nonatomic) IBOutlet GBTagListView2 *tagContentView;
 @end
 
 NS_ASSUME_NONNULL_END

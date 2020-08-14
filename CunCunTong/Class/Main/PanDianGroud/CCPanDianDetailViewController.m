@@ -10,9 +10,13 @@
 #import "CCPanDianDetailViewController.h"
 #import "BRDatePickerView.h"
 #import "CCSelectCatediyViewController.h"
+#import "CCAddPanDianModel.h"
+#import "CCBigPanDianTableViewCell.h"
 @interface CCPanDianDetailViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSArray *titleArray;
+@property (strong, nonatomic) CCAddPanDianModel *model;
+
 
 @end
 
@@ -28,12 +32,39 @@
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT);
         make.left.right.mas_equalTo(self.view);
-        make.bottom.mas_equalTo(self.view).mas_offset(-44);
+        make.bottom.mas_equalTo(self.view).mas_offset(0);
     }];
     self.tableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
     self.tableView.contentOffset = CGPointMake(0, -10);
+    [self initData];
+    [self.tableView registerClass:CCBigPanDianTableViewCell.class
+           forCellReuseIdentifier:@"CCBigPanDianTableViewCell"];
 }
-
+- (void)initData {
+    XYWeakSelf;
+    NSDictionary *params = @{
+    };
+    NSString *path =[NSString stringWithFormat:@"app0/marketreckon/%@/",self.pandianID];
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            weakSelf.model = [CCAddPanDianModel modelWithJSON:data];
+            [weakSelf.tableView reloadData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+}
 #pragma mark  - Get
 
 - (UITableView *)tableView {
@@ -50,8 +81,8 @@
     return _tableView;
 }
 - (void)goodsSelect:(UIButton*)button {
-    CCSelectGoodsViewController *vc = [CCSelectGoodsViewController new];
-    [self.navigationController pushViewController:vc animated:YES];
+//    CCSelectGoodsViewController *vc = [CCSelectGoodsViewController new];
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -62,7 +93,7 @@
     if (section == 0) {
         return 3;;
     } else if (section == 1){
-        return 3;
+        return self.model.child_set.count+1;
     } else if (section == 2){
         return 2;
     }
@@ -86,7 +117,7 @@
             view.lineBreakMode = NSLineBreakByTruncatingTail;
             view.backgroundColor = [UIColor clearColor];
             view.textAlignment = NSTextAlignmentLeft;
-            view.text = @"制单人";
+            view.text = indexPath.row ?  @"制单人" : @"制单日期";
             view ;
 
         });
@@ -104,13 +135,13 @@
             view.backgroundColor = [UIColor clearColor];
             view.textAlignment = NSTextAlignmentRight;
             view.numberOfLines = 1;
-            view.text = @"小明";
+            view.text =indexPath.row ? self.model.ccoperator: self.model.update_time;
             view ;
         });
         [cell.contentView addSubview:addressLab];
         [addressLab mas_updateConstraints:^(MASConstraintMaker *make) {
             make.right.mas_equalTo(cell.contentView).mas_offset(-21);
-            make.size.mas_equalTo(CGSizeMake(247, 14));
+            make.size.mas_equalTo(CGSizeMake(287, 14));
             make.top.mas_equalTo(cell.contentView).mas_offset(10);
         }];
         UIView *line = [UIView new];
@@ -130,7 +161,7 @@
             view.lineBreakMode = NSLineBreakByTruncatingTail;
             view.backgroundColor = [UIColor clearColor];
             view.textAlignment = NSTextAlignmentLeft;
-            view.text = @"无";
+            view.text = self.model.remark;
             view ;
         });
         [cell.contentView addSubview:nameLab];
@@ -194,19 +225,13 @@
             [cell.contentView addSubview:titleLab];
             [titleLab mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.right.mas_equalTo(cell.contentView).mas_offset(-20);
-                make.size.mas_equalTo(CGSizeMake(117, 14));
+                make.size.mas_equalTo(CGSizeMake(217, 14));
                 make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
             }];
             if (indexPath.row == 1) {
-                titleLab.text = [NSString getCurrentTime:@"yyyy-MM-dd"];
-                [titleLab addTapGestureWithBlock:^(UIView *gestureView) {
-                    NSString *str = [NSString getCurrentTime:@"yyyy-MM-dd"];
-                    [BRDatePickerView showDatePickerWithTitle:@"请选择" dateType:BRDatePickerModeYMD defaultSelValue:str resultBlock:^(NSString *selectValue) {
-                        titleLab.text = selectValue;
-                    }];
-                }];
+                titleLab.text = self.model.create_time;
             } else if(indexPath.row == 2) {
-                titleLab.text = @"请选择盘点分类";
+                titleLab.text =self.model.category;
             }
         }
         UIView *line = [UIView new];
@@ -219,101 +244,12 @@
             make.height.mas_equalTo(kWidth(1));
         }];
     } else if (indexPath.section == 1 && indexPath.row >0){
-        UILabel *subtitleLab = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_666666;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"商品名称：娃哈哈矿泉水";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab];
-        [subtitleLab mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(237, 14));
-            make.top.mas_equalTo(cell.contentView).mas_offset(10);
-        }];
-        
-        UILabel *subtitleLab2 = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_666666;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"规格：500ml";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab2];
-        [subtitleLab2 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(167, 14));
-            make.top.mas_equalTo(subtitleLab.mas_bottom).mas_offset(6);
-        }];
-        UILabel *subtitleLab3 = ({
-            UILabel *view = [UILabel new];
-            view.textColor = krgb(255,16,16);
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"库存数量：10";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab3];
-        [subtitleLab3 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(160, 14));
-            make.top.mas_equalTo(subtitleLab2.mas_bottom).mas_offset(6);
-        }];
-        UILabel *subtitleLab4 = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_666666;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"单位：瓶";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab4];
-        [subtitleLab4 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(subtitleLab2.mas_right).mas_offset(10);
-            make.size.mas_equalTo(CGSizeMake(107, 14));
-            make.top.mas_equalTo(subtitleLab.mas_bottom).mas_offset(6);
-        }];
-        UILabel *subtitleLab5 = ({
-            UILabel *view = [UILabel new];
-            view.textColor =krgb(255,24,24);
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"盘点数量：10";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab5];
-        [subtitleLab5 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(subtitleLab4).mas_offset(0);
-            make.size.mas_equalTo(CGSizeMake(107, 14));
-            make.top.mas_equalTo(subtitleLab4.mas_bottom).mas_offset(6);
-        }];
-        UIView *line = [UIView new];
-         line.backgroundColor = UIColorHex(0xf7f7f7);
-         [cell.contentView addSubview:line];
-         [line mas_updateConstraints:^(MASConstraintMaker *make) {
-             make.left.mas_equalTo(cell.contentView).mas_offset(20);
-             make.bottom.mas_equalTo(cell.contentView);
-             make.width.mas_equalTo(Window_W-40);
-             make.height.mas_equalTo(kWidth(1));
-         }];
+        Child_setItem *item = self.model.child_set[indexPath.row-1];
+        CCBigPanDianTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCBigPanDianTableViewCell"];
+        cell.isDatil = YES;
+        cell.item = item;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
     }
     return cell;
 }
@@ -323,7 +259,8 @@
     if (indexPath.row ==0 || indexPath.section == 0) {
         return 35;
     } else if (indexPath.section == 1 && indexPath.row >0){
-        return 74;
+        Child_setItem *item = self.model.child_set[indexPath.row-1];
+        return 74+item.batch_set.count*66+10;
     }
     return 35;
 }
@@ -350,16 +287,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (indexPath.section == 0 && indexPath.row == 2) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        UILabel *textLab = [cell viewWithTag:1000];
-        CCSelectCatediyViewController *vc = [CCSelectCatediyViewController new];
-        vc.clickCatedity = ^(NSString * _Nonnull name) {
-            NSLog(@"%@",name);
-            textLab.text = name;
-        };
-        [self.navigationController pushViewController:vc animated:YES];
-    }
 }
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {

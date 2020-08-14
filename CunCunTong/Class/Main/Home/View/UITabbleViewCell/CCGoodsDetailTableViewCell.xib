@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="346" height="67"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ION-Sc-3Of">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ION-Sc-3Of">
                         <rect key="frame" x="15" y="25" width="50" height="17"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="50" id="8w3-zI-KRU"/>
@@ -27,7 +27,7 @@
                         <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UB4-BR-0eQ">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UB4-BR-0eQ">
                         <rect key="frame" x="80" y="25" width="202" height="17"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="202" id="3U5-M4-LRa"/>
@@ -37,20 +37,42 @@
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="右箭头灰" translatesAutoresizingMaskIntoConstraints="NO" id="UzA-0q-GPq">
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="右箭头灰" translatesAutoresizingMaskIntoConstraints="NO" id="UzA-0q-GPq">
                         <rect key="frame" x="329" y="28" width="6" height="11"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="11" id="2bA-Yg-2LD"/>
                             <constraint firstAttribute="width" constant="6" id="fMF-zO-UBr"/>
                         </constraints>
                     </imageView>
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="meE-Fr-dS8">
+                        <rect key="frame" x="80" y="52" width="108" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="108" id="a1i-tN-wGV"/>
+                            <constraint firstAttribute="height" constant="14" id="evU-ii-3KF"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.14117647059999999" green="0.58431372550000005" blue="0.56078431370000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dyR-Gu-GhJ">
+                        <rect key="frame" x="0.0" y="0.0" width="346" height="1"/>
+                        <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="7g4-wa-GwG"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="UzA-0q-GPq" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="C7R-nB-aXl"/>
+                    <constraint firstItem="dyR-Gu-GhJ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="0.10000000000000001" id="W3x-9g-Lvy"/>
                     <constraint firstItem="UB4-BR-0eQ" firstAttribute="leading" secondItem="ION-Sc-3Of" secondAttribute="trailing" constant="15" id="ZYz-xx-Qqn"/>
+                    <constraint firstItem="dyR-Gu-GhJ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="0.10000000000000001" id="bzb-fx-MOW"/>
                     <constraint firstItem="UB4-BR-0eQ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="dgy-fI-K7f"/>
+                    <constraint firstItem="meE-Fr-dS8" firstAttribute="leading" secondItem="UB4-BR-0eQ" secondAttribute="leading" id="fbv-RY-Iky"/>
+                    <constraint firstItem="meE-Fr-dS8" firstAttribute="top" secondItem="UB4-BR-0eQ" secondAttribute="bottom" constant="10" id="i0h-8v-Cj7"/>
                     <constraint firstAttribute="trailing" secondItem="UzA-0q-GPq" secondAttribute="trailing" constant="11" id="p7y-vt-iwV"/>
                     <constraint firstItem="ION-Sc-3Of" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="qik-64-d1c"/>
+                    <constraint firstAttribute="trailing" secondItem="dyR-Gu-GhJ" secondAttribute="trailing" constant="0.10000000000000001" id="rmA-H9-cgS"/>
                     <constraint firstItem="ION-Sc-3Of" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="xRM-G3-NmO"/>
                 </constraints>
             </tableViewCellContentView>
@@ -58,10 +80,13 @@
             <connections>
                 <outlet property="jiantouimageView" destination="UzA-0q-GPq" id="TcP-Ga-dAL"/>
                 <outlet property="rightIcon" destination="C7R-nB-aXl" id="Q6j-Xu-MRq"/>
+                <outlet property="strokLab" destination="meE-Fr-dS8" id="zeg-BX-4Rd"/>
                 <outlet property="subLab" destination="UB4-BR-0eQ" id="k6j-Yb-LGa"/>
+                <outlet property="subTitleConstraint" destination="dgy-fI-K7f" id="yAm-Wx-jMK"/>
+                <outlet property="titleCenterConstraint" destination="qik-64-d1c" id="S0W-ev-SHe"/>
                 <outlet property="titleLab" destination="ION-Sc-3Of" id="CVX-cg-xvj"/>
             </connections>
-            <point key="canvasLocation" x="71.014492753623188" y="152.34375"/>
+            <point key="canvasLocation" x="60.869565217391312" y="136.94196428571428"/>
         </tableViewCell>
     </objects>
     <resources>

@@ -7,7 +7,8 @@
 //
 
 #import "BaseTableViewCell.h"
-
+#import "CCMyOrderModel.h"
+#import "CCBackOrderListModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCMyOrderModelTableViewCell : BaseTableViewCell
@@ -24,6 +25,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *selectBtn;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageLeft;
+
+@property (strong,nonatomic) CCMyOrderModel *mainOrderModel;
+@property (strong,nonatomic) Sku_order_setItem *skuModel;
+@property (strong,nonatomic) Goods_order_setItem *goodsModel;
+@property (strong,nonatomic) CCBackOrderListModel *backgoodsModel;
+
+@property (weak, nonatomic) IBOutlet UILabel *sumPriceLab;
+@property (weak, nonatomic) IBOutlet UILabel *downDateLab;
+
 + (CGFloat )height;
 @end
 

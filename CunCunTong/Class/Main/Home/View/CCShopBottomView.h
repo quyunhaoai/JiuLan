@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong) ImageTitleButton *callPhoneBtn;
 @property (strong, nonatomic) UILabel *priceLab;  
 @property (nonatomic,strong) UIButton *goPayBtn;
+@property (nonatomic,strong) UIButton *addShopCarBtn;
 @property (strong, nonatomic) UIImageView *shopCarImage; // <#name#> 
 
 /*

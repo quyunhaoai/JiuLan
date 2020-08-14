@@ -29,12 +29,12 @@
     [self addSubview:self.imageView];
     [self addSubview:self.tipLabel];
     
-    CGFloat imageViewWH = 35;
+    CGFloat imageViewWH = 125;
     
     [self.imageView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.mas_centerX);
         make.bottom.mas_equalTo(self.mas_centerY).mas_offset(-5);
-        make.size.mas_equalTo(CGSizeMake(108, imageViewWH));
+        make.size.mas_equalTo(CGSizeMake(148, imageViewWH));
     }];
     [self.tipLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.mas_centerX);

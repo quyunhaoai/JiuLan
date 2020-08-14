@@ -13,7 +13,7 @@
 #import "GHDropMenuModel.h"
 #import "CCEverDayTe.h"
 #import "CCEverDayTeCollectionViewCell.h"
-#import "CCShopBottomView.h"
+#import "CCShopBottomView1.h"
 #import "CCServiceMassageView.h"
 #import "CCShopCarView.h"
 #import "CCSureOrderViewController.h"
@@ -22,14 +22,17 @@
 #import "CCMallSubClassCollectionViewCell.h"
 #import "CCCheXiaoCollectionViewCell.h"
 #import "CCEverDayTeViewController.h"
-@interface CCMallSubClassViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,GHDropMenuDelegate,GHDropMenuDataSource>
+#import "BottomAlert2Contentview.h"
+
+#import "CCCommodDetaildViewController.h"
+@interface CCMallSubClassViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,GHDropMenuDelegate,GHDropMenuDataSource,KKCommonDelegate>
 
 @property(nonatomic,strong)   UICollectionView *collectionView;
 @property (nonatomic, strong) SH_MallSubclassificationSelectView *mallSelectView;
 @property (nonatomic, assign) int                       sortColumn;//0:全部，1:按销量 2:按价格
 @property (nonatomic, assign) int                       sortType;//0:正序 1:倒序
 @property (nonatomic, assign) BOOL                       listType;//0:正序 1:倒序
-@property (strong, nonatomic) CCShopBottomView          *bottomView;
+@property (strong, nonatomic) CCShopBottomView1          *bottomView;
 @property (assign, nonatomic) BOOL                       isOpen;
 @property (strong, nonatomic) CCServiceMassageView      *massageView;
 @property (strong, nonatomic) NSMutableArray            *dataArray;
@@ -40,7 +43,7 @@
 @property (copy, nonatomic) NSString                    *min_price;
 @property (copy, nonatomic) NSString                    *max_price;
 @property (nonatomic,copy) NSString                     *specoption_id;
-
+@property (nonatomic,strong)CCGoodsDetailInfoModel      *goodsInfoModel;
 
 
 @end
@@ -62,6 +65,7 @@
     self.baseTableView = (UITableView *)self.collectionView;
     [self initData];
     adjustsScrollViewInsets_NO(self.collectionView, self);
+    [kNotificationCenter addObserver:self selector:@selector(requestShopCarData1) name:@"refreshShopCarInfo" object:nil];
 }
 
 #pragma mark - requestData APIs
@@ -102,11 +106,14 @@
             }
             [weakSelf.collectionView.mj_footer endRefreshing];
             [weakSelf.collectionView.mj_header endRefreshing];
-            if (next == nil) {
+            if (next == nil || [next isKindOfClass:[NSNull class]]) {
                 [weakSelf.collectionView.mj_footer endRefreshingWithNoMoreData];
+            } else {
+                [weakSelf.collectionView.mj_footer resetNoMoreData];
             }
             [weakSelf.collectionView reloadData];
-            self.page ++;
+            [weakSelf requestShopCarData1];
+            weakSelf.page ++;
         }else {
             if (msg.length>0) {
                 [MBManager showBriefAlert:msg];
@@ -134,59 +141,6 @@
 - (void)initUI {
     [self.view addSubview:self.mallSelectView];
     [self layoutCollectionView];
-    [self.view addSubview:self.bottomView];
-    [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.bottom.equalTo(self.view).mas_offset(-HOME_INDICATOR_HEIGHT);
-        make.height.mas_equalTo(66);
-    }];
-    self.isOpen = NO;
-    XYWeakSelf;
-    _bottomView.clickCallBack = ^(NSInteger tag) {
-        if (tag ==2) {
-            [weakSelf.bottomView.shopCarImage clearBadge];
-            if (!weakSelf.bottomView.isOpen) {
-                CCShopCarView *customContentView = [[CCShopCarView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 554)];
-                weakSelf.bottomView.contentView = customContentView;
-                weakSelf.bottomView.hiddenWhenTapBG = YES;
-                [weakSelf.bottomView show];
-                weakSelf.bottomView.isOpen = YES;
-            } else {
-                [weakSelf.bottomView hide];
-                weakSelf.bottomView.isOpen = NO;
-            }
-        } else if(tag == 1){
-            if (!weakSelf.isOpen) {
-                weakSelf.isOpen = YES;
-                [UIView animateWithDuration:0.25 animations:^{
-                    weakSelf.massageView.alpha = 1.0;
-                    weakSelf.massageView.hidden = NO;
-                } completion:^(BOOL finished) {
-                }];
-            } else {
-                weakSelf.isOpen = NO;
-                [UIView animateWithDuration:0.25 animations:^{
-                    weakSelf.massageView.alpha = 0;
-                    weakSelf.massageView.hidden = YES;
-                } completion:^(BOOL finished) {
-                }];
-            }
-        } else {//去结算
-            CCSureOrderViewController *vc = [CCSureOrderViewController new];
-            [weakSelf.navigationController pushViewController:vc animated:YES];
-        }
-    };
-    [self.view addSubview:self.massageView];
-    [self.massageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.view).mas_offset(13);
-        make.bottom.mas_equalTo(self.view).mas_offset(-(56+HOME_INDICATOR_HEIGHT));
-        make.width.mas_equalTo(152);
-        make.height.mas_equalTo(78);
-    }];
-    [self.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
-                                               value:10
-                                       animationType:WBadgeAnimTypeNone];
-    self.bottomView.shopCarImage.badgeCenterOffset = CGPointMake(24, 2);
 }
 
 #pragma mark  -  get
@@ -203,9 +157,9 @@
     }
     return _massageView;
 }
-- (CCShopBottomView *)bottomView {
+- (CCShopBottomView1 *)bottomView {
     if (!_bottomView) {
-        _bottomView = [[CCShopBottomView alloc] initWithFrame:CGRectZero inView:self.view];
+        _bottomView = [[CCShopBottomView1 alloc] initWithFrame:CGRectZero inView:self.view];
     }
     return _bottomView;
 }
@@ -275,7 +229,7 @@
 - (void)clickItem {
     XYWeakSelf;
     NSDictionary *params = @{};
-    NSString *path = @"/app0/goodsfilter/50/";
+    NSString *path = [NSString stringWithFormat:@"/app0/goodsfilter/%@/",self.categoryID];
     [[STHttpResquest sharedManager] requestWithMethod:GET
                                              WithPath:path
                                            WithParams:params
@@ -332,7 +286,7 @@
         for (int i = 0; i<tagArray.count; i++) {
             GHDropMenuModel *dropMenuTagModel = tagArray[i];
             if (i == 0) {
-                self.brand_id = STRING_FROM_INTAGER(dropMenuTagModel.identifier);
+                self.brand_id = STRING_FROM_INTAGER(dropMenuTagModel.tagIdentifier);
             } else if (i == 1){
                 self.package = dropMenuTagModel.tagName;
             } else if (i == 2) {
@@ -365,7 +319,7 @@
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0,
                                                                          NAVIGATION_BAR_HEIGHT+RationHeight(48),
                                                                          Window_W,
-                                                                         Window_H - RationHeight(48) - NAVIGATION_BAR_HEIGHT-66-HOME_INDICATOR_HEIGHT) collectionViewLayout:flowLayout];
+                                                                         Window_H - RationHeight(48) - NAVIGATION_BAR_HEIGHT-HOME_INDICATOR_HEIGHT) collectionViewLayout:flowLayout];
     _collectionView.backgroundColor = [UIColor whiteColor];
     _collectionView.delegate   = self;
     _collectionView.dataSource = self;
@@ -398,22 +352,29 @@
     if (self.listType) {
         CCCheXiaoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CCCheXiaoCollectionViewCell" forIndexPath:indexPath];
         cell.model = [CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];
+        cell.isGoodsType = YES;
+        cell.deleaget = self;
         return cell;
     }
     CCMallSubClassCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CCMallSubClassCollectionViewCell" forIndexPath:indexPath];
     cell.model = [CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];
+    cell.delegate = self;
     return cell;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.listType) {
-        return CGSizeMake((Window_W-20)/2, 180);
+        return CGSizeMake((Window_W-20-10)/2, (Window_W-20)/2+70+20);
     }
     return CGSizeMake(Window_W, 130);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    CCGoodsDetail *model = [CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];
+    CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+    vc.goodsID = STRING_FROM_INTAGER(model.ccid);
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
@@ -426,11 +387,11 @@
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 0.1f;
+    return 10.1f;
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(0,10, 0,10);
+    return UIEdgeInsetsMake(10,10, 10,10);
     
 }
 #pragma mark - private methods
@@ -438,7 +399,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)searchAction{
+- (void)searchAction {
     if (self.searBarView.searchTextField.text.length>0) {
         CCEverDayTeViewController *vc = [CCEverDayTeViewController new];
         vc.goods_name = self.searBarView.searchTextField.text;
@@ -450,5 +411,135 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma mark  -  kkcommDelegate
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item {
+    CCGoodsDetail *mmm = (CCGoodsDetail *)item;
+    XYWeakSelf;
+     NSDictionary *params = @{};
+     NSString *path = [NSString stringWithFormat:@"/app0/goodsdetail/%ld/",mmm.ccid];
+     [[STHttpResquest sharedManager] requestWithMethod:GET
+                                              WithPath:path
+                                            WithParams:params
+                                      WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+         NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+         NSString *msg = [[dic objectForKey:@"errmsg"] description];
+         weakSelf.showErrorView = NO;
+         if(status == 0){
+             NSDictionary *data = dic[@"data"];
+             weakSelf.goodsInfoModel = [CCGoodsDetailInfoModel modelWithJSON:data];
+             NKAlertView *alertView = [[NKAlertView alloc] init];
+             BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
+             customContentView.model = weakSelf.goodsInfoModel;
+             alertView.type = NKAlertViewTypeBottom;
+             alertView.contentView = customContentView;
+             alertView.hiddenWhenTapBG = YES;
+             [alertView show];
+         }else {
+             if (msg.length>0) {
+                 [MBManager showBriefAlert:msg];
+             }
+         }
+     } WithFailurBlock:^(NSError * _Nonnull error) {
+         weakSelf.showErrorView = YES;
+     }];
+}
 
+- (void)requestShopCarData {
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/mcarts/?limit=10";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            CCShopCarView *customContentView = [[CCShopCarView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 554)];
+            customContentView.DataDic = data.mutableCopy;
+            NSArray *results = data[@"results"];
+            [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
+                                                       value:results.count
+                                               animationType:WBadgeAnimTypeNone];
+            float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
+            NSString *price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(toal_price)];
+            //189-00
+            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
+                                     range:NSMakeRange(0, 1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(0, 1)];
+            //189-00 text-style1
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            weakSelf.bottomView.priceLab.attributedText = attributedString;
+            weakSelf.bottomView.contentView = customContentView;
+            weakSelf.bottomView.hiddenWhenTapBG = YES;
+            [weakSelf.bottomView show];
+            weakSelf.bottomView.isOpen = YES;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+    }];
+}
+- (void)requestShopCarData1 {
+XYWeakSelf;
+NSDictionary *params = @{};
+NSString *path = @"/app0/mcarts/?limit=10";
+[[STHttpResquest sharedManager] requestWithMethod:GET
+                                         WithPath:path
+                                       WithParams:params
+                                 WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+    NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+    NSString *msg = [[dic objectForKey:@"errmsg"] description];
+    if(status == 0){
+        NSDictionary *data = dic[@"data"];
+        NSArray *results = data[@"results"];
+        [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
+                                                   value:results.count
+                                           animationType:WBadgeAnimTypeNone];
+        float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
+        NSString *price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(toal_price)];
+        //189-00
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
+                                 range:NSMakeRange(0, 1)];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                            green:255.0f/255.0f
+                                                                                             blue:255.0f/255.0f
+                                                                                            alpha:1.0f]
+                                 range:NSMakeRange(0, 1)];
+        //189-00 text-style1
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f]
+                                 range:NSMakeRange(1, price.length-1)];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                            green:255.0f/255.0f
+                                                                                             blue:255.0f/255.0f
+                                                                                            alpha:1.0f]
+                                 range:NSMakeRange(1, price.length-1)];
+        weakSelf.bottomView.priceLab.attributedText = attributedString;
+    }else {
+        if (msg.length>0) {
+            [MBManager showBriefAlert:msg];
+        }
+    }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+    }];
+}
+
+- (void)dealloc {
+    [kNotificationCenter removeObserver:self name:@"refreshShopCarInfo" object:nil];
+}
 @end

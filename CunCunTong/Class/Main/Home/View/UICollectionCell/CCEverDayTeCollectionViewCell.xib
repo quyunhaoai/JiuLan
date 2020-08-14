@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -24,7 +24,7 @@
                                 <rect key="frame" x="10" y="12" width="102" height="102"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="erN-WT-23q">
-                                <rect key="frame" x="122" y="18" width="271" height="15"/>
+                                <rect key="frame" x="117" y="18" width="276" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="gIh-T2-aW9"/>
                                 </constraints>
@@ -33,7 +33,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vFk-ar-rDr">
-                                <rect key="frame" x="122" y="95" width="134" height="15"/>
+                                <rect key="frame" x="117" y="95" width="134" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="6yd-lQ-T1K"/>
                                     <constraint firstAttribute="width" constant="134" id="udm-Sr-bq3"/>
@@ -42,44 +42,63 @@
                                 <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cBq-3G-CU3">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cBq-3G-CU3">
                                 <rect key="frame" x="320" y="83" width="75" height="28"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="NQp-Rq-XMA"/>
                                     <constraint firstAttribute="width" constant="75" id="duO-Jp-ewu"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="确定抢购" backgroundImage="确定背景绿">
+                                <state key="normal" title="立即抢购" backgroundImage="确定背景绿">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="goQuanggou:" destination="gTV-IL-0wX" eventType="touchUpInside" id="lcz-x9-PWv"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WaS-qu-gIu">
-                                <rect key="frame" x="122" y="70" width="134" height="15"/>
+                                <rect key="frame" x="117" y="70" width="208" height="15"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="134" id="b4X-ez-Xu7"/>
                                     <constraint firstAttribute="height" constant="15" id="oIn-LW-PKs"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                 <color key="textColor" red="1" green="0.27058823529411763" blue="0.015686274509803921" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5yh-gm-fva" customClass="GBTagListView2">
+                                <rect key="frame" x="112" y="38" width="293" height="25"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="oAK-I5-17t"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="QZd-kk-m2y" firstAttribute="width" secondItem="eAn-qu-gVT" secondAttribute="height" constant="-24" id="0pN-Wa-6rE"/>
+                            <constraint firstItem="5yh-gm-fva" firstAttribute="top" secondItem="erN-WT-23q" secondAttribute="bottom" constant="5" id="7rJ-DG-bGg"/>
                             <constraint firstAttribute="trailing" secondItem="cBq-3G-CU3" secondAttribute="trailing" constant="10" id="C9L-lg-FGE"/>
-                            <constraint firstItem="WaS-qu-gIu" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="10" id="FH4-ir-TBe"/>
+                            <constraint firstItem="WaS-qu-gIu" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="5" id="FH4-ir-TBe"/>
                             <constraint firstItem="QZd-kk-m2y" firstAttribute="leading" secondItem="eAn-qu-gVT" secondAttribute="leading" constant="10" id="MTD-7j-6aV"/>
                             <constraint firstItem="WaS-qu-gIu" firstAttribute="top" secondItem="erN-WT-23q" secondAttribute="bottom" constant="37" id="RVt-6Q-qtQ"/>
-                            <constraint firstItem="erN-WT-23q" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="10" id="Ufc-ho-5VM"/>
+                            <constraint firstItem="erN-WT-23q" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="5" id="Ufc-ho-5VM"/>
+                            <constraint firstAttribute="trailing" secondItem="5yh-gm-fva" secondAttribute="trailing" constant="0.10000000000000001" id="ZyK-Bg-cLJ"/>
                             <constraint firstAttribute="trailing" secondItem="erN-WT-23q" secondAttribute="trailing" constant="12" id="av1-36-fsz"/>
                             <constraint firstItem="vFk-ar-rDr" firstAttribute="bottom" secondItem="QZd-kk-m2y" secondAttribute="bottom" constant="-4" id="dLJ-yF-7Er"/>
                             <constraint firstAttribute="bottom" secondItem="QZd-kk-m2y" secondAttribute="bottom" constant="12" id="fxH-ng-Z9L"/>
                             <constraint firstItem="QZd-kk-m2y" firstAttribute="top" secondItem="eAn-qu-gVT" secondAttribute="top" constant="12" id="mpZ-0j-yvk"/>
                             <constraint firstAttribute="bottom" secondItem="cBq-3G-CU3" secondAttribute="bottom" constant="15" id="op6-QN-XEz"/>
+                            <constraint firstItem="5yh-gm-fva" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="0.10000000000000001" id="raP-PQ-DTW"/>
+                            <constraint firstAttribute="trailing" secondItem="WaS-qu-gIu" secondAttribute="trailing" constant="80" id="ry8-8P-mPo"/>
                             <constraint firstItem="erN-WT-23q" firstAttribute="top" secondItem="eAn-qu-gVT" secondAttribute="top" constant="18" id="v7i-tb-xPX"/>
-                            <constraint firstItem="vFk-ar-rDr" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="10" id="w10-4q-wMQ"/>
+                            <constraint firstItem="vFk-ar-rDr" firstAttribute="leading" secondItem="QZd-kk-m2y" secondAttribute="trailing" constant="5" id="w10-4q-wMQ"/>
                         </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
             </view>
@@ -96,6 +115,7 @@
                 <outlet property="icon_iamgeView" destination="QZd-kk-m2y" id="Tqr-bH-lLN"/>
                 <outlet property="subLab" destination="WaS-qu-gIu" id="BUJ-Ip-DHD"/>
                 <outlet property="sureSales" destination="cBq-3G-CU3" id="LcM-l7-my6"/>
+                <outlet property="tagContentView" destination="5yh-gm-fva" id="gDp-P1-qsa"/>
                 <outlet property="titleLab" destination="erN-WT-23q" id="SGm-XR-AdX"/>
             </connections>
             <point key="canvasLocation" x="-164.49275362318841" y="72.321428571428569"/>

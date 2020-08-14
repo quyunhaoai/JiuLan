@@ -7,10 +7,16 @@
 //
 
 #import "CCBaseView.h"
-
+#import "CCOrderDatileModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCOrderDetailFooterView : CCBaseView
+@property (nonatomic,strong) CCOrderDatileModel *model;
+
+@property (strong, nonatomic) UILabel *priceLab;
+@property (strong, nonatomic) UILabel *cutLab;
+@property (strong, nonatomic) UILabel *sumLab;
+
 
 @end
 

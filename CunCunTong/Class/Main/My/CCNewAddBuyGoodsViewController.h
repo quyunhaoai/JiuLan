@@ -11,12 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCNewAddBuyGoodsViewController : CCBaseViewController
-@property (weak, nonatomic) IBOutlet UILabel *datelab;
-
-@property (weak, nonatomic) IBOutlet UILabel *selectlab;
-
-@property (weak, nonatomic) IBOutlet KKButton *selectGoods;
-
+@property (nonatomic,copy) NSString *paindianID;  
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UILabel *sumlab;
+@property (weak, nonatomic) IBOutlet UIButton *zanCunBtn;
 
 @end
 

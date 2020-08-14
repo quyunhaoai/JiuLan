@@ -20,6 +20,7 @@
 @end
 
 @interface SegmentTapView : UIView
+@property (assign, nonatomic) CGFloat   lineWidth;    // 
 
 /**
  选择回调
@@ -49,7 +50,10 @@
  下划线**/
 @property (nonatomic, strong)UIImageView *lineImageView;
 
-@property (nonatomic, assign) CGRect imageFrame;  
+@property (nonatomic, assign) CGRect imageFrame;
+@property (nonatomic, assign)CGFloat lineHeight;
+@property (assign, nonatomic) CGFloat   lineY;//
+
 /**
 Initialization
  
@@ -60,6 +64,7 @@ Initialization
  @return instance
  */
 -(instancetype)initWithFrame:(CGRect)frame withDataArray:(NSArray *)dataArray withFont:(CGFloat)font;
+-(instancetype)initWithFrame:(CGRect)frame withDataArray:(NSArray *)dataArray withFont:(CGFloat)font wihtLineWidth:(CGFloat)width;
 /**
  手动选择
  

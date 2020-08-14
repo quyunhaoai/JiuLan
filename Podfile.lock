@@ -14,51 +14,122 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - AMap2DMap-NO-IDFA (5.6.1):
-    - AMapFoundation-NO-IDFA (~> 1.4)
+  - AlipaySDK-iOS (15.7.4)
+  - AMap3DMap-NO-IDFA (7.5.0):
+    - AMapFoundation-NO-IDFA (~> 1.6.3)
   - AMapFoundation-NO-IDFA (1.6.3)
+  - AMapLocation-NO-IDFA (2.6.5):
+    - AMapFoundation-NO-IDFA (~> 1.6.3)
+  - AMapSearch-NO-IDFA (7.3.0):
+    - AMapFoundation-NO-IDFA (~> 1.6.3)
+  - APOpenSdk (1.1.0)
+  - HappyDNS (0.3.16)
+  - IQKeyboardManager (6.5.5)
+  - JCore (2.1.4-noidfa)
+  - JPush (3.2.4-noidfa):
+    - JCore (< 3.0.0, >= 2.0.0)
+  - LDSDKManager/Alipay (1.1.1):
+    - AlipaySDK-iOS
+    - APOpenSdk
+    - LDSDKManager/Core
+  - LDSDKManager/Core (1.1.1):
+    - MCBase/Dto
+    - MCBase/Log
+  - LDSDKManager/Wechat (1.1.1):
+    - LDSDKManager/Core
+    - WechatOpenSDK
+  - libwebp (1.1.0):
+    - libwebp/demux (= 1.1.0)
+    - libwebp/mux (= 1.1.0)
+    - libwebp/webp (= 1.1.0)
+  - libwebp/demux (1.1.0):
+    - libwebp/webp
+  - libwebp/mux (1.1.0):
+    - libwebp/demux
+  - libwebp/webp (1.1.0)
   - Masonry (1.1.0)
   - MBProgressHUD (1.1.0)
+  - MCBase/Dto (0.0.1)
+  - MCBase/Log (0.0.1)
   - MJRefresh (3.1.15.7)
-  - Qiniu (7.3.3)
-  - SDWebImage (5.6.0):
-    - SDWebImage/Core (= 5.6.0)
-  - SDWebImage/Core (5.6.0)
+  - Qiniu (7.4.0):
+    - HappyDNS (~> 0.3.16)
+  - SDWebImage (5.8.1):
+    - SDWebImage/Core (= 5.8.1)
+  - SDWebImage/Core (5.8.1)
+  - SDWebImageWebPCoder (0.6.1):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.7)
   - TYAttributedLabel (2.6.6)
+  - WechatOpenSDK (1.8.7.1)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.1.0)
-  - AMap2DMap-NO-IDFA
+  - AMap3DMap-NO-IDFA
+  - AMapLocation-NO-IDFA
+  - AMapSearch-NO-IDFA
+  - IQKeyboardManager
+  - JCore (= 2.1.4-noidfa)
+  - JPush (= 3.2.4-noidfa)
+  - LDSDKManager/Alipay
+  - LDSDKManager/Wechat
   - Masonry (~> 1.1.0)
   - MBProgressHUD (~> 1.1.0)
   - MJRefresh (~> 3.1.15.1)
   - Qiniu (~> 7.3)
   - SDWebImage
+  - SDWebImageWebPCoder
   - TYAttributedLabel (~> 2.6.2)
 
 SPEC REPOS:
   trunk:
     - AFNetworking
-    - AMap2DMap-NO-IDFA
+    - AlipaySDK-iOS
+    - AMap3DMap-NO-IDFA
     - AMapFoundation-NO-IDFA
+    - AMapLocation-NO-IDFA
+    - AMapSearch-NO-IDFA
+    - APOpenSdk
+    - HappyDNS
+    - IQKeyboardManager
+    - JCore
+    - JPush
+    - LDSDKManager
+    - libwebp
     - Masonry
     - MBProgressHUD
+    - MCBase
     - MJRefresh
     - Qiniu
     - SDWebImage
+    - SDWebImageWebPCoder
     - TYAttributedLabel
+    - WechatOpenSDK
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  AMap2DMap-NO-IDFA: ccecb3e2a044c17e6badb9b91c950e709368be20
+  AlipaySDK-iOS: 8659cdb4403de7e5f26ad8b699864a9cbe53384c
+  AMap3DMap-NO-IDFA: f0981f6f48ec192c45f6db140f5ab53c47d16424
   AMapFoundation-NO-IDFA: cf241b2f4832fe6c9e121af381e34791be49ad0d
+  AMapLocation-NO-IDFA: 681a55b09638a0a5838c7c260f8825a1dbc7d98d
+  AMapSearch-NO-IDFA: 85555dc9ba312949d39a259baa4ef4e0619fa944
+  APOpenSdk: e5ced8a7e1bb17ca8c28550211a03a0414179245
+  HappyDNS: 158044ed01375cb27b28f272b198bca3901aced8
+  IQKeyboardManager: 3a8b9e603f8b0eeaf5f096a1f2b2cfcf121992ef
+  JCore: 2f15311e6889ab43ed5d629802ef793cac566465
+  JPush: 2ff11d3013b360bc1b7da16741027e88f12fe3e6
+  LDSDKManager: d03f621a9c445d93c20f756497c11958bc514154
+  libwebp: 9c174486ec18a564cf0ecea2adcc85d10968ff98
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  MCBase: 59dd4396d9eb19050fccd7ec55de2cf498b5d5e0
   MJRefresh: 697f8ec75ebdbe9207767bb682cf0f51b0d8a41f
-  Qiniu: fe81b0c43a64afd229e30e28db15cbe5bc1c62d0
-  SDWebImage: 21b19f56b4226cdfe3aefe4e6848dc43ed129a86
+  Qiniu: 39ed946cac58ebaa75be3cc6bedfabc71924f1e4
+  SDWebImage: e3eae2eda88578db0685a0c88597fdadd9433f05
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   TYAttributedLabel: cb8fc910d97eb5224936d4f692a78e042af691b2
+  WechatOpenSDK: 6a4d1436c15b3b5fe2a0bd383f3046010186da44
 
-PODFILE CHECKSUM: 4885c9036dd31b8213daaf7fb9ee0b4fa7aa896c
+PODFILE CHECKSUM: 3419567128fb2fdebf79461a939b8f7b1ff3b653
 
 COCOAPODS: 1.9.1

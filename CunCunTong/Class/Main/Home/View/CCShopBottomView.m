@@ -105,18 +105,17 @@
         make.edges.mas_equalTo(self);
     }];
     UIImageView *bgImage = ({
-        
-                    UIImageView *view = [UIImageView new];
-                    view.contentMode = UIViewContentModeScaleAspectFill;
-                    view.image = [UIImage imageNamed:@"shopBottomBg"];
-                    view ;
-        
+        UIImageView *view = [UIImageView new];
+        view.contentMode = UIViewContentModeScaleAspectFill;
+//                    view.image = [UIImage imageNamed:@"shopBottomBg"];
+        view.backgroundColor = kWhiteColor;
+        view ;
     });
     
     [self.mainView addSubview:bgImage];
     [bgImage mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.mas_equalTo(self).mas_offset(-10);
-        make.left.top.mas_equalTo(self).mas_offset(10);
+        make.right.bottom.mas_equalTo(self).mas_offset(0);
+        make.left.top.mas_equalTo(self).mas_offset(0);
     }];
     [self.mainView addSubview:self.callPhoneBtn];
     [self.callPhoneBtn mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -127,11 +126,29 @@
     }];
     self.callPhoneBtn.style = EImageTopTitleBottom;
     self.callPhoneBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-
+    ImageTitleButton *sureBtn = ({
+        ImageTitleButton *view = [ImageTitleButton buttonWithType:UIButtonTypeCustom];
+        [view setTitle:@"购物车" forState:UIControlStateNormal];
+        [view setTitleColor:COLOR_666666 forState:UIControlStateNormal];
+        [view.titleLabel setFont:FONT_10];
+        [view setTag:2];
+        [view setImage:IMAGE_NAME(@"购物车图标灰小") forState:UIControlStateNormal];
+        [view setUserInteractionEnabled:YES];
+         [view addTarget:self action:@selector(moreBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+        view ;
+    });
+    [self.mainView addSubview:sureBtn];
+    [sureBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.callPhoneBtn.mas_right).mas_offset(0);
+        make.top.mas_equalTo(self).mas_offset(15);
+        make.bottom.mas_equalTo(self).mas_offset(-10);
+        make.width.mas_equalTo(kWidth(47));
+    }];
+    sureBtn.style = EImageTopTitleBottom;
+    sureBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
     UIImageView *shopCar = ({
         UIImageView *view = [UIImageView new];
         view.contentMode = UIViewContentModeScaleAspectFit;
-        view.image = [UIImage imageNamed:@"购物车图标白"];
         view.userInteractionEnabled = YES;
         view ;
     });
@@ -148,6 +165,7 @@
         make.width.mas_equalTo(kWidth(24));
         make.height.mas_equalTo(kWidth(24));
     }];
+
     [self.mainView addSubview:self.priceLab];
     [self.priceLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(shopCar.mas_right).mas_offset(15);
@@ -159,7 +177,14 @@
     [self.goPayBtn mas_updateConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.mas_right).mas_offset(-10);
         make.top.mas_equalTo(self).mas_offset(10);
-        make.width.mas_equalTo(kWidth(67));
+        make.width.mas_equalTo(kWidth(110));
+        make.bottom.mas_equalTo(self).mas_offset(-10);
+    }];
+    [self.mainView addSubview:self.addShopCarBtn];
+    [self.addShopCarBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.goPayBtn.mas_left).mas_offset(0);
+        make.top.mas_equalTo(self).mas_offset(10);
+        make.width.mas_equalTo(kWidth(110));
         make.bottom.mas_equalTo(self).mas_offset(-10);
     }];
     
@@ -179,7 +204,8 @@
         _goPayBtn = ({
             UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
             [view setTitleColor:kWhiteColor forState:UIControlStateNormal];
-            [view setTitle:@"去结算" forState:UIControlStateNormal  ];
+            [view setTitle:@"立即购买" forState:UIControlStateNormal];
+            [view setBackgroundImage:IMAGE_NAME(@"立即购买背景") forState:UIControlStateNormal];
             [view.titleLabel setFont:FONT_15];
             view.tag = 3;
             [view addTarget:self action:@selector(moreBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -187,6 +213,21 @@
         });
     }
     return _goPayBtn;
+}
+- (UIButton *)addShopCarBtn {
+    if (!_addShopCarBtn) {
+        _addShopCarBtn = ({
+            UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
+            [view setTitleColor:kWhiteColor forState:UIControlStateNormal];
+            [view setTitle:@"加入购物车" forState:UIControlStateNormal];
+            [view setBackgroundImage:IMAGE_NAME(@"加入购物车背景") forState:UIControlStateNormal];
+            [view.titleLabel setFont:FONT_15];
+            view.tag = 4;
+            [view addTarget:self action:@selector(moreBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+            view ;
+        });
+    }
+    return _addShopCarBtn;
 }
 - (UILabel *)priceLab {
     if (!_priceLab) {
@@ -197,6 +238,7 @@
             view.lineBreakMode = NSLineBreakByTruncatingTail;
             view.backgroundColor = [UIColor clearColor];
             view.textAlignment = NSTextAlignmentLeft;
+            view.hidden = YES;
             view ;
         });
     }
@@ -208,10 +250,10 @@
         _callPhoneBtn =({
             ImageTitleButton *view = [ImageTitleButton buttonWithType:UIButtonTypeCustom];
             view.tag = 1;
-            [view setTitleColor:kWhiteColor forState:UIControlStateNormal];
-            [view setTitle:@"联系客服" forState:UIControlStateNormal  ];
+            [view setTitleColor:COLOR_666666 forState:UIControlStateNormal];
+            [view setTitle:@"客服" forState:UIControlStateNormal  ];
             [view.titleLabel setFont:FONT_10];
-            [view setImage:[UIImage imageNamed:@"客服图标"] forState:UIControlStateNormal];
+            [view setImage:[UIImage imageNamed:@"客服图标灰小"] forState:UIControlStateNormal];
             [view addTarget:self action:@selector(moreBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
             view ;
         });

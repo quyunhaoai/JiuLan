@@ -28,7 +28,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(NSData *)dictToJsonData:(NSDictionary *)dict;
 
+//判断是否有中文
+- (NSString *)IsChinese:(NSString *)str;
 
++ (void)uploadTokenMultiple:(NSMutableArray *)files namespaceString:(NSString *)namespaceString percentLabel:(UILabel *)percentLabel cancleButton:(UIButton *)cancleButton finishBlock:(void(^)(NSMutableArray *qualificationFileListArray))finishBlock;
++ (void)uploadTokenMultiple:(NSMutableArray *)files namespaceString:(NSString *)namespaceString  finishBlock:(void(^)(NSMutableArray *qualificationFileListArray))finishBlock;
++ (void)upImage:(UIImage *)files name:(NSString *)name finishBlock:(void(^)(NSMutableArray *qualificationFileListArray))finishBlock;
+
++ (NSData *)CompressedImage:(UIImage *)sourceImage;
+
++ (void)srh_saveImage:(UIImage *)image completionHandle:(void (^)(NSError *, NSString *))completionHandler;
 @end
 
 NS_ASSUME_NONNULL_END

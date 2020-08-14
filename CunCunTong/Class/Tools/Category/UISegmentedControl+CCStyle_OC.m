@@ -23,8 +23,8 @@
         [self setBackgroundImage:tintColorImage forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
         [self setBackgroundImage:[self imageWithColor:[tintColor colorWithAlphaComponent:0.2]] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
         [self setBackgroundImage:tintColorImage forState:UIControlStateSelected|UIControlStateSelected barMetrics:UIBarMetricsDefault];
-        [self setTitleTextAttributes:@{NSForegroundColorAttributeName: tintColor, NSFontAttributeName: [UIFont systemFontOfSize:17]} forState:UIControlStateNormal];
-        [self setTitleTextAttributes:@{NSForegroundColorAttributeName: kWhiteColor, NSFontAttributeName: [UIFont systemFontOfSize:17]} forState:UIControlStateSelected];
+        [self setTitleTextAttributes:@{NSForegroundColorAttributeName: tintColor, NSFontAttributeName: [UIFont systemFontOfSize:14]} forState:UIControlStateNormal];
+        [self setTitleTextAttributes:@{NSForegroundColorAttributeName: kWhiteColor, NSFontAttributeName: [UIFont systemFontOfSize:14]} forState:UIControlStateSelected];
         [self setDividerImage:tintColorImage forLeftSegmentState:UIControlStateNormal rightSegmentState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         self.layer.masksToBounds = YES;
         self.layer.borderWidth = 1;

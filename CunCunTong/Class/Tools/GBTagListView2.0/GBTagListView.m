@@ -137,25 +137,15 @@ alpha:1.0]
 }
 -(void)tagBtnClick:(UIButton*)button{
     if(_isSingleSelect){
-        if(button.selected){
-            
-            button.selected=!button.selected;
-
-        }else{
-            
-            _tempBtn.selected=NO;
-            _tempBtn.backgroundColor=[UIColor whiteColor];
-            _tempBtn.layer.borderWidth = 0.001f;
-            _tempBtn.layer.borderColor = kClearColor.CGColor;
-             button.selected=YES;
-             button.layer.borderColor = krgb(255,157,52).CGColor;
-             button.layer.borderWidth = 1;
-            _tempBtn=button;
-
-        }
-        
+        _tempBtn.selected=NO;
+        _tempBtn.backgroundColor=[UIColor whiteColor];
+        _tempBtn.layer.borderWidth = 0.001f;
+        _tempBtn.layer.borderColor = kClearColor.CGColor;
+         button.selected=YES;
+         button.layer.borderColor = krgb(255,157,52).CGColor;
+         button.layer.borderWidth = 1;
+        _tempBtn=button;
     }else{
-        
         button.selected=!button.selected;
     }
     
@@ -166,8 +156,7 @@ alpha:1.0]
     }
     
     [self didSelectItems];
-    
-    
+
 }
 -(void)didSelectItems{
 
@@ -200,7 +189,7 @@ alpha:1.0]
          }
     }
     }
-    self.didselectItemBlock(arr);
+    self.didselectItemBlock(arr,self.tag);
     
     
 }

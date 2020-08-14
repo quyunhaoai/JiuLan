@@ -65,8 +65,10 @@
                                           action:@selector(textFieldDidChange:)
                                 forControlEvents:UIControlEventEditingChanged];
 }
+
 - (void)jumpBtnClicked:(id)item {
-  UIButton *button = (UIButton *)item;
+    XYWeakSelf;
+    UIButton *button = (UIButton *)item;
     if (button.tag == BUTTON_TAG(7)) {//登录
         NSDictionary *params = @{};
         NSString *path = @"";
@@ -85,22 +87,32 @@
             };
             path = @"/app/loginsendsmscode/";
         }
-        [[STHttpResquest sharedManager] requestWithMethod:POST
-                                                 WithPath:path
-                                               WithParams:params
-                                         WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        [[STHttpResquest sharedManager]  requestWithPUTMethod:POST
+                                                    WithPath:path
+                                                  WithParams:params
+                                            WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
             NSInteger status = [[dic objectForKey:@"errno"] integerValue];
             NSString *msg = [[dic objectForKey:@"errmsg"] description];
-            if(status == 0){
+            if(status == 0 && dic != nil){
                 NSDictionary *data = dic[@"data"];
                 NSString *token = data[@"jwtoken"];
                 NSString *centerID = data[@"centerID"];
                 NSString *marketID = data[@"marketID"];
+                NSString *moblie = data[@"mobile"];
+                [kUserDefaults setObject:data[name] forKey:name];
                 [[NSUserDefaults standardUserDefaults] setObject:centerID forKey:@"centerID"];
                 [[NSUserDefaults standardUserDefaults] setObject:marketID forKey:@"marketID"];
                 [[NSUserDefaults standardUserDefaults] setObject:token forKey:@"token"];
+                [kUserDefaults setObject:moblie forKey:@"mobile"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                [UIApplication sharedApplication].delegate.window.rootViewController = [CCTabbarViewController getTabBarController];
+                [weakSelf registID];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    CCTabbarViewController *vc = [CCTabbarViewController getTabBarController];
+                    [vc setSelectedIndex:0];
+                    [kNotificationCenter postNotificationName:@"refreshHome" object:nil];
+                    [UIApplication sharedApplication].delegate.window.rootViewController = vc;
+                    
+                });
             }else {
                 if (msg.length>0) {
                     [MBManager showBriefAlert:msg];
@@ -150,9 +162,6 @@
                         }
                     });
                 dispatch_resume(weakSelf.timer);
-                if (msg.length>0) {
-                    [MBManager showBriefAlert:msg];
-                }
             }else {
                 if (msg.length>0) {
                     [MBManager showBriefAlert:msg];
@@ -163,10 +172,33 @@
         }];
     }
 }
+
+- (void)registID{
+    NSLog(@"%@",[kUserDefaults objectForKey:@"registerID"]);
+    NSString *reg_id = [kUserDefaults objectForKey:@"registerID"];
+    if ([reg_id isNotBlank]) {
+        NSDictionary *params = @{@"plat":@(0),
+                                 @"reg_id":reg_id,
+        };
+        NSString *path = @"/app0/auroraregid/";
+        [[STHttpResquest sharedManager] requestWithPUTMethod:POST
+                                                    WithPath:path
+                                                  WithParams:params
+                                            WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+            NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+            if(status == 0){
+            }else {
+            }
+        } WithFailurBlock:^(NSError * _Nonnull error) {
+        }];
+    }
+}
+
 #pragma mark  -  textfiledDelegate
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     return YES;
 }
+
 - (NSString *)SubStringfrom:(UITextField *)textField andLength:(NSUInteger )length {
     NSString *str1 =   [self getSubString:textField.text AndLength:length];
     textField.text = str1;
@@ -206,11 +238,21 @@
 - (void)textFieldDidChange:(UITextField *)textField {
     if (textField == _inTextView.keyTextField) {
         _codeAndPassworld = [self SubStringfrom:textField andLength:18];
-    } else if (textField == _inTextView.moblieTextField) {
-        _mobleNumber = [self SubStringfrom:textField andLength:11];
-        if (_mobleNumber.length>0) {
+        if (_mobleNumber.length>0 && self.codeAndPassworld.length >0) {
             [_inTextView.longinBtn setUserInteractionEnabled:YES];
             [_inTextView.longinBtn setBackgroundColor:kMainColor];
+        } else {
+            [_inTextView.longinBtn setUserInteractionEnabled:NO];
+            [_inTextView.longinBtn setBackgroundColor:kGrayCustomColor];
+        }
+    } else if (textField == _inTextView.moblieTextField) {
+        _mobleNumber = [self SubStringfrom:textField andLength:11];
+        if (_mobleNumber.length>0 && self.codeAndPassworld.length >0) {
+            [_inTextView.longinBtn setUserInteractionEnabled:YES];
+            [_inTextView.longinBtn setBackgroundColor:kMainColor];
+        } else {
+            [_inTextView.longinBtn setUserInteractionEnabled:NO];
+            [_inTextView.longinBtn setBackgroundColor:kGrayCustomColor];
         }
     }
 }
@@ -218,6 +260,7 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     return YES;
 }
+
 #pragma get
 
 - (CCLonginTextInputVIew *)inTextView {

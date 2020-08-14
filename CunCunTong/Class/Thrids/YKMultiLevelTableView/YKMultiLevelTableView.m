@@ -58,18 +58,25 @@ static CGFloat const leftMargin = 30.0; //left indentation
     //set indentation
     CGFloat indentationX = (node.level-1)*leftMargin;
     [self moveNode:indentationX];
-    
+    if ([name isEqualToString:_node.name]) {
+        _nodeLabel.textColor = kMainColor;
+    }
     //text color
 //    CGFloat rgbValue = (node.level-1)*50;
 //    _nodeLabel.textColor  = RGB(rgbValue, rgbValue, rgbValue, 1.0);
     
     
     _nodeLabel.text = node.name;
-    if (node.isExpand || node.isLeaf) {
-        _leftImage.image = [UIImage imageNamed:@"上箭头"];
-    }else{
-        _leftImage.image = [UIImage imageNamed:@"下箭头"];
+    if (_node.level ==3 || [_node.childrenID isEqualToString:@"999999"]) {
+        
+    } else {
+        if (node.isExpand || node.isLeaf) {
+            _leftImage.image = [UIImage imageNamed:@"上箭头"];
+        }else{
+            _leftImage.image = [UIImage imageNamed:@"下箭头"];
+        }
     }
+
     
     //hidden left log for leaf node or not
    // _leftImage.hidden = node.isLeaf;
@@ -102,8 +109,7 @@ static CGFloat const leftMargin = 30.0; //left indentation
 
 @property (nonatomic, copy) NSString *rootID;
 
-//all nodes
-@property (nonatomic, copy) NSMutableArray *nodes;
+
 
 //show the last status all child nodes keep when yes, or just show next level child nodes
 @property (nonatomic, assign ,getter=isPreservation) BOOL preservation;
@@ -242,6 +248,9 @@ static CGFloat const cellHeight = 45.0;
     }
     cell.rect  =CGRectMake(0, 0, CGRectGetWidth(self.frame), cellHeight);
     cell.node = [_tempNodes objectAtIndex:indexPath.row];
+    if ([self.name isEqualToString:cell.nodeLabel.text]) {
+        cell.nodeLabel.textColor = kMainColor;
+    }
     return cell;
 }
 

@@ -10,8 +10,8 @@
 #import "STSearchHistoryTableViewCell.h"
 
 #import "STSearchTableViewSetionHeaderView.h"
-#import "CCEverDayTeViewController.h"
-#import "CCMyOrderViewController.h"
+#import "STSearchResultTableViewController.h"
+#import "CCOrderSearchReusltViewController.h"
 
 @interface CCOrderSearchViewController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property (nonatomic,strong) UIButton *rightNavBtn; //  按钮
@@ -120,12 +120,14 @@
 - (void)searchStr:(NSString *)searchString {
     if (searchString.length>0) {
         [self addItem:searchString];
+        self.searchRelustStr = searchString;
         if (self.searchStr.length>0) {
-            CCEverDayTeViewController *vc = [CCEverDayTeViewController new];
+            STSearchResultTableViewController *vc = [STSearchResultTableViewController new];
             vc.goods_name = self.searchRelustStr;
             [self.navigationController pushViewController:vc animated:YES];
         } else {
-            CCMyOrderViewController *vc = [CCMyOrderViewController new];
+            CCOrderSearchReusltViewController *vc = [CCOrderSearchReusltViewController new];
+            vc.search = self.searchRelustStr;
             [self.navigationController pushViewController:vc animated:YES];
         }
     }

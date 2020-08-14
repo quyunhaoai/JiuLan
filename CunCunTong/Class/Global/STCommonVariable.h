@@ -40,8 +40,13 @@ static float const kkHighOpacity = .75f;//75%，高不透明(常用语遮罩）
 
 static NSString* const userInfo = @"userInfo";
 static NSString* const refreshMyInfo = @"refreshMyInfo";
-
-
+static NSString* const centerID = @"centerID";
+static NSString* const marketID = @"marketID";
+static NSString* const token = @"token";
+static NSString* const headPhots = @"head_photo";
+static NSString* const name = @"name";
+static NSString* const isOK = @"isOK";
+static NSString* const AppID = @"";
 typedef NS_ENUM(NSInteger, KKSectionOpType){
     KKSectionOpTypeAddToFavSection,//添加到用户感兴趣的板块
     KKSectionOpTypeRemoveFromFavSection,//从用户感兴趣的板块中删除
@@ -130,8 +135,12 @@ typedef NS_ENUM(NSInteger,ShareViewSelectType){
 @protocol KKCommonDelegate <NSObject>//通用，
 @optional
 - (void)didSelectWithView:(UIView *)view andCommonCell:(NSIndexPath *)index;
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item andInView:(UIView *)View andCommonCell:(NSIndexPath *)index;
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item andInView:(UIView *)View;
 - (void)clickButtonWithType:(KKBarButtonType)type item:(id)item;
+- (void)clickButtonWithView:(id)view item:(id)item;
 - (void)shieldBtnClicked:(id)item;
+- (void)jumpBtnClicked:(UIButton *)button andModel:(id)item;
 - (void)jumpBtnClicked:(id)item;
 - (void)jumpToUserPage:(NSString *)userId;
 - (void)clickImageWithItem:(id)item rect:(CGRect)rect fromView:(UIView *)fromView image:(UIImage *)image indexPath:(NSIndexPath *)indexPath;

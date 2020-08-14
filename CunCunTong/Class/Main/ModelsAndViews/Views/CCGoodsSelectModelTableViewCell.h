@@ -7,7 +7,7 @@
 //
 
 #import "BaseTableViewCell.h"
-
+#import "CCGoodsSelectModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCGoodsSelectModelTableViewCell : BaseTableViewCell
@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UILabel *goodsNumberlabel;
 @property (weak, nonatomic) IBOutlet UIButton *selectBtn;
+@property (weak, nonatomic) id<KKCommonDelegate>delegate; 
+@property (nonatomic,strong) CCGoodsSelectModel *models;  
 
 
 

@@ -14,11 +14,10 @@
 - (void)setupUI {
     UIImageView *imageBgView = ({
         UIImageView *view = [UIImageView new];
-        view.contentMode = UIViewContentModeScaleAspectFill ;
+        view.contentMode = 0;
         view.layer.masksToBounds = YES ;
         view.userInteractionEnabled = YES ;
         [view setImage:IMAGE_NAME(@"收货地址背景")];
-         
         view;
     });
     
@@ -56,7 +55,7 @@
     [nameLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self).mas_offset(50);
         make.size.mas_equalTo(CGSizeMake(177, 14));
-        make.top.mas_equalTo(self).mas_offset(10);
+        make.bottom.mas_equalTo(self.mas_centerY).mas_offset(-5);
     }];
     self.nameLab = nameLab;
     CCCustomLabel *addressLab = ({
@@ -87,7 +86,7 @@
     
     [self addSubview:mobleNumberLab];
     [mobleNumberLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self).mas_offset(-50);
+        make.right.mas_equalTo(self).mas_offset(-10);
         make.size.mas_equalTo(CGSizeMake(117, 14));
         make.centerY.mas_equalTo(nameLab).mas_offset(0);
     }];
@@ -95,7 +94,7 @@
     self.numberLab = mobleNumberLab;
     [self addSubview:self.modifyBtn];
     [self.modifyBtn mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self).mas_offset(-5);
+        make.right.mas_equalTo(self).mas_offset(-10);
         make.size.mas_equalTo(CGSizeMake(77, 33));
         make.bottom.mas_equalTo(self).mas_offset(-5);
     }];

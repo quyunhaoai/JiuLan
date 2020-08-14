@@ -99,6 +99,13 @@
         [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
         [style addSubview:button];
         [tolAry addObject:button];
+        if (i == 0) {
+            self.oneImage = button;
+        } else if(i == 1) {
+            self.towImage = button;
+        } else if (i == 2) {
+            self.threeImage = button;
+        }
     }
     [tolAry mas_distributeViewsAlongAxis:MASAxisTypeHorizontal withFixedSpacing:24 leadSpacing:20 tailSpacing:20];
     [tolAry mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -106,7 +113,30 @@
         make.height.equalTo(@54);
     }];
     self.toaArray = tolAry.copy;
-    
+    UIView *bageView = [[UIView alloc] init];
+    [self addSubview:bageView];
+    [bageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(6, 6));
+        make.right.mas_equalTo(self.oneImage.mas_right).mas_offset(-12);
+        make.top.mas_equalTo(self.oneImage.mas_top).mas_offset(3);
+    }];
+    self.oneImageview = bageView;
+    UIView *bageView2 = [[UIView alloc] init];
+    [self addSubview:bageView2];
+    [bageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(6, 6));
+        make.right.mas_equalTo(self.towImage.mas_right).mas_offset(-12);
+        make.top.mas_equalTo(self.towImage.mas_top).mas_offset(3);
+    }];
+    self.towImagevvv = bageView2;
+    UIView *bageView3 = [[UIView alloc] init];
+    [self addSubview:bageView3];
+    [bageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(6, 6));
+        make.right.mas_equalTo(self.threeImage.mas_right).mas_offset(-12);
+        make.top.mas_equalTo(self.threeImage.mas_top).mas_offset(3);
+    }];
+    self.threeImagevvv = bageView3;
 }
 - (void)buttonClick:(UIButton *)button {
     if (self.click) {
@@ -120,7 +150,7 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.backgroundColor = [UIColor clearColor];
 //            设置显示的内容
-        label.text = @"昵称";
+//        label.text = @"昵称";
 //            设置字体颜色
         label.textColor = [UIColor whiteColor];
 //            设置字体和字号
@@ -143,7 +173,7 @@
             UIImageView *view = [UIImageView new];
             view.userInteractionEnabled = YES;
             view.contentMode = UIViewContentModeScaleAspectFill;
-            view.image = [[UIImage imageNamed:@"个人信息头像"] imageByRoundCornerRadius:26];
+            view.layer.cornerRadius = 26;
             view.layer.masksToBounds = YES ;
             view ;
         });

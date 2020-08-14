@@ -45,6 +45,7 @@
     if (self) {
         // 请求超时设定
         self.requestSerializer = [AFJSONRequestSerializer serializer];
+//        self.responseSerializer = [AFHTTPResponseSerializer serializer];
         self.requestSerializer.timeoutInterval = 20;
         self.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         [self.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -59,6 +60,8 @@
                                                           @"text/json",
                                                           @"text/html", nil];
         self.securityPolicy.allowInvalidCertificates = YES;
+        self.securityPolicy.validatesDomainName = NO;//不验证证书的域名
+
     }
     return self;
 }
@@ -108,7 +111,21 @@
             break;
         }
         case DELETE:{
-            [self DELETE:urlstr parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            [self DELETE:urlstr
+              parameters:params
+                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                NSLog(@"JSON: %@", responseObject);
+                success(responseObject);
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"Error: %@", error);
+                failure(error);
+            }];
+        }
+            break;
+        case PUT:{
+            [self PUT:urlstr
+           parameters:params
+              success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 NSLog(@"JSON: %@", responseObject);
                 success(responseObject);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -129,8 +146,13 @@
  {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",kUrl,path]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        NSLog(@"path:%@\nparams:%@\nCenterID:%@\nMarketID:%@\nJWTOKEN:%@",path,params,[self getCenterID],[self getsupplierId],[self getJwtoken]);
      if (method == POST) {
         request.HTTPMethod = @"POST";
+     } else  if (method == DELETE) {
+        request.HTTPMethod = @"DELETE";
+     } else  if (method == GET) {
+         request.HTTPMethod = @"GET";
      } else {
         request.HTTPMethod = @"PUT";
      }
@@ -141,7 +163,13 @@
      //此处为请求头，类型为字典
     NSString *msg = [[CCTools sharedInstance] convertToJsonData:params];
     NSData *data = [msg dataUsingEncoding:NSUTF8StringEncoding];
-    request.HTTPBody = data;
+     if (method == GET) {
+     } else {
+        request.HTTPBody = data;
+     }
+//     request.securityPolicy.allowInvalidCertificates = YES;
+//     request.securityPolicy.validatesDomainName = NO;//不验证证书的域名
+     
     [request addValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {

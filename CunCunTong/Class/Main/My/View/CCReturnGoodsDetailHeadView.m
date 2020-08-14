@@ -28,6 +28,7 @@
         view.layer.masksToBounds = YES ;
         view ;
     });
+    self.stateImage = iconIamgeView4;
     [self addSubview:iconIamgeView4];
     [iconIamgeView4 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(self).mas_offset(0);
@@ -43,7 +44,7 @@
         view.backgroundColor = [UIColor clearColor];
         view.textAlignment = NSTextAlignmentLeft;
         view.numberOfLines = 0;
-        view.text = @"退货申请已提交\n申请时间：2019/12/20  08:00";
+//        view.text = @"退货申请已提交\n申请时间：2019/12/20  08:00";
         view ;
     });
     [self addSubview:taRendaiFusumTextLab2];
@@ -52,7 +53,7 @@
         make.size.mas_equalTo(CGSizeMake(kWidth(238), 84));
         make.centerY.mas_equalTo(self).mas_offset(0);
     }];
-    
+    self.ccctitleLab = taRendaiFusumTextLab2;
     
 }
 @end

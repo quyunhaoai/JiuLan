@@ -19,13 +19,13 @@
     [self addSubview:self.keyTextField];
     
     //Base style for 矩形 25
-    UIView *style = [[UIView alloc] initWithFrame:CGRectMake(20, 50, 306, 44)];
+    UIView *style = [[UIView alloc] initWithFrame:CGRectMake(20, 50, Window_W-70, 44)];
     style.layer.cornerRadius = 8;
     style.layer.backgroundColor = [[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f] CGColor];
     style.alpha = 1;
     [self addSubview:style];
     
-    UIView *verView = [[UIView alloc] initWithFrame:CGRectMake(20, 50+20+44+25, 306, 44)];
+    UIView *verView = [[UIView alloc] initWithFrame:CGRectMake(20, 50+20+44+25, Window_W-70, 44)];
     verView.layer.cornerRadius = 8;
     verView.layer.backgroundColor = [[UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f] CGColor];
     verView.alpha = 1;
@@ -73,7 +73,7 @@
         _passworldChuageBtn = ({
             UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
             [btn setTitleColor:krgb(36,149,143) forState:UIControlStateNormal];
-            [btn.titleLabel setFont:[UIFont systemFontOfSize:12]];
+            [btn.titleLabel setFont:[UIFont systemFontOfSize:14]];
             [btn setTag:BUTTON_TAG(6)];
             [btn addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
             [btn setTitle:@"账号密码登录" forState:UIControlStateNormal];
@@ -88,7 +88,7 @@
         _sendVarkeyBtn = ({
             UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
             [btn setTitleColor:krgb(36,149,143) forState:UIControlStateNormal];
-            [btn.titleLabel setFont:[UIFont systemFontOfSize:12]];
+            [btn.titleLabel setFont:[UIFont systemFontOfSize:14]];
             [btn setTag:BUTTON_TAG(8)];
             [btn addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
             [btn setTitle:@"获取验证码" forState:UIControlStateNormal];

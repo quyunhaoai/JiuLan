@@ -8,13 +8,6 @@
 //
 
 #import "CCGoodsDetailInfoModel.h"
-//@implementation Promote
-//@end
-//
-
-//@implementation ChildrenItem
-//@end
-
 
 @implementation Spec_setItem
 @end
@@ -29,12 +22,18 @@
 
 
 @implementation Sku_setItem
++ (NSDictionary *)modelContainerPropertyGenericClass {
+    return @{@"grid_play_price":[Grid_play_priceItem class],
+    };
+}
 @end
 
 
 @implementation Address
 @end
 
+@implementation Grid_play_priceItem
+@end
 
 @implementation Coupon_setItem
 @end
@@ -50,4 +49,5 @@
              @"coupon_set":[Coupon_setItem class],
     };
 }
+
 @end

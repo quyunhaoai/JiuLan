@@ -42,10 +42,12 @@ BOOL isShowGloomy;//是否显示深色背景
 
 #pragma mark - 初始化gloomyView
 +(void)customView {
-    gloomyView = [[GloomyView alloc] initWithFrame:kDefaultRect];
-    gloomyView.backgroundColor = kGloomyBlackColor;
-    gloomyView.hidden = YES;
-    isShowGloomy = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gloomyView = [[GloomyView alloc] initWithFrame:kDefaultRect];
+        gloomyView.backgroundColor = kGloomyBlackColor;
+        gloomyView.hidden = YES;
+        isShowGloomy = NO;
+    });
 }
 + (void)showGloomy:(BOOL)isShow {
     isShowGloomy = isShow;

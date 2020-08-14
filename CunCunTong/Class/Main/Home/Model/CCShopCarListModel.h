@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * old_price;
 @property (nonatomic , copy) NSString              * total_play_price;
 @property (nonatomic , assign) NSInteger              center_sku_id;
+@property (assign, nonatomic) NSInteger               center_goods_id;    //
+@property (assign, nonatomic) BOOL isSelect; // 
 @end
 
 NS_ASSUME_NONNULL_END

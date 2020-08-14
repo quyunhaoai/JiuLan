@@ -76,7 +76,6 @@
     
     //参照线
     UIBezierPath *linePath = [UIBezierPath bezierPath];
-    
     [linePath moveToPoint:CGPointMake(_x,_y)];
     [linePath addLineToPoint:CGPointMake(_x + _lineWidth,_y)];
     [linePath addLineToPoint:CGPointMake(_x + _lineWidth,_lineHeight)];
@@ -94,8 +93,6 @@
             [linePath addLineToPoint:CGPointMake(_x + _lineWidth,(_lineHeight - _y) / _markLabelCount * i + _y)];
         }
     }
-    
-    
     lineLayer.path = linePath.CGPath;
     [self.layer addSublayer:lineLayer];
     
@@ -152,8 +149,8 @@
             UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,_barMargin / 2 + i * (_titleHeight + _barMargin), _titleWidth, _titleHeight)];
             [self.scroll addSubview:titleLabel];
             [self.markLabelArray addObject:titleLabel];
-            titleLabel.textColor = [UIColor whiteColor];
-            titleLabel.font = [UIFont systemFontOfSize:12];
+            titleLabel.textColor = COLOR_333333;
+            titleLabel.font = [UIFont systemFontOfSize:10];
             titleLabel.text = _titleArray[i];
             titleLabel.textAlignment = NSTextAlignmentRight;
         }
@@ -174,11 +171,10 @@
         
         for (int i = 0; i < _titleArray.count; i ++) {
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(i * labelWidth,  _lineHeight + 5, labelWidth, 15)];
-            
             [self.scroll addSubview:label];
             [self.markLabelArray addObject:label];
-            label.textColor = [UIColor whiteColor];
-            label.font = [UIFont systemFontOfSize:12];
+            label.textColor = COLOR_333333;
+            label.font = [UIFont systemFontOfSize:10];
             label.textAlignment = NSTextAlignmentCenter;
             label.text = _titleArray[i];
         }
@@ -189,15 +185,12 @@
     if (_valueArray.count == 0) {
         return;
     }
-    
     int maxValueAtArray = [[_valueArray valueForKeyPath:@"@max.intValue"] intValue];
-    
-    if (maxValueAtArray == 0) {
-        return;
-    }
-    
+//    if (maxValueAtArray == 0) {
+//        return;
+//    }
     [self maxValue:maxValueAtArray];
-    _maxValue = _maxChar + 1;
+    _maxValue = _maxChar + 10;
     
     for (int i = 0; i < _valueLength - 1; i++) {
         _maxValue = _maxValue * 10;
@@ -225,12 +218,12 @@
                 height = self.barWidth;
             }
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(i * labelWidth + _x - labelWidth / 2, _lineHeight + 5 + _y, labelWidth, height)];
-            
+
             [self addSubview:label];
             [self.markLabelArray addObject:label];
             
-            label.textColor = [UIColor whiteColor];
-            label.font = [UIFont systemFontOfSize:12];
+            label.textColor = COLOR_333333;
+            label.font = [UIFont systemFontOfSize:10];
             label.textAlignment = NSTextAlignmentCenter;
             if (i == 0) {
                 label.text = @"0";
@@ -238,7 +231,7 @@
                 label.text = [NSString stringWithFormat:@"%d",_maxValue];
             } else{
                 if (_maxValue < _markLabelCount) {
-                    label.text = [NSString stringWithFormat:@"%.1f",(float)_maxValue / _markLabelCount * i];
+                    label.text = [NSString stringWithFormat:@"%.0f",(float)_maxValue / _markLabelCount * i];
                 } else{
                     
                     label.text = [NSString stringWithFormat:@"%d",_maxValue / _markLabelCount * i];
@@ -259,12 +252,12 @@
         
         for (int i = 0; i < (_markLabelCount + 1); i ++) {
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0,_lineHeight - (valueHeight / 2 + i * valueHeight), valueWidth, valueHeight)];
-            
+            label.hidden = YES;
             [self addSubview:label];
             [self.markLabelArray addObject:label];
             
-            label.textColor = [UIColor whiteColor];
-            label.font = [UIFont systemFontOfSize:12];
+            label.textColor = COLOR_333333;
+            label.font = [UIFont systemFontOfSize:10];
             label.textAlignment = NSTextAlignmentCenter;
             
             if (i == 0) {
@@ -273,7 +266,7 @@
                 label.text = [NSString stringWithFormat:@"%d",_maxValue];
             } else{
                 if (_maxValue < _markLabelCount) {
-                    label.text = [NSString stringWithFormat:@"%.1f",(float)_maxValue / _markLabelCount * i];
+                    label.text = [NSString stringWithFormat:@"%.0f",(float)_maxValue / _markLabelCount * i];
                 } else{
                     label.text = [NSString stringWithFormat:@"%d",_maxValue / _markLabelCount * i];
                 }
@@ -289,6 +282,7 @@
         shapeLayer.strokeColor = [UIColor clearColor].CGColor;
         
         UILabel *label = [[UILabel alloc] init];
+        label.hidden = YES;
         [self.markLabelArray addObject:label];
         
         UIBezierPath *barPath = [UIBezierPath bezierPath];
@@ -323,8 +317,10 @@
             [barPath moveToPoint:CGPointMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) ,_lineHeight)];
             [barPath addLineToPoint:CGPointMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) ,_lineHeight - (_lineHeight - _y) * ([_valueArray[i] floatValue] / _maxValue))];
             
-            label.frame = CGRectMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) - 25, _lineHeight - (_lineHeight - _y) * ([_valueArray[i] floatValue] / _maxValue) - _y, 50, 20);
-            label.textAlignment = NSTextAlignmentCenter;
+            label.frame = CGRectMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) - 20,  _lineHeight - 100, 12, 100);
+//            label.frame = CGRectMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) - 20,  _lineHeight - (_lineHeight - _y) * ([_valueArray[i] floatValue] / _maxValue) - _y, 13, (_lineHeight - _y)  + 21);
+//            label.frame = CGRectMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) - 25, _lineHeight - (_lineHeight - _y) * ([_valueArray[i] floatValue] / _maxValue) - _y, 100, 20);
+            label.textAlignment = NSTextAlignmentJustified;
             if (self.labelRotation) {
                 label.transform = CGAffineTransformMakeRotation(self.labelRotation);
             }
@@ -332,10 +328,17 @@
         
         [self.scroll addSubview:label];
         label.hidden = YES;
-        label.textColor = [UIColor whiteColor];
-        label.font = [UIFont systemFontOfSize:12];
-        label.text = [NSString stringWithFormat:@"%@",_valueArray[i]];
-        
+        label.textColor = COLOR_333333;
+        label.numberOfLines = 0;
+        label.font = [UIFont systemFontOfSize:10];
+        NSMutableString * str = [[NSMutableString alloc] initWithString:_titleArray2[i]];
+        CGFloat width = [str widthForFont:FONT_10];
+        width = width + 20;
+        if (width>_lineHeight) {
+            width = _lineHeight-20;
+        }
+        label.frame = CGRectMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) - 20,  _lineHeight - width, 12, width);
+        label.text = str;
         shapeLayer.path= barPath.CGPath;
         [self.scroll.layer addSublayer:shapeLayer];
         
@@ -367,6 +370,16 @@
         ani.toValue = @1;
         ani.duration = 1.0;
         [gressLayer addAnimation:ani forKey:NSStringFromSelector(@selector(strokeEnd))];
+        
+        UILabel *label2 = [[UILabel alloc] init];
+        [self.scroll addSubview:label2];
+        label2.hidden = YES;
+        [self.markLabelArray addObject:label2];
+        label2.textColor = kMainColor;
+        label2.font = [UIFont systemFontOfSize:10];
+        label2.text = [NSString stringWithFormat:@"%@",_valueArray[i]];
+        label2.frame = CGRectMake(_barMargin / 2 + labelWidth / 2 + i * (_barMargin + labelWidth) - 25, _lineHeight - (_lineHeight - _y) * ([_valueArray[i] floatValue] / _maxValue) - _y, 50, 20);
+        label2.textAlignment = NSTextAlignmentCenter;
     }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -452,9 +465,9 @@
 }
 
 - (void)setMarkTextColor{
-    for (UILabel *label in self.markLabelArray) {
-        label.textColor = _markTextColor;
-    }
+//    for (UILabel *label in self.markLabelArray) {
+//        label.textColor = _markTextColor;
+//    }
 }
 
 - (void)setMarkTextFont{

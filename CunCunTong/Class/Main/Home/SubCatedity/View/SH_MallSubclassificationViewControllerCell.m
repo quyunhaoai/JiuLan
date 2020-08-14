@@ -85,32 +85,6 @@
     return _lineview;
 }
 
-#pragma mark - model
 
-//- (void)setModel:(AKMallSelectGoodsModel *)model{
-//    _model = model;
-//    [self.headImage sd_setImageWithURL:KThumbnailStringURL(model.logo) placeholderImage:IMAGE_NAME(@"tempyule_HD")];
-//    self.titleLabel.text = model.productName;
-//    if ( model.price == model.marketPrice) {
-//        NSString *string = [NSString stringWithFormat:@"¥%.2f",model.price];
-//        self.priceLbel.text = string;//商品价格
-//    } else {
-//        NSString *string = [NSString stringWithFormat:@"¥%.2f ¥%.2f ",model.price,model.marketPrice];
-//        self.priceLbel.attributedText = [NSString mutableAttributedStringFromString:string withFont1:FONT_15 withFont2:FONT_13];
-//    }
-//}
-
-//- (void)setGoodsModel:(SH_GoodsDetailModel *)goodsModel {
-//        _goodsModel = goodsModel;
-//    [self.headImage sd_setImageWithURL:KThumbnailStringURL(_goodsModel.logo) placeholderImage:IMAGE_NAME(@"tempyule_HD")];
-//    self.titleLabel.text = _goodsModel.productName;
-//    if ( goodsModel.price == goodsModel.marketPrice) {
-//        NSString *string = [NSString stringWithFormat:@"¥%.2f",goodsModel.price];
-//        self.priceLbel.text = string;//商品价格
-//    } else {
-//        NSString *string = [NSString stringWithFormat:@"¥%.2f ¥%.2f ",goodsModel.price,goodsModel.marketPrice];
-//        self.priceLbel.attributedText = [NSString mutableAttributedStringFromString:string withFont1:FONT_15 withFont2:FONT_13];
-//    }
-//}
 
 @end

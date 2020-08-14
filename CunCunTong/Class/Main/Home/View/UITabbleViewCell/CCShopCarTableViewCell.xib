@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -68,6 +68,25 @@
                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xCi-DQ-5o1">
+                                <rect key="frame" x="10" y="65" width="21" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="nYd-iq-A2w"/>
+                                    <constraint firstAttribute="width" constant="21" id="yme-hj-fYp"/>
+                                </constraints>
+                                <state key="normal" image="未选中图标"/>
+                                <state key="selected" image="选中图标"/>
+                                <connections>
+                                    <action selector="selectAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="6lq-Vb-s0g"/>
+                                </connections>
+                            </button>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2FA-YF-Txs">
+                                <rect key="frame" x="0.0" y="0.0" width="358" height="1"/>
+                                <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="zgL-vu-SBm"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -75,9 +94,12 @@
                             <constraint firstItem="OOE-R9-Rf8" firstAttribute="centerY" secondItem="6An-26-eRc" secondAttribute="centerY" id="39M-Dz-ZHy"/>
                             <constraint firstItem="6An-26-eRc" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="3fj-OA-uD5"/>
                             <constraint firstItem="EXg-68-Ihj" firstAttribute="width" secondItem="z0v-2L-HAW" secondAttribute="height" constant="-24" id="7mx-L2-r9p"/>
+                            <constraint firstItem="xCi-DQ-5o1" firstAttribute="leading" secondItem="z0v-2L-HAW" secondAttribute="leading" constant="10" id="IxU-LG-BCE"/>
                             <constraint firstItem="CDc-eh-uxj" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="O2S-Mq-YLN"/>
+                            <constraint firstItem="2FA-YF-Txs" firstAttribute="top" secondItem="z0v-2L-HAW" secondAttribute="top" constant="0.10000000000000001" id="PKh-FH-yfZ"/>
                             <constraint firstItem="1c0-Am-qOM" firstAttribute="top" secondItem="CDc-eh-uxj" secondAttribute="bottom" constant="10" id="QGY-Wd-Zok"/>
                             <constraint firstItem="OOE-R9-Rf8" firstAttribute="leading" secondItem="6An-26-eRc" secondAttribute="trailing" constant="10" id="SjI-YR-a1B"/>
+                            <constraint firstItem="xCi-DQ-5o1" firstAttribute="centerY" secondItem="z0v-2L-HAW" secondAttribute="centerY" id="Sla-eh-3xU"/>
                             <constraint firstItem="hjb-ue-LMl" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="Wfv-t7-TdJ"/>
                             <constraint firstItem="EXg-68-Ihj" firstAttribute="leading" secondItem="z0v-2L-HAW" secondAttribute="leading" constant="10" id="adr-r1-Gxo"/>
                             <constraint firstAttribute="trailing" secondItem="1c0-Am-qOM" secondAttribute="trailing" constant="12" id="eEM-lH-QuV"/>
@@ -85,8 +107,10 @@
                             <constraint firstItem="1c0-Am-qOM" firstAttribute="leading" secondItem="EXg-68-Ihj" secondAttribute="trailing" constant="10" id="jhJ-jK-y5G"/>
                             <constraint firstItem="CDc-eh-uxj" firstAttribute="top" secondItem="z0v-2L-HAW" secondAttribute="top" constant="12" id="lFe-dL-sVp"/>
                             <constraint firstAttribute="trailing" secondItem="CDc-eh-uxj" secondAttribute="trailing" constant="12" id="lhm-x3-ESe"/>
+                            <constraint firstItem="2FA-YF-Txs" firstAttribute="leading" secondItem="z0v-2L-HAW" secondAttribute="leading" constant="0.10000000000000001" id="mo5-Pb-atv"/>
                             <constraint firstAttribute="bottom" secondItem="EXg-68-Ihj" secondAttribute="bottom" constant="12" id="qND-Ai-fjn"/>
                             <constraint firstItem="hjb-ue-LMl" firstAttribute="bottom" secondItem="EXg-68-Ihj" secondAttribute="bottom" id="z69-qU-bLt"/>
+                            <constraint firstAttribute="trailing" secondItem="2FA-YF-Txs" secondAttribute="trailing" constant="0.10000000000000001" id="zAw-rU-CV3"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -101,8 +125,11 @@
             <connections>
                 <outlet property="gugeLab" destination="1c0-Am-qOM" id="D2H-IV-6aF"/>
                 <outlet property="headImageView" destination="EXg-68-Ihj" id="5iJ-tn-WmF"/>
+                <outlet property="imageViewLeftConstraints" destination="adr-r1-Gxo" id="V25-WF-MoM"/>
                 <outlet property="kucunLab" destination="OOE-R9-Rf8" id="DcS-kq-Gr1"/>
+                <outlet property="lineView" destination="2FA-YF-Txs" id="Q2g-cC-cm6"/>
                 <outlet property="pricelab" destination="hjb-ue-LMl" id="Vv0-1y-72t"/>
+                <outlet property="selectButton" destination="xCi-DQ-5o1" id="fs0-26-ceG"/>
                 <outlet property="titleLab" destination="CDc-eh-uxj" id="oEK-fh-2cy"/>
             </connections>
             <point key="canvasLocation" x="159.42028985507247" y="170.42410714285714"/>
@@ -110,6 +137,8 @@
     </objects>
     <resources>
         <image name="库存图标" width="14.5" height="16"/>
+        <image name="未选中图标" width="15.5" height="15"/>
+        <image name="选中图标" width="15" height="15"/>
         <image name="首页特价商品图片" width="96" height="96"/>
     </resources>
 </document>

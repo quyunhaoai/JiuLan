@@ -11,6 +11,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCYouHuiQuanViewController : CCBaseTableViewController
+- (instancetype)initWithCoupon_set:(NSArray *)coupon_set;
+@property (strong, nonatomic) NSArray *coupon_setArray;   //
+@property (assign, nonatomic) NSInteger orderID;    //
+/*
+ *    block
+ */
+@property (copy, nonatomic) void(^blackCoupon_id)(NSString *coupon_id);
+@property (assign, nonatomic) BOOL isOrderVc; // 
 
 @end
 

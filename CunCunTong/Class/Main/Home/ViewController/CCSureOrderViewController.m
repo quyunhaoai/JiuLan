@@ -14,6 +14,9 @@
 #import "CCCententAlertErWeiMaView.h"
 #import "CCAddBlankCarViewController.h"
 #import "CCOrderListModel.h"
+#import "CCSureOrderTableViewCell.h"
+#import "CCNowPayViewController.h"
+#import "CCCheXiaoOrderModel.h"
 @interface CCSureOrderViewController ()
 {
     
@@ -27,10 +30,24 @@
 @property (strong, nonatomic) UIView *temView;
 
 @property (strong, nonatomic) CCOrderListModel *orderModel;
+@property (strong, nonatomic) CCCheXiaoOrderModel *chexiaoorderModel;
+@property (nonatomic,copy) NSString *types;  //
+@property (strong, nonatomic) NSArray *mcartsArray;   //
+@property (nonatomic,copy) NSString *center_sku_id;  //
+@property (nonatomic,copy) NSString *count;  //
 @end
 
 @implementation CCSureOrderViewController
-
+- (instancetype)initWithTypes:(NSString *)types withmcarts:(NSArray *)mcarts withCenter_sku_id:(NSString *)center_sku_id withCount:(NSString *)count {
+    self = [super self];
+    if(self){
+        self.types = types;
+        self.mcartsArray = mcarts;
+        self.center_sku_id = center_sku_id;
+        self.count = count;
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -39,11 +56,12 @@
     self.tableView.tableHeaderView = self.hhhView;
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT);
+        make.bottom.mas_equalTo(self.view).mas_offset(-51);
     }];
-    self.bottomView.frame = CGRectMake(0, 0, Window_W, 51);
-    self.tableView.tableFooterView = self.bottomView;
+    self.bottomView.frame = CGRectMake(0, Window_H-51, Window_W, 51);
+    [self.view addSubview:self.bottomView];
     self.tableView.backgroundColor = UIColorHex(0xf7f7f7);
-    
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self initData];
     [self setupUI];
 }
@@ -63,9 +81,13 @@
 }
 - (void)initData {
     XYWeakSelf;
-    NSDictionary *params = @{@"coupon_id":@"",
+    NSDictionary *params = @{@"types":self.types,
+                             @"mcarts":[self.mcartsArray componentsJoinedByString:@","],
+                             @"center_sku_id":self.center_sku_id,
+                             @"count":self.count,
     };
-    NSString *path = @"/app0/makeordermcarts/";
+    NSString *path =self.isCheXiao ? @"/app0/makecarorder/" : @"/app0/makeordermcarts/";///app0/makecarorder/
+    
     [[STHttpResquest sharedManager] requestWithMethod:GET
                                              WithPath:path
                                            WithParams:params
@@ -74,11 +96,48 @@
         NSString *msg = [[dic objectForKey:@"errmsg"] description];
         weakSelf.showErrorView = NO;
         if(status == 0){
-            NSDictionary *data = dic[@"data"];
-            weakSelf.orderModel = [CCOrderListModel modelWithJSON:data];
-            weakSelf.hhhView.nameLab.text = [NSString stringWithFormat:@"收货人:%@",weakSelf.orderModel.name];;
-            weakSelf.hhhView.addressLab.text = [NSString stringWithFormat:@"收货地址：%@%@%@%@",weakSelf.orderModel.place1,weakSelf.orderModel.place2,weakSelf.orderModel.place3, weakSelf.orderModel.address];
-            weakSelf.hhhView.numberLab.text = weakSelf.orderModel.mobile;
+            if (self.isCheXiao) {
+                NSDictionary *data = dic[@"data"];
+                weakSelf.chexiaoorderModel = [CCCheXiaoOrderModel modelWithJSON:data];
+                weakSelf.hhhView.nameLab.text = [NSString stringWithFormat:@"收货人:%@",weakSelf.chexiaoorderModel.person_info.name];;
+                weakSelf.hhhView.addressLab.text = [NSString stringWithFormat:@"收货地址：%@%@%@%@",weakSelf.chexiaoorderModel.person_info.place1,weakSelf.chexiaoorderModel.person_info.place2,weakSelf.chexiaoorderModel.person_info.place3, weakSelf.chexiaoorderModel.person_info.address];
+                weakSelf.hhhView.numberLab.text = weakSelf.chexiaoorderModel.person_info.mobile;
+                //
+                NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"合计："];
+                [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:14.0f] range:NSMakeRange(0, 3)];
+                [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:51.0f/255.0f green:51.0f/255.0f blue:51.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 3)];
+                NSString *str =STRING_FROM_0_FLOAT(weakSelf.chexiaoorderModel.total_price);
+                NSString *total_price = [NSString stringWithFormat:@"￥%@",str];
+                //234-00
+                NSMutableAttributedString *attributedString1 = [[NSMutableAttributedString alloc] initWithString:total_price];
+                [attributedString1 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:20.0f] range:NSMakeRange(0, total_price.length)];
+                [attributedString1 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:254.0f/255.0f green:98.0f/255.0f blue:44.0f/255.0f alpha:1.0f] range:NSMakeRange(0, total_price.length)];
+                [attributedString appendAttributedString:attributedString1];
+                weakSelf.bottomView.sumLab.attributedText = attributedString;
+                [weakSelf.tableView reloadData];
+            } else {
+                NSDictionary *data = dic[@"data"];
+                weakSelf.orderModel = [CCOrderListModel modelWithJSON:data];
+                weakSelf.hhhView.nameLab.text = [NSString stringWithFormat:@"收货人:%@",weakSelf.orderModel.name];;
+                weakSelf.hhhView.addressLab.text = [NSString stringWithFormat:@"收货地址：%@%@%@%@",weakSelf.orderModel.place1,weakSelf.orderModel.place2,weakSelf.orderModel.place3, weakSelf.orderModel.address];
+                weakSelf.hhhView.numberLab.text = weakSelf.orderModel.mobile;
+                //
+                NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"合计："];
+                [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:14.0f] range:NSMakeRange(0, 3)];
+                [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:51.0f/255.0f green:51.0f/255.0f blue:51.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 3)];
+                NSString *str =STRING_FROM_0_FLOAT(weakSelf.orderModel.order_total_price);
+                NSString *total_price = [NSString stringWithFormat:@"￥%@",str];
+                //234-00
+                NSMutableAttributedString *attributedString1 = [[NSMutableAttributedString alloc] initWithString:total_price];
+                [attributedString1 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:20.0f] range:NSMakeRange(0, total_price.length)];
+                [attributedString1 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:254.0f/255.0f green:98.0f/255.0f blue:44.0f/255.0f alpha:1.0f] range:NSMakeRange(0, total_price.length)];
+                NSString *old_price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(weakSelf.orderModel.order_total_old_price)];
+                NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:old_price attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
+                [attributedString appendAttributedString:attributedString1];
+                [attributedString appendAttributedString:attrStr];
+                weakSelf.bottomView.sumLab.attributedText = attributedString;
+                [weakSelf.tableView reloadData];
+            }
         }else {
             if (msg.length>0) {
                 [MBManager showBriefAlert:msg];
@@ -87,79 +146,165 @@
     } WithFailurBlock:^(NSError * _Nonnull error) {
         weakSelf.showErrorView = YES;
     }];
-    self.dataSoureArray = @[[CCSureOrder new],[CCSureOrder new]].mutableCopy;
 }
 
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    if (self.isCheXiao) {
+        return 2;
+    } else {
+        return self.orderModel.results.count + 1;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 1) {
-        return 1;
+    if (self.isCheXiao ) {
+        if (section == 0) {
+            return self.chexiaoorderModel.carts.count;
+        } else {
+            return 2;
+        }
+    } else {
+        if (section == self.orderModel.results.count ) {
+            return 2;
+        }
+        ResultsItem *arr = self.orderModel.results[section];
+        return arr.mcarts_set.count+1;
     }
-    return self.dataSoureArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        UITableViewCell *cell = [BaseTableViewCell cellWithTableView:tableView model:self.dataSoureArray[indexPath.row] indexPath:indexPath];
-        return cell;
-    } else if(indexPath.section == 1) {
-       static NSString *CellIdentifier = @"CellIdentifier1";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if(cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-        }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        [cell.contentView removeAllSubviews];
-        [self cellAddSubViews:cell.contentView];
-        
-        return cell;
-    }else{
-        static NSString *CellIdentifier = @"CellIdentifier2";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if(cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-            cell.backgroundColor = [UIColor whiteColor];
-            cell.textLabel.textColor = COLOR_333333;
-            cell.textLabel.font = [UIFont systemFontOfSize:14];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        }
-        if (indexPath.row == 0) {
-            cell.textLabel.text = [NSString stringWithFormat:@"商品数量"];
-            cell.detailTextLabel.text = @"3";
+    if (self.isCheXiao) {
+        if(indexPath.section == 1) {
+             static NSString *CellIdentifier = @"CellIdentifier2";
+             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+             if(cell == nil) {
+                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+                 cell.backgroundColor = [UIColor whiteColor];
+                 cell.textLabel.textColor = COLOR_333333;
+                 cell.textLabel.font = [UIFont systemFontOfSize:14];
+                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
+             }
+             if(indexPath.row == 0) {
+                 cell.textLabel.text = [NSString stringWithFormat:@"商品数量"];
+                 cell.detailTextLabel.text = STRING_FROM_INTAGER(self.chexiaoorderModel.total_count);
+             } else {
+                 cell.textLabel.text = [NSString stringWithFormat:@"商品金额"];
+                 NSString *total_price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(self.chexiaoorderModel.total_price)];
+                 //78-00
+                 NSMutableAttributedString *attributedString2 = [[NSMutableAttributedString alloc] initWithString:total_price];
+                 [attributedString2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:13.0f] range:NSMakeRange(0, 1)];
+                 [attributedString2 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:69.0f/255.0f blue:4.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 1)];
+                 //78-00 text-style1
+                 [attributedString2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Regular" size:19.0f] range:NSMakeRange(1, total_price.length-1)];
+                 [attributedString2 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:69.0f/255.0f blue:4.0f/255.0f alpha:1.0f] range:NSMakeRange(1, total_price.length-1)];
+                 cell.detailTextLabel.attributedText = attributedString2;
+             }
+             return cell;
         } else {
-            cell.textLabel.text = [NSString stringWithFormat:@"商品金额"];
-            cell.detailTextLabel.text = @"¥234.00";
-        }
-        return cell;
+             CartsItem *model = self.chexiaoorderModel.carts[indexPath.row];
+             CCSureOrderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCSureOrder"];
+             cell.nameLab.text = model.goods_name;
+             cell.carModel = model;
+             cell.numberBtn.hidden = YES;
+             return cell;
+         }
+    } else {
+        if(indexPath.section == self.orderModel.results.count) {
+             static NSString *CellIdentifier = @"CellIdentifier2";
+             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+             if(cell == nil) {
+                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+                 cell.backgroundColor = [UIColor whiteColor];
+                 cell.textLabel.textColor = COLOR_333333;
+                 cell.textLabel.font = [UIFont systemFontOfSize:14];
+                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
+             }
+             if(indexPath.row == 0) {
+                 cell.textLabel.text = [NSString stringWithFormat:@"商品数量"];
+                 cell.detailTextLabel.text = STRING_FROM_INTAGER(self.orderModel.mcarts_id_list.count);
+             } else {
+                 cell.textLabel.text = [NSString stringWithFormat:@"商品金额"];
+                 NSString *total_price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(self.orderModel.order_total_price)];
+                 //78-00
+                 NSMutableAttributedString *attributedString2 = [[NSMutableAttributedString alloc] initWithString:total_price];
+                 [attributedString2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:13.0f] range:NSMakeRange(0, 1)];
+                 [attributedString2 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:69.0f/255.0f blue:4.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 1)];
+                 //78-00 text-style1
+                 [attributedString2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Regular" size:19.0f] range:NSMakeRange(1, total_price.length-1)];
+                 [attributedString2 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:69.0f/255.0f blue:4.0f/255.0f alpha:1.0f] range:NSMakeRange(1, total_price.length-1)];
+                 cell.detailTextLabel.attributedText = attributedString2;
+             }
+             return cell;
+         }
+         ResultsItem *arr = self.orderModel.results[indexPath.section];
+         if (indexPath.row == arr.mcarts_set.count) {
+             static NSString *CellIdentifier = @"CellIdentifier";
+             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+             if(cell == nil) {
+                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+                 cell.backgroundColor = [UIColor whiteColor];
+                 cell.detailTextLabel.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
+                 cell.detailTextLabel.font = [UIFont systemFontOfSize:14];
+                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
+             }
+             //2
+             NSString *cout =[NSString stringWithFormat:@"共%@件",STRING_FROM_INTAGER(arr.mcarts_set.count)];
+             
+             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:cout];
+             [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Regular" size:12.0f] range:NSMakeRange(0, cout.length)];
+             [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:1.0f] range:NSMakeRange(0, cout.length)];
+             //
+             NSMutableAttributedString *attributedString1 = [[NSMutableAttributedString alloc] initWithString:@"小计："];
+             [attributedString1 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Regular" size:13.0f] range:NSMakeRange(0, 3)];
+             [attributedString1 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:51.0f/255.0f green:51.0f/255.0f blue:51.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 3)];
+             NSString *total_price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(arr.goods_total_price)];
+             //78-00
+             NSMutableAttributedString *attributedString2 = [[NSMutableAttributedString alloc] initWithString:total_price];
+             [attributedString2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:13.0f] range:NSMakeRange(0, 1)];
+             [attributedString2 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:69.0f/255.0f blue:4.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 1)];
+             //78-00 text-style1
+             [attributedString2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Regular" size:19.0f] range:NSMakeRange(1, total_price.length-1)];
+             [attributedString2 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f green:69.0f/255.0f blue:4.0f/255.0f alpha:1.0f] range:NSMakeRange(1, total_price.length-1)];
+             [attributedString appendAttributedString:attributedString1];
+             [attributedString appendAttributedString:attributedString2];
+             cell.detailTextLabel.attributedText = attributedString;
+             return cell;
+         } else {
+             CCSureOrderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCSureOrder"];
+             cell.nameLab.text = arr.goods_name;
+             cell.model = arr.mcarts_set[indexPath.row];
+             cell.numberBtn.hidden = YES;
+             return cell;
+         }
     }
-
 }
 
 #pragma mark - Table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1) {
-        if (self.isOpen) {
-            return 318;
+    if (self.isCheXiao) {
+        if (indexPath.section == 1) {
+            return 40;
         } else {
-            return 132;
+            return [CCSureOrderTableViewCell height];
         }
-    } else if (indexPath.section == 2){
-        return 40;
+    } else {
+        if (indexPath.section == self.orderModel.results.count ) {
+            return 40;
+        }
+        ResultsItem *arr = self.orderModel.results[indexPath.section];
+        if (indexPath.row == arr.mcarts_set.count) {
+            return 40;
+        }
+        return [CCSureOrderTableViewCell height];
     }
-    NSString *modelName = NSStringFromClass([self.dataSoureArray[indexPath.row] class]);
-    Class CellClass = NSClassFromString([modelName stringByAppendingString:@"TableViewCell"]);
-    if ([modelName isEqualToString:@"TextModel"]) {
-        CellClass = NSClassFromString(@"TextModelCell");
-    }
-    return [CellClass height];
-    
+
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return 10;
+    }
     return 0.0001f;
 }
 
@@ -187,398 +332,63 @@
 - (CCSureOrderBottomView *)bottomView {
     if (!_bottomView) {
         _bottomView = [[CCSureOrderBottomView alloc] init];
-        //
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"合计："];
-        [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:14.0f] range:NSMakeRange(0, 3)];
-        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:51.0f/255.0f green:51.0f/255.0f blue:51.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 3)];
-        //234-00
-        NSMutableAttributedString *attributedString1 = [[NSMutableAttributedString alloc] initWithString:@"¥234.00"];
-        [attributedString1 addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:20.0f] range:NSMakeRange(0, 7)];
-        [attributedString1 addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:254.0f/255.0f green:98.0f/255.0f blue:44.0f/255.0f alpha:1.0f] range:NSMakeRange(0, 7)];
-        [attributedString appendAttributedString:attributedString1];
-        _bottomView.sumLab.attributedText = attributedString;
+        [_bottomView.goPayBtn setTitle:@"提交订单" forState:UIControlStateNormal];
+        [_bottomView.goPayBtn addTarget:self
+                                 action:@selector(goPayAction)
+                       forControlEvents:UIControlEventTouchUpInside];
     }
     return _bottomView;
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NKAlertView *alert = [[NKAlertView alloc] init];
-    alert.contentView = [[CCCententAlertErWeiMaView alloc] initWithFrame:CGRectMake(0, 0, 300, 336)];
-    alert.type = NKAlertViewTypeDef;
-    alert.hiddenWhenTapBG = YES;
-    
-    [alert show];
-}
-
-- (void)cellAddSubViews:(UIView *)contentView {
-     UILabel *titlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"支付方式";
-         view ;
-     });
-     [contentView addSubview:titlelab];
-     [titlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(117, 14));
-         make.top.mas_equalTo(contentView).mas_offset(10);
-     }];
-     
-     UIView *zhanHuView = [[UIView alloc] init];
-     zhanHuView.userInteractionEnabled = YES;
-     [contentView addSubview:zhanHuView];
-     [zhanHuView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.top.mas_equalTo(titlelab.mas_bottom).mas_offset(15);
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.right.mas_equalTo(contentView).mas_offset(-10);
-         make.height.mas_equalTo(32);
-     }];
-     [[CCTools sharedInstance] addborderToView:zhanHuView width:1.0 color:kMainColor];
-     UIImageView *iconIamgeView = ({
-         UIImageView *view = [UIImageView new];
-         view.userInteractionEnabled = YES;
-         view.contentMode = UIViewContentModeScaleAspectFill;
-         view.image = [UIImage imageNamed:@"选中圆点图标 1"];
-         view.layer.masksToBounds = YES ;
-         view.tag = 1;
-         view ;
-     });
-     [zhanHuView addSubview:iconIamgeView];
-     [iconIamgeView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.centerY.mas_equalTo(zhanHuView).mas_offset(0);
-         make.left.mas_equalTo(contentView).mas_offset(15);
-         make.height.width.mas_equalTo(13);
-     }];
-     UILabel *zhuanghutitlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"账户余额";
-         view ;
-     });
-     [zhanHuView addSubview:zhuanghutitlelab];
-    self.temView = zhanHuView;
+- (void)goPayAction{
     XYWeakSelf;
-    [zhanHuView addTapGestureWithBlock:^(UIView *gestureView) {
-        weakSelf.isSlect = !weakSelf.isSlect;
-        if (weakSelf.isSlect) {
-            weakSelf.selectPayType = 1;
-        }
-        [weakSelf setSelectState:gestureView isSelect:weakSelf.isSlect];
-    }];
-     [zhuanghutitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(iconIamgeView.mas_right).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(117, 14));
-         make.centerY.mas_equalTo(zhanHuView).mas_offset(0);
-     }];
-     UILabel *yuEtitlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view ;
-     });
-    yuEtitlelab.text = [NSString stringWithFormat:@"可用余额：%ld",(long)self.orderModel.balance];
-     [contentView addSubview:yuEtitlelab];
-     [yuEtitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(70, 14));
-         make.top.mas_equalTo(zhanHuView.mas_bottom).mas_offset(10);
-     }];
-     UIButton *chongzhiBtn = ({
-         UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
-         [view setTitleColor:kMainColor forState:UIControlStateNormal];
-         [view setTitle:@"充值" forState:UIControlStateNormal];
-         [view.titleLabel setFont:FONT_15];
-         view.tag = 3;
-         [view addTarget:self action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-         view ;
-     });
-     [contentView addSubview:chongzhiBtn];
-     [chongzhiBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(yuEtitlelab.mas_right).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(50, 25));
-         make.centerY.mas_equalTo(yuEtitlelab).mas_offset(0);
-     }];
-     KKButton *rightBtn = [KKButton buttonWithType:UIButtonTypeCustom];
-     rightBtn.tag = 11;
-     [rightBtn setTitle:@"其他" forState:UIControlStateNormal];
-     if (self.isOpen) {
-        [rightBtn setImage:IMAGE_NAME(@"上箭头") forState:UIControlStateNormal];
-     } else {
-        [rightBtn setImage:IMAGE_NAME(@"下箭头") forState:UIControlStateNormal];
-     }
-     [rightBtn setTitleColor:COLOR_666666 forState:UIControlStateNormal];
-     rightBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-     [rightBtn addTarget:self action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-     [contentView addSubview:rightBtn];
-     [rightBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.top.mas_equalTo(yuEtitlelab.mas_bottom).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(50, 25));
-         make.centerX.mas_equalTo(contentView).mas_offset(0);
-     }];
-     [rightBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleRight imageTitleSpace:5];
-    if (!self.isOpen) {
-        return;
+    NSDictionary *params = @{};
+    if (self.isCheXiao) {
+        params = @{};
+    } else {
+        params =  @{@"order_total_price":STRING_FROM_0_FLOAT(self.orderModel.order_total_price),
+                    @"mcarts_id_list":self.orderModel.mcarts_id_list,
+                    @"types":@(self.orderModel.types),
+                    @"center_sku_id":@(self.orderModel.center_sku_id),
+                    @"sku_count":@(self.orderModel.sku_count),
+           };
     }
-     UIView *weixinView = [[UIView alloc] init];
-     [contentView addSubview:weixinView];
-     [weixinView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.top.mas_equalTo(rightBtn.mas_bottom).mas_offset(10);
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.right.mas_equalTo(contentView).mas_offset(-10);
-         make.height.mas_equalTo(32);
-     }];
-     [[CCTools sharedInstance] addborderToView:weixinView width:1.0 color:COLOR_e5e5e5];
-     UIImageView *iconIamgeView1 = ({
-         UIImageView *view = [UIImageView new];
-         view.userInteractionEnabled = YES;
-         view.contentMode = UIViewContentModeScaleAspectFill;
-         view.image = [UIImage imageNamed:@"未选中圆点图标"];
-         view.layer.masksToBounds = YES ;
-          view.tag = 1;
-         view ;
-     });
-     [weixinView addSubview:iconIamgeView1];
-     [iconIamgeView1 mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.centerY.mas_equalTo(weixinView).mas_offset(0);
-         make.left.mas_equalTo(contentView).mas_offset(15);
-         make.height.width.mas_equalTo(13);
-     }];
-     UILabel *weixintitlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"微信支付";
-         view ;
-     });
-     [weixinView addSubview:weixintitlelab];
-     [weixintitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(iconIamgeView1.mas_right).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(117, 14));
-         make.centerY.mas_equalTo(weixinView).mas_offset(0);
-     }];
-    UIImageView *iconIamge1 = ({
-        UIImageView *view = [UIImageView new];
-        view.userInteractionEnabled = YES;
-        view.contentMode = UIViewContentModeScaleToFill;
-        view.image = [UIImage imageNamed:@"微信图标 1"];
-        view.layer.masksToBounds = YES ;
-         view.tag = 1;
-        view ;
-    });
-    [weixinView addSubview:iconIamge1];
-    [iconIamge1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(weixinView).mas_offset(0);
-        make.right.mas_equalTo(contentView).mas_offset(-21);
-        make.height.mas_equalTo(20);
-        make.width.mas_equalTo(25);
-    }];
-     [weixinView addTapGestureWithBlock:^(UIView *gestureView) {
-         weakSelf.isSlect = !weakSelf.isSlect;
-         if (weakSelf.isSlect) {
-             weakSelf.selectPayType = 2;
-         }
-         [weakSelf setSelectState:gestureView isSelect:weakSelf.isSlect];
-     }];
-     UIView *zhifubaoView = [[UIView alloc] init];
-     [contentView addSubview:zhifubaoView];
-     [zhifubaoView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.top.mas_equalTo(weixinView.mas_bottom).mas_offset(15);
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.right.mas_equalTo(contentView).mas_offset(-10);
-         make.height.mas_equalTo(32);
-     }];
-     [[CCTools sharedInstance] addborderToView:zhifubaoView width:1.0 color:COLOR_e5e5e5];
-     UIImageView *iconIamgeView2 = ({
-         UIImageView *view = [UIImageView new];
-         view.userInteractionEnabled = YES;
-         view.contentMode = UIViewContentModeScaleAspectFill;
-         view.image = [UIImage imageNamed:@"未选中圆点图标"];
-         view.layer.masksToBounds = YES ;
-          view.tag = 1;
-         view ;
-     });
-     [zhifubaoView addSubview:iconIamgeView2];
-     [iconIamgeView2 mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.centerY.mas_equalTo(zhifubaoView).mas_offset(0);
-         make.left.mas_equalTo(contentView).mas_offset(15);
-         make.height.width.mas_equalTo(13);
-     }];
-     UILabel *zhifubaotitlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"支付宝支付";
-         view ;
-     });
-     [zhifubaoView addSubview:zhifubaotitlelab];
-     [zhifubaotitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(iconIamgeView2.mas_right).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(117, 14));
-         make.centerY.mas_equalTo(zhifubaoView).mas_offset(0);
-     }];
-    UIImageView *iconIamge2 = ({
-        UIImageView *view = [UIImageView new];
-        view.userInteractionEnabled = YES;
-        view.contentMode = UIViewContentModeScaleAspectFill;
-        view.image = [UIImage imageNamed:@"支付宝图标"];
-        view.layer.masksToBounds = YES ;
-         view.tag = 1;
-        view ;
-    });
-    [zhifubaoView addSubview:iconIamge2];
-    [iconIamge2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(zhifubaoView).mas_offset(0);
-        make.right.mas_equalTo(contentView).mas_offset(-21);
-        make.height.width.mas_equalTo(18);
-    }];
-     [zhifubaoView addTapGestureWithBlock:^(UIView *gestureView) {
-         weakSelf.isSlect = !weakSelf.isSlect;
-         if (weakSelf.isSlect) {
-             weakSelf.selectPayType = 3;
-         }
-         [weakSelf setSelectState:gestureView isSelect:weakSelf.isSlect];
-     }];
-     UIView *yinlianzhifuView = [[UIView alloc] init];
-     [contentView addSubview:yinlianzhifuView];
-     [yinlianzhifuView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.top.mas_equalTo(zhifubaoView.mas_bottom).mas_offset(10);
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.right.mas_equalTo(contentView).mas_offset(-10);
-         make.height.mas_equalTo(32);
-     }];
-     [[CCTools sharedInstance] addborderToView:yinlianzhifuView width:1.0 color:COLOR_e5e5e5];
-     UIImageView *iconIamgeView3 = ({
-         UIImageView *view = [UIImageView new];
-         view.userInteractionEnabled = YES;
-         view.contentMode = UIViewContentModeScaleAspectFill;
-         view.image = [UIImage imageNamed:@"未选中圆点图标"];
-         view.layer.masksToBounds = YES ;
-          view.tag = 1;
-         view ;
-     });
-     [yinlianzhifuView addSubview:iconIamgeView3];
-     [iconIamgeView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.centerY.mas_equalTo(yinlianzhifuView).mas_offset(0);
-         make.left.mas_equalTo(contentView).mas_offset(15);
-         make.height.width.mas_equalTo(13);
-     }];
-     UILabel *yinliantitlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"银联支付";
-         view ;
-     });
-     [yinlianzhifuView addSubview:yinliantitlelab];
-     [yinliantitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(iconIamgeView3.mas_right).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(117, 14));
-         make.centerY.mas_equalTo(yinlianzhifuView).mas_offset(0);
-     }];
-    [yinlianzhifuView addTapGestureWithBlock:^(UIView *gestureView) {
-        weakSelf.isSlect = !weakSelf.isSlect;
-        if (weakSelf.isSlect) {
-            weakSelf.selectPayType = 4;
+    NSString *path =self.isCheXiao ? @"/app0/makecarorder/" : @"/app0/makeordermcarts/";
+    [[STHttpResquest sharedManager]requestWithPUTMethod:POST WithPath:path WithParams:params WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        if(status == 0){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *data = dic[@"data"];
+                NSString *orderID = STRING_FROM_INTAGER([data[@"m_total_order_id"]  integerValue]);
+                if ([orderID isNotBlank] && ![orderID isEqualToString:@"0"]) {
+                    CCNowPayViewController *vc = [CCNowPayViewController new];
+                    vc.m_total_order_id = orderID;
+                    vc.isCheXiao = weakSelf.isCheXiao;
+                    [weakSelf.navigationController pushViewController:vc animated:YES];
+                } else {
+                    NSString *message = dic[@"message"];
+                    if ([message isNotBlank]) {
+                        [MBManager showBriefAlert:message];
+                    }
+                }
+            });
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
         }
-        [weakSelf setSelectState:gestureView isSelect:weakSelf.isSlect];
+    } WithFailurBlock:^(NSError * _Nonnull error) {
     }];
-     UIView *tarendaifuView = [[UIView alloc] init];
-     [contentView addSubview:tarendaifuView];
-     [tarendaifuView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.top.mas_equalTo(yinlianzhifuView.mas_bottom).mas_offset(10);
-         make.left.mas_equalTo(contentView).mas_offset(10);
-         make.right.mas_equalTo(contentView).mas_offset(-10);
-         make.height.mas_equalTo(32);
-     }];
-     [[CCTools sharedInstance] addborderToView:tarendaifuView width:1.0 color:COLOR_e5e5e5];
-     UIImageView *iconIamgeView4 = ({
-         UIImageView *view = [UIImageView new];
-         view.userInteractionEnabled = YES;
-         view.contentMode = UIViewContentModeScaleAspectFill;
-         view.image = [UIImage imageNamed:@"未选中圆点图标"];
-         view.layer.masksToBounds = YES ;
-         view.tag = 1;
-         view ;
-     });
-     [tarendaifuView addSubview:iconIamgeView4];
-     [iconIamgeView4 mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.centerY.mas_equalTo(tarendaifuView).mas_offset(0);
-         make.left.mas_equalTo(contentView).mas_offset(15);
-         make.height.width.mas_equalTo(13);
-     }];
-     UILabel *taRendaiFutitlelab = ({
-         UILabel *view = [UILabel new];
-         view.textColor =COLOR_333333;
-         view.font = STFont(12);
-         view.lineBreakMode = NSLineBreakByTruncatingTail;
-         view.backgroundColor = [UIColor clearColor];
-         view.textAlignment = NSTextAlignmentLeft;
-         view.text = @"他人代付";
-         view ;
-     });
-     [tarendaifuView addSubview:taRendaiFutitlelab];
-     [taRendaiFutitlelab mas_updateConstraints:^(MASConstraintMaker *make) {
-         make.left.mas_equalTo(iconIamgeView4.mas_right).mas_offset(10);
-         make.size.mas_equalTo(CGSizeMake(117, 14));
-         make.centerY.mas_equalTo(tarendaifuView).mas_offset(0);
-     }];
-    [tarendaifuView addTapGestureWithBlock:^(UIView *gestureView) {
-        weakSelf.isSlect = !weakSelf.isSlect;
-        if (weakSelf.isSlect) {
-            weakSelf.selectPayType = 5;
-        }
-        [weakSelf setSelectState:gestureView isSelect:weakSelf.isSlect];
-    }];
+}
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    NKAlertView *alert = [[NKAlertView alloc] init];
+//    alert.contentView = [[CCCententAlertErWeiMaView alloc] initWithFrame:CGRectMake(0, 0, 300, 336)];
+//    alert.type = NKAlertViewTypeDef;
+//    alert.hiddenWhenTapBG = YES;
+//
+//    [alert show];
 }
 
-- (void)BtnClick:(UIButton *)button {
-    if (button.tag == 3) {
-        //充值
-    } else {
-        //其他
-        self.isOpen = !self.isOpen;
-        [self.tableView reloadSection:1 withRowAnimation:UITableViewRowAnimationNone];
-    }
-}
-- (void)setSelectState:(UIView *)view isSelect:(BOOL) isSelect {
-    UIImageView *imageView = [view viewWithTag:1];
-    if ([self.temView isEqual:view]) {
-        if (isSelect) {
-            imageView.image = [UIImage imageNamed:@"选中圆点图标 1"];
-            [[CCTools sharedInstance] addborderToView:view width:1.0 color:kMainColor];
-        } else {
-            imageView.image = [UIImage imageNamed:@"未选中圆点图标"];
-            [[CCTools sharedInstance] addborderToView:view width:1.0 color:COLOR_e5e5e5];
-        }
-    } else {
-        UIImageView *imageV = [self.temView viewWithTag:1];
-        imageV.image = [UIImage imageNamed:@"未选中圆点图标"];
-        [[CCTools sharedInstance] addborderToView:self.temView width:1.0 color:COLOR_e5e5e5];
-        
-        imageView.image = [UIImage imageNamed:@"选中圆点图标 1"];
-        [[CCTools sharedInstance] addborderToView:view width:1.0 color:kMainColor];
 
-        self.temView = view;
-    }
-}
 @end

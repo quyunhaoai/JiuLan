@@ -39,7 +39,7 @@
 /**
  *  回调统计选中tag
  */
-@property(nonatomic,copy)void (^didselectItemBlock)(NSArray*arr);
+@property(nonatomic,copy)void (^didselectItemBlock)(NSArray*arr,NSInteger tag);
 
 /**
  *  是否可点击

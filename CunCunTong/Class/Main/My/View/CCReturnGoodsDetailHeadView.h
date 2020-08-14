@@ -11,6 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCReturnGoodsDetailHeadView : CCBaseView
+@property (strong, nonatomic) UIImageView *stateImage; //  
+
+@property (strong, nonatomic) UILabel *ccctitleLab;  
 
 @end
 

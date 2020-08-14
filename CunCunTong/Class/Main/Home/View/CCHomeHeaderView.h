@@ -9,6 +9,7 @@
 typedef void(^buttonClick)(NSInteger i);
 #import "CCBaseView.h"
 #import "SDCycleScrollView.h"
+#import "CCLunboTuModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCHomeHeaderView : CCBaseView
@@ -18,7 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) SDCycleScrollView *bgImage;
 
-@property (strong, nonatomic) NSArray *dataArray;   
+@property (strong, nonatomic) NSArray *dataArray;
+@property (strong, nonatomic) NSArray *photosArray;   
 @end
 
 NS_ASSUME_NONNULL_END

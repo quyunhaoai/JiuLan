@@ -11,18 +11,37 @@
 #import "CCSelectGoodsViewController.h"
 #import "BRDatePickerView.h"
 #import "CCSelectCatediyViewController.h"
-@interface CCNewAddPanDianViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "BRStringPickerView.h"
+#import "CCAddPanDianModel.h"
+#import "CCBigPanDianTableViewCell.h"
+#import <IQKeyboardManager.h>
+@interface CCNewAddPanDianViewController ()<UITableViewDelegate,UITableViewDataSource,KKCommonDelegate>
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSArray *titleArray;
-
+@property (nonatomic,copy) NSString *createStr;
+@property (nonatomic,strong) CCAddPanDianModel *model;
+@property (nonatomic,copy) NSString *status;
+@property (nonatomic,copy) NSString *types;
+@property (nonatomic,copy) NSString *remark;
+@property (nonatomic,copy) NSString *selelctCatedity;  //
+@property (strong, nonatomic) NSMutableDictionary *myDic;  //
 @end
 
 @implementation CCNewAddPanDianViewController
-
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+     [IQKeyboardManager sharedManager].enable = NO;
+}
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+         [IQKeyboardManager sharedManager].enable = YES;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
+    self.createStr = @"";
+    self.remark = @"";
+    self.types = @"0";
     [self customNavBarWithTitle:@"新增盘点单"];
     self.tableView.backgroundColor = UIColorHex(0xf7f7f7);
     [self.view addSubview:self.tableView];
@@ -33,6 +52,53 @@
     }];
     self.tableView.contentInset = UIEdgeInsetsMake(10, 0, 0, 0);
     self.tableView.contentOffset = CGPointMake(0, -10);
+    if ([self.paindianID intValue]) {
+        self.status = @"0";
+        [self initData];
+    } else {
+        self.status = @"1";
+    }
+    [self.tableView registerClass:CCBigPanDianTableViewCell.class
+           forCellReuseIdentifier:@"CCBigPanDianTableViewCell"];
+    [kNotificationCenter addObserver:self selector:@selector(initData) name:@"initData" object:nil];
+    [kNotificationCenter addObserver:self selector:@selector(initData2:) name:@"initData2" object:nil];
+    
+}
+
+- (void)initData2:(NSNotification *)noti {
+
+}
+
+- (void)dealloc {
+    [kNotificationCenter removeObserver:self name:@"initData" object:nil];
+    [kNotificationCenter removeObserver:self name:@"initData2" object:nil];
+}
+- (void)initData {
+    XYWeakSelf;
+    NSDictionary *params = @{
+    };
+    NSString *path =[NSString stringWithFormat:@"app0/marketreckon/%@/",self.paindianID];
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            weakSelf.myDic = data.mutableCopy;
+            weakSelf.model = [CCAddPanDianModel modelWithJSON:data];
+            weakSelf.sumlab.text = [NSString stringWithFormat:@"  共%ld种商品",weakSelf.model.count];
+            [weakSelf.tableView reloadData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 
 #pragma mark  - Get
@@ -51,8 +117,15 @@
     return _tableView;
 }
 - (void)goodsSelect:(UIButton*)button {
-    CCSelectGoodsViewController *vc = [CCSelectGoodsViewController new];
-    [self.navigationController pushViewController:vc animated:YES];
+    if ([self.createStr isNotBlank]) {
+        CCSelectGoodsViewController *vc = [CCSelectGoodsViewController new];
+        vc.catedity = self.createStr;
+        vc.titleStr = @"选择盘点商品";
+        vc.paindianID = self.paindianID;
+        [self.navigationController pushViewController:vc animated:YES];
+    } else {
+        [MBManager showBriefAlert:@"请选择盘点分类"];
+    }
 }
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -61,252 +134,406 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return 3;;
+        return 4;;
     } else if (section == 1){
-        return 3;
+        return 2+self.model.child_set.count;
     }
     return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"CellIdentifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if(cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.backgroundColor = [UIColor whiteColor];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [cell.contentView removeAllSubviews];
-    if (indexPath.section == 1 && indexPath.row == 1) {
-        KKButton *backBtn = [KKButton buttonWithType:UIButtonTypeCustom];
-        [backBtn setBackgroundColor:krgb(255,165,0)];
-        [backBtn.titleLabel setFont:FONT_13];
-        [backBtn setTitleColor:kWhiteColor forState:UIControlStateNormal];
-        [backBtn setTitle:@"选择商品" forState:UIControlStateNormal];
-        [backBtn setImage:IMAGE_NAME(@"选择商品加号") forState:UIControlStateNormal];
-        backBtn.layer.cornerRadius = 3;
-        backBtn.layer.masksToBounds = YES;
-        [backBtn addTarget:self action:@selector(goodsSelect:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:backBtn];
-        [backBtn mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.centerX.mas_equalTo(cell.contentView).mas_offset(0);
-            make.centerY.mas_equalTo(cell.contentView);
-            make.width.mas_equalTo(82);
-            make.height.mas_equalTo(25);
-        }];
-        [backBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleLeft imageTitleSpace:5];
-        UIView *line = [UIView new];
-        line.backgroundColor = UIColorHex(0xf7f7f7);
-        [cell.contentView addSubview:line];
-        [line mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(20);
-            make.bottom.mas_equalTo(cell.contentView);
-            make.width.mas_equalTo(Window_W-40);
-            make.height.mas_equalTo(kWidth(1));
-        }];
-    } else if (indexPath.section == 2 && indexPath.row == 1) {
-        UITextField *titleTextField = [UITextField new];
-        titleTextField.font = FONT_16;
-        titleTextField.textAlignment = NSTextAlignmentLeft;
-        titleTextField.textColor = COLOR_999999;
-        [titleTextField setValue:[UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0] forKeyPath:@"_placeholderLabel.textColor"];
-        titleTextField.userInteractionEnabled = YES;
-        [cell.contentView addSubview:titleTextField];
-        titleTextField.frame = CGRectMake(55, 10, Window_W - 115, 30);
-        titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        titleTextField.tag = 100+indexPath.row;
-        [cell.contentView addSubview:titleTextField];
-    } else if (indexPath.row == 0 || indexPath.section == 0) {
-        UILabel *subtitleLab = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_333333;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab];
-        [subtitleLab mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(237, 14));
-            make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
-        }];
-        if (indexPath.row == 0) {
-            UIImageView *rightIcon = ({
-                UIImageView *view = [UIImageView new];
-                view.contentMode = UIViewContentModeScaleAspectFit;
-                view.image = [UIImage imageNamed:@"竖线"];
-                view.userInteractionEnabled = YES;
-                view.tag = 100+indexPath.row;
-                view ;
-            });
-            [cell.contentView addSubview:rightIcon];
-            [rightIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.mas_equalTo(cell.contentView).mas_offset(10);
-                make.centerY.mas_equalTo(cell.contentView);
-                make.width.mas_equalTo(kWidth(3));
-                make.height.mas_equalTo(kWidth(14));
-            }];
-            subtitleLab.text = self.titleArray[indexPath.section];
-        } else if(indexPath.row == 1){
-            subtitleLab.text = @"单据日期";
-            
-        } else if(indexPath.row == 2){
-            subtitleLab.text = @"盘点分类";
+    if (![self.paindianID intValue]) {
+      static NSString *CellIdentifier = @"CellIdentifier";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if(cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+            cell.backgroundColor = [UIColor whiteColor];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
-        if (indexPath.row == 1 || indexPath.row == 2) {
-            UILabel *titleLab = ({
+        [cell.contentView removeAllSubviews];
+        if (indexPath.section == 1 && indexPath.row == 1) {
+            KKButton *backBtn = [KKButton buttonWithType:UIButtonTypeCustom];
+            [backBtn setBackgroundColor:krgb(255,165,0)];
+            [backBtn.titleLabel setFont:FONT_13];
+            [backBtn setTitleColor:kWhiteColor forState:UIControlStateNormal];
+            [backBtn setTitle:@"选择商品" forState:UIControlStateNormal];
+            [backBtn setImage:IMAGE_NAME(@"选择商品加号") forState:UIControlStateNormal];
+            backBtn.layer.cornerRadius = 3;
+            backBtn.layer.masksToBounds = YES;
+            [backBtn addTarget:self action:@selector(goodsSelect:) forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:backBtn];
+            [backBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.centerX.mas_equalTo(cell.contentView).mas_offset(0);
+                make.centerY.mas_equalTo(cell.contentView);
+                make.width.mas_equalTo(82);
+                make.height.mas_equalTo(25);
+            }];
+            [backBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleLeft imageTitleSpace:5];
+            UIView *line = [UIView new];
+            line.backgroundColor = UIColorHex(0xf7f7f7);
+            [cell.contentView addSubview:line];
+            [line mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(cell.contentView).mas_offset(20);
+                make.bottom.mas_equalTo(cell.contentView);
+                make.width.mas_equalTo(Window_W-40);
+                make.height.mas_equalTo(kWidth(1));
+            }];
+        } else if (indexPath.section == 2 && indexPath.row == 1) {
+            UITextField *titleTextField = [UITextField new];
+            titleTextField.font = FONT_16;
+            titleTextField.textAlignment = NSTextAlignmentLeft;
+            titleTextField.textColor = COLOR_999999;
+            titleTextField.userInteractionEnabled = YES;
+            [cell.contentView addSubview:titleTextField];
+            titleTextField.frame = CGRectMake(20, 10, Window_W - 40, 30);
+            titleTextField.clearButtonMode = 0;
+            titleTextField.tag = 100+indexPath.row;
+            [titleTextField addTarget:self action:@selector(textFieldsChange:) forControlEvents:UIControlEventEditingChanged];
+            [cell.contentView addSubview:titleTextField];
+        } else if (indexPath.row == 0 || indexPath.section == 0) {
+            UILabel *subtitleLab = ({
                 UILabel *view = [UILabel new];
-                view.textColor =COLOR_666666;
+                view.textColor =COLOR_333333;
                 view.font = STFont(13);
                 view.lineBreakMode = NSLineBreakByTruncatingTail;
                 view.backgroundColor = [UIColor clearColor];
-                view.textAlignment = NSTextAlignmentRight;
-                view.tag = 1000;
+                view.textAlignment = NSTextAlignmentLeft;
+                view.tag = 100;
                 view ;
             });
-            [cell.contentView addSubview:titleLab];
-            [titleLab mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.right.mas_equalTo(cell.contentView).mas_offset(-20);
-                make.size.mas_equalTo(CGSizeMake(117, 14));
+            [cell.contentView addSubview:subtitleLab];
+            [subtitleLab mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(cell.contentView).mas_offset(23);
+                make.size.mas_equalTo(CGSizeMake(237, 14));
                 make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
             }];
-            if (indexPath.row == 1) {
-                titleLab.text = [NSString getCurrentTime:@"yyyy-MM-dd"];
-                [titleLab addTapGestureWithBlock:^(UIView *gestureView) {
-                    NSString *str = [NSString getCurrentTime:@"yyyy-MM-dd"];
-                    [BRDatePickerView showDatePickerWithTitle:@"请选择" dateType:BRDatePickerModeYMD defaultSelValue:str resultBlock:^(NSString *selectValue) {
-                        titleLab.text = selectValue;
-                    }];
+            if (indexPath.row == 0) {
+                UIImageView *rightIcon = ({
+                    UIImageView *view = [UIImageView new];
+                    view.contentMode = UIViewContentModeScaleAspectFit;
+                    view.image = [UIImage imageNamed:@"竖线"];
+                    view.userInteractionEnabled = YES;
+                    view.tag = 100+indexPath.row;
+                    view ;
+                });
+                [cell.contentView addSubview:rightIcon];
+                [rightIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.left.mas_equalTo(cell.contentView).mas_offset(10);
+                    make.centerY.mas_equalTo(cell.contentView);
+                    make.width.mas_equalTo(kWidth(3));
+                    make.height.mas_equalTo(kWidth(14));
                 }];
-            } else if(indexPath.row == 2) {
-                titleLab.text = @"请选择盘点分类";
+                subtitleLab.text = self.titleArray[indexPath.section];
+            } else if(indexPath.row == 1){
+                subtitleLab.text = @"盘点类型";
+                UIButton *chongzhiBtn = ({
+                      UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
+                      [view setImage:IMAGE_NAME(@"未选中圆点图标") forState:UIControlStateNormal];
+                      [view setImage:IMAGE_NAME(@"选中圆点图标 1") forState:UIControlStateSelected];
+                      view.tag = 3;
+                      [view addTarget:self action:@selector(BtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+                      view ;
+                  });
+                  [cell.contentView addSubview:chongzhiBtn];
+                  [chongzhiBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+                      make.left.mas_equalTo(cell.contentView).mas_offset(101);
+                      make.size.mas_equalTo(CGSizeMake(16, 16));
+                      make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                  }];
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(101+16+15, 7.5, 67, 20)];
+                      label.textColor = COLOR_999999;
+                      label.font = FONT_14;
+                      label.text = @"周盘";
+                      label.textAlignment = NSTextAlignmentLeft;
+                      [cell.contentView addSubview:label];
+                      label.tag = 110+indexPath.row;
+                  UIButton *chongzhiBtn1 = ({
+                      UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
+                      [view setImage:IMAGE_NAME(@"未选中圆点图标") forState:UIControlStateNormal];
+                      [view setImage:IMAGE_NAME(@"选中圆点图标 1") forState:UIControlStateSelected];
+                      view.tag = 4;
+                      [view addTarget:self action:@selector(BtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+                      view ;
+                  });
+                  [cell.contentView addSubview:chongzhiBtn1];
+                  [chongzhiBtn1 mas_makeConstraints:^(MASConstraintMaker *make) {
+                      make.left.mas_equalTo(cell.contentView).mas_offset(199);
+                      make.size.mas_equalTo(CGSizeMake(16, 16));
+                      make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                  }];
+            
+                  UILabel *titlelab1 = ({
+                      UILabel *view = [UILabel new];
+                      view.textColor =COLOR_999999;
+                      view.font = STFont(14);
+                      view.lineBreakMode = NSLineBreakByTruncatingTail;
+                      view.backgroundColor = [UIColor clearColor];
+                      view.textAlignment = NSTextAlignmentLeft;
+                      view.text = @"月盘";
+                      view ;
+                  });
+                  [cell.contentView addSubview:titlelab1];
+                  [titlelab1 mas_updateConstraints:^(MASConstraintMaker *make) {
+                      make.left.mas_equalTo(cell.contentView).mas_offset(199+16+13);
+                      make.size.mas_equalTo(CGSizeMake(117, 20));
+                      make.top.mas_equalTo(cell.contentView).mas_offset(7.5);
+                  }];
+                if ([self.types isEqualToString:@"1"]) {
+                    [chongzhiBtn1 setSelected:YES];
+                } else {
+                    [chongzhiBtn setSelected:YES];
+                }
+            } else if(indexPath.row == 2){
+                subtitleLab.text = @"单据日期";
+                
+            } else if(indexPath.row == 3){
+                subtitleLab.text = @"盘点分类";
             }
+            if (indexPath.row == 3 || indexPath.row == 2) {
+                UILabel *titleLab = ({
+                    UILabel *view = [UILabel new];
+                    view.textColor =COLOR_666666;
+                    view.font = STFont(13);
+                    view.lineBreakMode = NSLineBreakByTruncatingTail;
+                    view.backgroundColor = [UIColor clearColor];
+                    view.textAlignment = NSTextAlignmentRight;
+                    view.tag = 1000;
+                    view ;
+                });
+                [cell.contentView addSubview:titleLab];
+                [titleLab mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.right.mas_equalTo(cell.contentView).mas_offset(-20);
+                    make.size.mas_equalTo(CGSizeMake(117, 14));
+                    make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                }];
+                if (indexPath.row == 2) {
+                    titleLab.text = [NSString getCurrentTime:@"yyyy-MM-dd"];
+                    [titleLab addTapGestureWithBlock:^(UIView *gestureView) {
+                        NSString *str = [NSString getCurrentTime:@"yyyy-MM-dd"];
+                        [BRDatePickerView showDatePickerWithTitle:@"请选择" dateType:BRDatePickerModeYMD defaultSelValue:str resultBlock:^(NSString *selectValue) {
+                            titleLab.text = selectValue;
+                        }];
+                    }];
+                } else if(indexPath.row == 3) {
+                    titleLab.text =self.selelctCatedity.length ? self.selelctCatedity : @"请选择盘点分类";
+                }
+            }
+            UIView *line = [UIView new];
+            line.backgroundColor = UIColorHex(0xf7f7f7);
+            [cell.contentView addSubview:line];
+            [line mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(cell.contentView).mas_offset(20);
+                make.bottom.mas_equalTo(cell.contentView);
+                make.width.mas_equalTo(Window_W-40);
+                make.height.mas_equalTo(kWidth(1));
+            }];
+        } else if (indexPath.section == 1 && indexPath.row >1){
+            Child_setItem *item = self.model.child_set[indexPath.row-2];
+            CCBigPanDianTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCBigPanDianTableViewCell"];
+            cell.item = item;
+            cell.deleaget = self;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            return cell;
         }
-        UIView *line = [UIView new];
-        line.backgroundColor = UIColorHex(0xf7f7f7);
-        [cell.contentView addSubview:line];
-        [line mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(20);
-            make.bottom.mas_equalTo(cell.contentView);
-            make.width.mas_equalTo(Window_W-40);
-            make.height.mas_equalTo(kWidth(1));
-        }];
-    } else if (indexPath.section == 1 && indexPath.row >1){
-        UILabel *subtitleLab = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_666666;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"商品名称：娃哈哈矿泉水";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab];
-        [subtitleLab mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(237, 14));
-            make.top.mas_equalTo(cell.contentView).mas_offset(10);
-        }];
-        
-        UILabel *subtitleLab2 = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_666666;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"规格：500ml";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab2];
-        [subtitleLab2 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(167, 14));
-            make.top.mas_equalTo(subtitleLab.mas_bottom).mas_offset(6);
-        }];
-        UILabel *subtitleLab3 = ({
-            UILabel *view = [UILabel new];
-            view.textColor = krgb(255,16,16);
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"库存数量：";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab3];
-        [subtitleLab3 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(cell.contentView).mas_offset(23);
-            make.size.mas_equalTo(CGSizeMake(80, 14));
-            make.top.mas_equalTo(subtitleLab2.mas_bottom).mas_offset(6);
-        }];
-        UITextField *titleTextField = [UITextField new];
-        titleTextField.font = FONT_16;
-        titleTextField.textAlignment = NSTextAlignmentLeft;
-        titleTextField.textColor = COLOR_999999;
-        [titleTextField setValue:[UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0] forKeyPath:@"_placeholderLabel.textColor"];
-        titleTextField.userInteractionEnabled = YES;
-        [cell.contentView addSubview:titleTextField];
-        titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        titleTextField.tag = 100+indexPath.row;
-        [cell.contentView addSubview:titleTextField];
-        [titleTextField mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(subtitleLab3.mas_right).mas_offset(5);
-            make.size.mas_equalTo(CGSizeMake(80, 14));
-            make.top.mas_equalTo(subtitleLab2.mas_bottom).mas_offset(6);
-        }];
-        UILabel *subtitleLab4 = ({
-            UILabel *view = [UILabel new];
-            view.textColor =COLOR_666666;
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"单位：瓶";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab4];
-        [subtitleLab4 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(subtitleLab2.mas_right).mas_offset(10);
-            make.size.mas_equalTo(CGSizeMake(107, 14));
-            make.top.mas_equalTo(subtitleLab.mas_bottom).mas_offset(6);
-        }];
-        UILabel *subtitleLab5 = ({
-            UILabel *view = [UILabel new];
-            view.textColor =krgb(255,24,24);
-            view.font = STFont(13);
-            view.lineBreakMode = NSLineBreakByTruncatingTail;
-            view.backgroundColor = [UIColor clearColor];
-            view.textAlignment = NSTextAlignmentLeft;
-            view.tag = 100;
-            view.text = @"盘点数量：10";
-            view ;
-        });
-        [cell.contentView addSubview:subtitleLab5];
-        [subtitleLab5 mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(subtitleLab4).mas_offset(0);
-            make.size.mas_equalTo(CGSizeMake(107, 14));
-            make.top.mas_equalTo(subtitleLab4.mas_bottom).mas_offset(6);
-        }];
-        UIView *line = [UIView new];
-         line.backgroundColor = UIColorHex(0xf7f7f7);
-         [cell.contentView addSubview:line];
-         [line mas_updateConstraints:^(MASConstraintMaker *make) {
-             make.left.mas_equalTo(cell.contentView).mas_offset(20);
-             make.bottom.mas_equalTo(cell.contentView);
-             make.width.mas_equalTo(Window_W-40);
-             make.height.mas_equalTo(kWidth(1));
-         }];
+        return cell;
+    } else {
+          static NSString *CellIdentifier = @"CellIdentifier";
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            if(cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+                cell.backgroundColor = [UIColor whiteColor];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            }
+            [cell.contentView removeAllSubviews];
+            cell.contentView.userInteractionEnabled = NO;
+
+            if (indexPath.section == 1 && indexPath.row == 1) {
+                KKButton *backBtn = [KKButton buttonWithType:UIButtonTypeCustom];
+                [backBtn setBackgroundColor:krgb(255,165,0)];
+                [backBtn.titleLabel setFont:FONT_13];
+                [backBtn setTitleColor:kWhiteColor forState:UIControlStateNormal];
+                [backBtn setTitle:@"选择商品" forState:UIControlStateNormal];
+                [backBtn setImage:IMAGE_NAME(@"选择商品加号") forState:UIControlStateNormal];
+                backBtn.layer.cornerRadius = 3;
+                backBtn.layer.masksToBounds = YES;
+                backBtn.userInteractionEnabled = YES;
+                [backBtn addTarget:self action:@selector(goodsSelect:) forControlEvents:UIControlEventTouchUpInside];
+                [cell.contentView addSubview:backBtn];
+                [backBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.centerX.mas_equalTo(cell.contentView).mas_offset(0);
+                    make.centerY.mas_equalTo(cell.contentView);
+                    make.width.mas_equalTo(82);
+                    make.height.mas_equalTo(25);
+                }];
+                [backBtn layoutButtonWithEdgeInsetsStyle:KKButtonEdgeInsetsStyleLeft imageTitleSpace:5];
+                UIView *line = [UIView new];
+                line.backgroundColor = UIColorHex(0xf7f7f7);
+                [cell.contentView addSubview:line];
+                [line mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.left.mas_equalTo(cell.contentView).mas_offset(20);
+                    make.bottom.mas_equalTo(cell.contentView);
+                    make.width.mas_equalTo(Window_W-40);
+                    make.height.mas_equalTo(kWidth(1));
+                }];
+                cell.contentView.userInteractionEnabled = YES;
+                self.createStr =STRING_FROM_INTAGER(self.model.category_id);
+            } else if (indexPath.section == 2 && indexPath.row == 1) {
+                UITextField *titleTextField = [UITextField new];
+                titleTextField.font = FONT_14;
+                titleTextField.textAlignment = NSTextAlignmentLeft;
+                titleTextField.textColor = COLOR_999999;
+                titleTextField.userInteractionEnabled = YES;
+                [cell.contentView addSubview:titleTextField];
+                titleTextField.frame = CGRectMake(20, 10, Window_W - 40, 30);
+                titleTextField.clearButtonMode = UITextFieldViewModeNever;
+                titleTextField.tag = 100+indexPath.row;
+                [titleTextField addTarget:self action:@selector(textFieldsChange:) forControlEvents:UIControlEventEditingChanged];
+                [cell.contentView addSubview:titleTextField];
+                cell.contentView.userInteractionEnabled = YES;
+            } else if (indexPath.row == 0 || indexPath.section == 0) {
+                UILabel *subtitleLab = ({
+                    UILabel *view = [UILabel new];
+                    view.textColor =COLOR_333333;
+                    view.font = STFont(13);
+                    view.lineBreakMode = NSLineBreakByTruncatingTail;
+                    view.backgroundColor = [UIColor clearColor];
+                    view.textAlignment = NSTextAlignmentLeft;
+                    view.tag = 100;
+                    view ;
+                });
+                [cell.contentView addSubview:subtitleLab];
+                [subtitleLab mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.left.mas_equalTo(cell.contentView).mas_offset(23);
+                    make.size.mas_equalTo(CGSizeMake(237, 14));
+                    make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                }];
+                if (indexPath.row == 0) {
+                    UIImageView *rightIcon = ({
+                        UIImageView *view = [UIImageView new];
+                        view.contentMode = UIViewContentModeScaleAspectFit;
+                        view.image = [UIImage imageNamed:@"竖线"];
+                        view.userInteractionEnabled = YES;
+                        view.tag = 100+indexPath.row;
+                        view ;
+                    });
+                    [cell.contentView addSubview:rightIcon];
+                    [rightIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+                        make.left.mas_equalTo(cell.contentView).mas_offset(10);
+                        make.centerY.mas_equalTo(cell.contentView);
+                        make.width.mas_equalTo(kWidth(3));
+                        make.height.mas_equalTo(kWidth(14));
+                    }];
+                    subtitleLab.text = self.titleArray[indexPath.section];
+                } else if(indexPath.row == 1){
+                    subtitleLab.text = @"盘点类型";
+                    UIButton *chongzhiBtn = ({
+                          UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
+                          [view setImage:IMAGE_NAME(@"未选中圆点图标") forState:UIControlStateNormal];
+                          [view setImage:IMAGE_NAME(@"选中圆点图标 1") forState:UIControlStateSelected];
+                          view.tag = 3;
+                          [view addTarget:self action:@selector(BtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+                          view ;
+                      });
+                      [cell.contentView addSubview:chongzhiBtn];
+                      [chongzhiBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+                          make.left.mas_equalTo(cell.contentView).mas_offset(101);
+                          make.size.mas_equalTo(CGSizeMake(16, 16));
+                          make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                      }];
+                    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(101+16+15, 7.5, 67, 20)];
+                          label.textColor = COLOR_999999;
+                          label.font = FONT_14;
+                          label.text = @"周盘";
+                          label.textAlignment = NSTextAlignmentLeft;
+                          [cell.contentView addSubview:label];
+                          label.tag = 110+indexPath.row;
+                      UIButton *chongzhiBtn1 = ({
+                          UIButton *view = [UIButton buttonWithType:UIButtonTypeCustom];
+                          [view setImage:IMAGE_NAME(@"未选中圆点图标") forState:UIControlStateNormal];
+                          [view setImage:IMAGE_NAME(@"选中圆点图标 1") forState:UIControlStateSelected];
+                          view.tag = 4;
+                          [view addTarget:self action:@selector(BtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+                          view ;
+                      });
+                      [cell.contentView addSubview:chongzhiBtn1];
+                      [chongzhiBtn1 mas_makeConstraints:^(MASConstraintMaker *make) {
+                          make.left.mas_equalTo(cell.contentView).mas_offset(199);
+                          make.size.mas_equalTo(CGSizeMake(16, 16));
+                          make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                      }];
+                
+                      UILabel *titlelab1 = ({
+                          UILabel *view = [UILabel new];
+                          view.textColor =COLOR_999999;
+                          view.font = STFont(14);
+                          view.lineBreakMode = NSLineBreakByTruncatingTail;
+                          view.backgroundColor = [UIColor clearColor];
+                          view.textAlignment = NSTextAlignmentLeft;
+                          view.text = @"月盘";
+                          view ;
+                      });
+                      [cell.contentView addSubview:titlelab1];
+                      [titlelab1 mas_updateConstraints:^(MASConstraintMaker *make) {
+                          make.left.mas_equalTo(cell.contentView).mas_offset(199+16+13);
+                          make.size.mas_equalTo(CGSizeMake(117, 20));
+                          make.top.mas_equalTo(cell.contentView).mas_offset(7.5);
+                      }];
+                    if (self.model.types == 0) {
+                        chongzhiBtn.selected = YES;
+                        chongzhiBtn1.selected = NO;
+                    } else {
+                        chongzhiBtn1.selected = YES;
+                        chongzhiBtn.selected = NO;
+                    }
+                    self.types = STRING_FROM_INTAGER(self.model.types);
+                } else if(indexPath.row == 2){
+                    subtitleLab.text = @"单据日期";
+                    
+                } else if(indexPath.row == 3){
+                    subtitleLab.text = @"盘点分类";
+                }
+                if (indexPath.row == 3 || indexPath.row == 2) {
+                    UILabel *titleLab = ({
+                        UILabel *view = [UILabel new];
+                        view.textColor =COLOR_666666;
+                        view.font = STFont(13);
+                        view.lineBreakMode = NSLineBreakByTruncatingTail;
+                        view.backgroundColor = [UIColor clearColor];
+                        view.textAlignment = NSTextAlignmentRight;
+                        view.tag = 1000;
+                        view ;
+                    });
+                    [cell.contentView addSubview:titleLab];
+                    [titleLab mas_updateConstraints:^(MASConstraintMaker *make) {
+                        make.right.mas_equalTo(cell.contentView).mas_offset(-20);
+                        make.size.mas_equalTo(CGSizeMake(217, 14));
+                        make.centerY.mas_equalTo(cell.contentView).mas_offset(0);
+                    }];
+                    if (indexPath.row == 2) {
+                        titleLab.text = self.model.update_time;
+                    } else if(indexPath.row == 3) {
+                        titleLab.text = self.model.category;
+                    }
+                }
+                UIView *line = [UIView new];
+                line.backgroundColor = UIColorHex(0xf7f7f7);
+                [cell.contentView addSubview:line];
+                [line mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.left.mas_equalTo(cell.contentView).mas_offset(20);
+                    make.bottom.mas_equalTo(cell.contentView);
+                    make.width.mas_equalTo(Window_W-40);
+                    make.height.mas_equalTo(kWidth(1));
+                }];
+            } else if (indexPath.section == 1 && indexPath.row >1){
+                Child_setItem *item = self.model.child_set[indexPath.row-2];
+                CCBigPanDianTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCBigPanDianTableViewCell"];
+                cell.item = item;
+                cell.deleaget = self;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                return cell;
+            }
+            return cell;
     }
-    return cell;
 }
 
 #pragma mark - Table view delegate
@@ -314,7 +541,8 @@
     if (indexPath.row ==0 || indexPath.section == 0) {
         return 35;
     } else if (indexPath.section == 1 && indexPath.row >1){
-        return 74;
+        Child_setItem *item = self.model.child_set[indexPath.row-2];
+        return 74+item.batch_set.count*66+50;
     }
     return 51;
 }
@@ -341,17 +569,73 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (indexPath.section == 0 && indexPath.row == 2) {
+    [self.tableView endEditing:YES];
+    if (indexPath.section == 0 && indexPath.row == 3 && ![self.paindianID intValue]) {
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         UILabel *textLab = [cell viewWithTag:1000];
-        CCSelectCatediyViewController *vc = [CCSelectCatediyViewController new];
-        vc.clickCatedity = ^(NSString * _Nonnull name) {
-            NSLog(@"%@",name);
-            textLab.text = name;
+        XYWeakSelf;
+        NSDictionary *params = @{
         };
-        [self.navigationController pushViewController:vc animated:YES];
+        NSString *path = @"/app0/category1/";
+        [[STHttpResquest sharedManager] requestWithMethod:GET
+                                                 WithPath:path
+                                               WithParams:params
+                                         WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+            NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+            NSString *msg = [[dic objectForKey:@"errmsg"] description];
+            if(status == 0){
+                NSArray *data = dic[@"data"];
+                NSMutableArray *array = [NSMutableArray arrayWithCapacity:0];
+                for (NSDictionary *dic in data) {
+                    [array addObject:dic[@"name"]];
+                }
+                [BRStringPickerView showStringPickerWithTitle:@"" dataSource:array defaultSelValue:@"" isAutoSelect:NO themeColor:kMainColor resultBlock:^(id selectValue) {
+                    textLab.text = selectValue;
+                    for (NSDictionary *dic in data) {
+                        NSString *str = dic[@"name"];
+                        if ([selectValue isEqualToString:str]) {
+                            weakSelf.createStr = [NSString stringWithFormat:@"%ld",[dic[@"id"] integerValue]];
+                        }
+                    }
+                    weakSelf.selelctCatedity = selectValue;
+                    [weakSelf clearData];
+                } cancelBlock:^{
+                    
+                }];
+
+            }else {
+                if (msg.length>0) {
+                    [MBManager showBriefAlert:msg];
+                }
+            }
+        } WithFailurBlock:^(NSError * _Nonnull error) {
+        }];
     }
 }
+- (void)clearData {
+    XYWeakSelf;
+    NSDictionary *params = @{
+    };
+    NSString *path =[NSString stringWithFormat:@"/app0/reckoncentersku/%@/",self.paindianID];
+    [[STHttpResquest sharedManager] requestWithPUTMethod:DELETE
+                                                WithPath:path
+                                              WithParams:params
+                                        WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            [weakSelf initData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // 圆角弧度半径
@@ -434,16 +718,160 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
-
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.view endEditing:YES];
+}
 
 - (IBAction)panDianOver:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    XYWeakSelf;
+    NSDictionary *params = @{@"category_id":self.createStr,
+                             @"status":@(1),
+                             @"types":self.types,
+                             @"remark":self.remark,
+                             @"child_set":self.model.child_set.modelToJSONObject,
+    };
+    NSString *path = [self.paindianID integerValue] ?  [NSString stringWithFormat:@"/app0/marketreckon/%@/",self.paindianID] : @"/app0/marketreckon/";
+    [[STHttpResquest sharedManager] requestWithPUTMethod:[self.paindianID integerValue] ? PUT : POST
+                                                WithPath:path
+                                              WithParams:params
+                                        WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [kNotificationCenter postNotificationName:@"initData" object:nil];
+                [weakSelf.navigationController popViewControllerAnimated:YES];
+            });
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+
 }
 
 - (IBAction)zanCunBtn:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    XYWeakSelf;
+    NSDictionary *params = @{@"category_id":self.createStr,
+                             @"status":@(0),
+                             @"types":self.types,
+                             @"remark":self.remark,
+                             @"child_set":self.self.model.child_set.modelToJSONObject,
+    };
+    NSString *path = [self.paindianID integerValue] ?  [NSString stringWithFormat:@"/app0/marketreckon/%@/",self.paindianID] : @"/app0/marketreckon/";
+    [[STHttpResquest sharedManager] requestWithPUTMethod:[self.paindianID integerValue] ? PUT : POST
+                                                WithPath:path
+                                              WithParams:params
+                                        WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [kNotificationCenter postNotificationName:@"initData" object:nil];
+                 [weakSelf.navigationController popViewControllerAnimated:YES];
+             });
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 
+- (void)BtnClicked:(UIButton *)button {
+    button.selected = !button.isSelected;
+    UIView *cell = (UIView *)button.superview;
+    if (button.tag == 13) {//提交
+        
+    } else if (button.tag == 3) {
+        self.types = @"0";
+        button.selected = YES;
+        UIButton *otherBtn = [cell viewWithTag:4];
+        otherBtn.selected = NO;
+    } else {
+        self.types = @"1";
+        button.selected = YES;
+        UIButton *otherBtn = [cell viewWithTag:3];
+        otherBtn.selected = NO;
+    }
+}
 
+- (void)textFieldsChange:(UITextField *)textField {
+    if (textField.tag == 101) {
+        self.remark = textField.text;
+    } else {
+        UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
+        NSIndexPath *path = [self.tableView indexPathForCell:cell];
+        Child_setItem *item = self.model.child_set[path.row-2];
+        item.count = [textField.text integerValue];
+    }
+}
 
+#pragma mark  -  kkcommontdelegate
+- (void)clickButtonWithView:(id)view item:(id)item {
+    UIButton *button = (UIButton *)view;
+    CCBigPanDianTableViewCell *cell = (CCBigPanDianTableViewCell *)button.superview.superview.superview.superview;
+    NSIndexPath *path = [self.tableView indexPathForCell:cell];
+    NSMutableArray *arr = [self.myDic[@"child_set"] mutableCopy];
+    NSMutableDictionary *dict = [arr[path.row-2] mutableCopy];
+    NSMutableArray *arr2 = [dict[@"batch_set"] mutableCopy];
+    [arr2 addObject:@{ @"id": @0,
+                       @"product_date": @"",
+                       @"amount": @0,
+                       @"stock_set": @[@0],
+                       @"sys_stock_set":@[@0],
+                       @"can_del":@1,
+    }];
+    [dict setObject:arr2 forKey:@"batch_set"];
+    [arr replaceObjectAtIndex:path.row-2 withObject:dict];
+    [self.myDic setObject:arr forKey:@"child_set"];
+    self.model = [CCAddPanDianModel modelWithJSON:self.myDic];
+    [self.tableView reloadData];
+}
+
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item andInView:(UIView *)View {
+    NSIndexPath *path2 = (NSIndexPath *)item;
+    CCBigPanDianTableViewCell *cell = (CCBigPanDianTableViewCell *)View;
+    NSIndexPath *path = [self.tableView indexPathForCell:cell];
+    NSMutableArray *arr = [self.myDic[@"child_set"] mutableCopy];
+    NSMutableDictionary *dict = [arr[path.row-2] mutableCopy];
+    NSMutableArray *arr2 = [dict[@"batch_set"] mutableCopy];
+    [arr2 removeObjectAtIndex:path2.row];
+    [dict setObject:arr2 forKey:@"batch_set"];
+    [arr replaceObjectAtIndex:path.row-2 withObject:dict];
+    [self.myDic setObject:arr forKey:@"child_set"];
+    self.model = [CCAddPanDianModel modelWithJSON:self.myDic];
+    [self.tableView reloadData];
+}
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item andInView:(UIView *)View andCommonCell:(NSIndexPath *)index {
+
+    UITextField *field = (UITextField *)item;
+    CCBigPanDianTableViewCell *cell = (CCBigPanDianTableViewCell *)View;
+    NSIndexPath *path = [self.tableView indexPathForCell:cell];
+    NSMutableArray *arr = [self.myDic[@"child_set"] mutableCopy];
+    NSMutableDictionary *dict = [arr[path.row-2] mutableCopy];
+    NSMutableArray *arr2 = [dict[@"batch_set"] mutableCopy];
+    NSMutableDictionary *mutablDict = [arr2[index.row] mutableCopy];
+    NSInteger count = [field.text integerValue];
+    NSMutableArray *stock_set = [mutablDict[@"stock_set"] mutableCopy];
+    if (type == 2) {
+        [stock_set replaceObjectAtIndex:1 withObject:[NSNumber numberWithInteger:count]];
+    } else {
+        [stock_set replaceObjectAtIndex:0 withObject:[NSNumber numberWithInteger:count]];
+    }
+    [mutablDict setValue:stock_set forKey:@"stock_set"];
+    [arr2 replaceObjectAtIndex:index.row withObject:mutablDict];
+    [dict setObject:arr2 forKey:@"batch_set"];
+    [arr replaceObjectAtIndex:path.row-2 withObject:dict];
+    [self.myDic setObject:arr forKey:@"child_set"];
+    self.model = [CCAddPanDianModel modelWithJSON:self.myDic];
+    [self.tableView reloadData];
+}
 @end

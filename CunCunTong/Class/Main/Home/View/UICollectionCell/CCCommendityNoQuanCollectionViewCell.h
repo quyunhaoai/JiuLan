@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CCGoodsDetail.h"
+#import "GBTagListView2.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCCommendityNoQuanCollectionViewCell : UICollectionViewCell
@@ -15,6 +16,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *titleLab;
 @property (weak, nonatomic) IBOutlet UILabel *subLab;
 @property (nonatomic,strong) CCGoodsDetail *model;
+@property (weak, nonatomic) IBOutlet UILabel *isZhiYLab;
+@property (strong, nonatomic) GBTagListView2 *tagListView;
+
+@property (weak, nonatomic) IBOutlet GBTagListView2 *tagContentView;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -327,6 +327,7 @@ NSString * const ID = @"SDCycleScrollViewCell";
             NSURL *url = (NSURL *)obj;
             urlString = [url absoluteString];
         }
+        urlString = [[CCTools sharedInstance] IsChinese:urlString];
         if (urlString) {
             [temp addObject:urlString];
         }

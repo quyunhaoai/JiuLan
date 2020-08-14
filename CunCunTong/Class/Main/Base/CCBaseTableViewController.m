@@ -19,7 +19,11 @@
 #import "CCGoodsSelectModelTableViewCell.h"
 #import "CCYouHuiQuanTableViewCell.h"
 #import "CCMyGoodsListTableViewCell.h"
-@interface CCBaseTableViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "CCKuCunWarnGoodsListTableViewCell.h"
+#import "CCHeadInfoTableViewCell.h"
+#import "CCFooterInfoTableViewCell.h"
+#import "CCNeedListModelTableViewCell.h"
+@interface CCBaseTableViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate>
 @property (nonatomic,readonly) UITableViewStyle style;
 @end
 
@@ -68,7 +72,32 @@
          forCellReuseIdentifier:@"CCYouHuiQuan"];
     [self.tableView registerNib:CCMyGoodsListTableViewCell.loadNib
          forCellReuseIdentifier:@"CCMyGoodsList"];
-//    [self addTableViewRefresh];
+    [self.tableView registerNib:CCKuCunWarnGoodsListTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCKuCunWarnGoodsListTableViewCell"];
+    [self.tableView registerClass:CCHeadInfoTableViewCell.class
+           forCellReuseIdentifier:@"CCHeadInfoTableViewCell"];
+    [self.tableView registerClass:CCFooterInfoTableViewCell.class
+           forCellReuseIdentifier:@"CCFooterInfoTableViewCell"];
+    [self.tableView registerNib:CCNeedListModelTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCNeedListModel"];
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeKeyBoard:)];
+//    tap.delegate = self;
+//    [self.tableView addGestureRecognizer:tap];
+}
+
+//- (void)closeKeyBoard:(UITapGestureRecognizer *)gest{
+//    [self.tableView endEditing:YES];
+//}
+
+
+//table添加手势
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    NSLog(@"---%@",touch.view.class);
+    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UIView"]) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 #pragma mark  - Get
 
@@ -136,20 +165,23 @@
 }
 
 - (void)tableViewDidSelect:(NSIndexPath *)indexPath {
-    
+//        [self.tableView endEditing:YES];
 }
 
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self.view endEditing:YES];
+    [self.tableView endEditing:YES];
 }
 
-
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.view endEditing:YES];
+}
 /// 添加下拉刷新
 - (void)addTableViewHeadRefresh {
     __weak typeof (self) weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        weakSelf.page = 0;
         [weakSelf initData];
     }];
 }
@@ -157,6 +189,7 @@
 - (void)addTableViewRefresh {
     __weak typeof (self) weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        weakSelf.page = 0;
         [weakSelf initData];
     }];
     

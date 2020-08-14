@@ -8,7 +8,7 @@
 
 #ifndef CCDefineMacros_h
 #define CCDefineMacros_h
-#define kUrl @"http://192.168.0.125:8000"
+#define kUrl @"https://www.chimprove.top"//www.chimprove.top
 #define KBaseLocation @""
 #define kPrintPathLog (1)           //  打印页面path debug 模式下
 /*================================常用宏===============================*/
@@ -218,6 +218,7 @@
 #define STRING_FROM_DOUBLE(a) [NSString stringWithFormat:@"%.9f",a]
 
 #define STRING_FROM_2_FLOAT(a) [NSString stringWithFormat:@"%.2f",a]
+#define STRING_FROM_0_FLOAT(a) [NSString removeFloatAllZeroByString:STRING_FROM_2_FLOAT(a)]
 
 /**
  *  获得图片
@@ -527,6 +528,7 @@ return shared##className; \
 #define kPurpleColor        [UIColor purpleColor]
 #define kClearColor         [UIColor clearColor]
 #define kMainColor          COLOR_HEX_RGB(0x22958F)//#22958F
+#define kGrayCustomColor    krgb(204,204,204)
 #define kTipYellowCOLOR     krgb(255,165,0)
 #define kPriceRedCOLOR      krgb(255,69,4)
 #define RGBHexColor(hexValue, alphaValue) [UIColor colorWithRed:((float)((hexValue & 0xFF0000) >> 16))/255.0 green:((float)((hexValue & 0xFF00) >> 8))/255.0 blue:((float)(hexValue & 0xFF))/255.0 alpha:alphaValue]

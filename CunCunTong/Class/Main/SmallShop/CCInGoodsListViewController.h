@@ -11,6 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCInGoodsListViewController : CCBaseTableViewController
+@property (nonatomic,copy) NSString *navTitleStr;
+@property (nonatomic,copy) NSString *types;
 
 @end
 

@@ -12,6 +12,7 @@
 #import "CCModifyArddress.h"
 @interface CCMyAddressViewController ()
 //@property (strong, nonatomic) CCSureOrderHeadView *hhhView;
+@property (strong,nonatomic)CCModifyArddress *model;
 @end
 
 @implementation CCMyAddressViewController
@@ -32,7 +33,31 @@
     [self initData];
 }
 - (void)initData {
-    self.dataSoureArray = @[[CCModifyArddress new]].mutableCopy;
+//    self.dataSoureArray = @[[CCModifyArddress new]].mutableCopy;
+    XYWeakSelf;
+    NSDictionary *params = @{
+    };
+    NSString *path = @"/app0/myaddress/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            weakSelf.model = [CCModifyArddress modelWithJSON:data];
+            [weakSelf.dataSoureArray addObject:weakSelf.model];
+            [weakSelf.tableView reloadData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 //#pragma mark  -  get
 //-(CCSureOrderHeadView *)hhhView {

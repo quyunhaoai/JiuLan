@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , strong) NSArray <NSString *>              * specoption_set;
 @property (nonatomic , copy) NSString              * image;
 @property (nonatomic , assign) NSInteger              count;
-@property (nonatomic , assign) NSInteger              price;
+@property (nonatomic , assign) CGFloat              price;
 @property (nonatomic , assign) NSInteger              total_price;
 @property (nonatomic , assign) NSInteger              old_price;
 @property (nonatomic , assign) NSInteger              total_old_price;
@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * goods_name;
 @property (nonatomic , assign) NSInteger              goods_status;
 @property (nonatomic , copy) NSString              * extra_info;
-@property (nonatomic , assign) NSInteger              goods_total_price;
+@property (nonatomic , assign) CGFloat              goods_total_price;
 @property (nonatomic , assign) NSInteger              goods_total_old_price;
 @property (nonatomic , strong) NSArray <Mcarts_setItem *>              * mcarts_set;
 
@@ -45,11 +45,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * coupon_info;
 @property (nonatomic , strong) NSArray <NSNumber *>              * mcarts_id_list;
 @property (nonatomic , assign) NSInteger              order_status;
-@property (nonatomic , assign) NSInteger              order_total_price;
-@property (nonatomic , assign) NSInteger              order_total_old_price;
+@property (nonatomic , assign) CGFloat              order_total_price;
+@property (nonatomic , assign) CGFloat              order_total_old_price;
 @property (nonatomic , assign) NSInteger              count;
 @property (nonatomic , assign) NSInteger              mcarts_count;
 @property (nonatomic , strong) NSArray <ResultsItem *>              * results;
+@property (assign, nonatomic) NSInteger types;    //
+
+
+@property (nonatomic , assign) NSInteger              sku_count;
+@property (nonatomic , assign) NSInteger              center_sku_id;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -26,17 +26,17 @@
         view.lineBreakMode = NSLineBreakByTruncatingTail;
         view.backgroundColor = [UIColor clearColor];
         view.textAlignment = NSTextAlignmentLeft;
-
+        view.numberOfLines =0;
         view ;
     });
     [self addSubview:taRendaiFusumTextLab2];
     [taRendaiFusumTextLab2 mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self).mas_offset(10);
-        make.size.mas_equalTo(CGSizeMake(217, 14));
-        make.top.mas_equalTo(self).mas_offset(15);
+        make.size.mas_equalTo(CGSizeMake(Window_W-20, 44));
+        make.top.mas_equalTo(self).mas_offset(10);
     }];
     //0-00
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"请在此上传凭证（最多8张）"];
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"请在此上传凭证\n(必须包含一张带生产日期的照片，最多8张）"];
     [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:51.0f/255.0f
                                                                                         green:51.0f/255.0f
                                                                                          blue:51.0f/255.0f
@@ -44,14 +44,14 @@
     [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:153.0f/255.0f
                                                                                         green:153.0f/255.0f
                                                                                          blue:153.0f/255.0f
-                                                                                        alpha:1.0f] range:NSMakeRange(7, 6)];
+                                                                                        alpha:1.0f] range:NSMakeRange(7, 22)];
     taRendaiFusumTextLab2.attributedText = attributedString;
     
     // 1. 常见一个发布图片时的photosView
     PYPhotosView *publishPhotosView = [PYPhotosView photosView];
     publishPhotosView.photosMaxCol = 4;
     publishPhotosView.x = 12;
-    publishPhotosView.y = 45;
+    publishPhotosView.y = 65;
     publishPhotosView.width = Window_W -24;
     publishPhotosView.photoWidth = ((Window_W - 24) - 24)/4;
     publishPhotosView.photoHeight = ((Window_W - 24) - 24)/4;
@@ -82,6 +82,16 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.imageArray addObjectsFromArray:photos];
             [photosView reloadDataWithImages:weakSelf.imageArray];
+            //上传图片
+            NSString *name=[NSString stringWithFormat:@"%.0f_Image_",DATE_NOW_SINCE1970];
+        
+            [CCTools uploadTokenMultiple:weakSelf.imageArray namespaceString:name percentLabel:[UILabel new] cancleButton:[UIButton new] finishBlock:^(NSMutableArray * _Nonnull qualificationFileListArray) {
+                NSLog(@"得到签名照的图片URL %@%@",qualificationFileListArray,[qualificationFileListArray lastObject]);
+                weakSelf.photoArray = qualificationFileListArray.mutableCopy;
+                if (weakSelf.blackBlock) {
+                    weakSelf.blackBlock(weakSelf.photoArray);
+                }
+            }];
         });
     }];
     [self.viewController presentViewController:imagePickerVc animated:YES completion:nil];
@@ -94,11 +104,6 @@
     return _imageArray;
 }
 
-
-    
-    
-    
-
 - (UIButton *)sendBtn {
     if (!_sendBtn) {
         _sendBtn = ({
@@ -109,6 +114,8 @@
             [view setTitleColor:kWhiteColor forState:UIControlStateNormal];
             [view setTitle:@"提交" forState:UIControlStateNormal];
             [view.titleLabel setFont:FONT_18];
+            [view setBackgroundColor:kGrayCustomColor];
+            [view setUserInteractionEnabled:NO];
             view.tag = 3;
             [view addTarget:self action:@selector(BtnClicked:) forControlEvents:UIControlEventTouchUpInside];
             view ;

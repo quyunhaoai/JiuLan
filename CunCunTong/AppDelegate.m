@@ -13,8 +13,16 @@
 
 #import "CCTabbarViewController.h"
 #import "CCLoginRViewController.h"
-#import "CCSureOrderViewController.h"
-@interface AppDelegate ()
+#import "MHWelComeViewController.h"
+#import "CCTemListViewController.h"
+#import <SDImageWebPCoder.h>
+#import <TencentOpenAPI/TencentOAuth.h>
+#import "KKThirdTools.h"
+#import <WechatOpenSDK/WechatAuthSDK.h>
+#import "AppDelegate+JpushManager.h"
+#import "KKWXTool.h"
+#import "LDSDKManager.h"
+@interface AppDelegate ()<WXApiDelegate>
 
 @end
 
@@ -25,33 +33,50 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-//    NSString *token = [kUserDefaults objectForKey:@"token"];
-//    if (token.isNotBlank) {
-//        self.window.rootViewController = [CCTabbarViewController getTabBarController];
-//    } else {
-//        CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
-//        self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
-//    }
-    
-//    CCLoginRViewController *vc = [[CCLoginRViewController alloc] init];
-//    self.window.rootViewController = [CCTabbarViewController getTabBarController];
-    CCBaseViewController *vc = [CCSureOrderViewController new];
+    CCBaseViewController *vc = [[MHWelComeViewController alloc] init];
     self.window.rootViewController = [[CCBaseNavController alloc] initWithRootViewController:vc];
-
-    
-//                NKAlertView *alert = [[NKAlertView alloc] init];
-//                alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];
-//                alert.hiddenWhenTapBG = YES;
-//                alert.type = NKAlertViewTypeDef;
-//                [alert show];
-    
-    [AMapServices sharedServices].apiKey = @"b82c30f9ff91789d674e36a044a42b40";
+    [AMapServices sharedServices].apiKey = @"60d2928715564b72bb3aaba68025d1e5";
+    SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
+    [[SDImageCodersManager sharedManager] addCoder:webPCoder];
+    //第三方平台注册
+    [KKThirdTools registerPlatform:@[@(KKThirdPlatformWX),@(KKThirdPlatformQQ)]];
+    [self JPushApplication:application didFinishLaunchingWithOptions:launchOptions];
+    NSArray *regPlatformConfigList = @[
+            @{
+                    LDSDKConfigAppSchemeKey: @"waqu",   //用于支付完成的回到schema 不要带://
+                    LDSDKConfigAppIdKey: @"2016101900724662",
+                    LDSDKConfigAppSecretKey: @"AivRsxOiPoiXklp5",
+                    LDSDKConfigAppPlatformTypeKey: @(LDSDKPlatformAliPay)
+            },
+    ];
+    [[LDSDKManager share] registerWithPlatformConfigList:regPlatformConfigList];
     return YES;
+
 }
 
 
++ (AppDelegate *)sharedAppDelegate
+{
+    return (AppDelegate *)[UIApplication sharedApplication].delegate;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
+    return [WXApi handleOpenUniversalLink:userActivity delegate:self];
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return  [[KKWXTool shareInstance] handlerOpenUrl:url] || [TencentOAuth HandleOpenURL:url] || [[LDSDKManager share] handleURL:url];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [[KKWXTool shareInstance] handlerOpenUrl:url] || [TencentOAuth HandleOpenURL:url] ||[[LDSDKManager share] handleURL:url];
+}
 
 
+- (void)applicationWillTerminate:(UIApplication *)application {
+    //    NSLog(@"程序被杀死");
+    [kUserDefaults removeObjectForKey:isOK];
+}
 /*
 #pragma mark - UISceneSession lifecycle
 

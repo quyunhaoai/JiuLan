@@ -37,7 +37,7 @@
     tagList.isSingleSelect=YES;
     tagList.signalTagColor=krgb(245,245,245);
     __weak __typeof(self)weakSelf = self;
-    [tagList setDidselectItemBlock:^(NSArray *arr) {
+    [tagList setDidselectItemBlock:^(NSArray *arr,NSInteger tag) {
         NSLog(@"选中的标签%@",arr);
         if (weakSelf.searchHotCellLabelClickButton) {
             weakSelf.searchHotCellLabelClickButton(arr);

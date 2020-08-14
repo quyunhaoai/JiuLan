@@ -24,9 +24,14 @@
 #import "CCYouHuiQuanViewController.h"
 
 #import "CCGoodsDetailInfoModel.h"
+#import "CCShopCarViewController.h"
+#import "CCShaiXuanAlertView.h"
+#import "WSLPictureBrowseView.h"
 @interface CCCommodDetaildViewController ()<UIScrollViewDelegate,SDCycleScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
     CGRect HeaderFrame;
+    dispatch_group_t path;
+    WSLPictureBrowseView *background;
 }
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (nonatomic,strong) UITableView             *tableView;
@@ -45,6 +50,7 @@
 @property (nonatomic,strong) CCGoodsDetailInfoModel *goodsDetailModel;
 @property (strong, nonatomic) UILabel *salesLab;
 @property (strong,nonatomic) NSMutableArray  *photoArr;
+
 
 @end
 
@@ -74,6 +80,10 @@
     [super viewDidLoad];
     [self setupUI];
     [self initData];
+    [kNotificationCenter addObserver:self
+                            selector:@selector(requestShopCarData1)
+                                name:@"requestShopCarData1"
+                              object:nil];
 }
 
 - (void)initData {
@@ -106,28 +116,18 @@
 }
 
 - (void)downImage:(NSArray *)array {
-    XYWeakSelf;
     self.photoArr = [NSMutableArray array];
     for (int i= 0; i<array.count; i++) {
         photoInfo *info = [photoInfo new];
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:array[i]]
-                                                              options:SDWebImageDownloaderUseNSURLCache
-                                                             progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-
-         } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-             //这边就能拿到图片了
-             CGFloat width = image.size.width;
-             CGFloat height = image.size.height;
-             CGFloat cellHeight = height/width *Window_W;
-             info.width = width;
-             info.height = cellHeight;
-             info.image = image;
-             [weakSelf.photoArr addObject:info];
-             [weakSelf.tableView reloadData];
-        }];
+        NSString *url = array[i];
+        url = [[CCTools sharedInstance] IsChinese:url];
+        info.url = url;
+        info.width = Window_W;
+        info.height = 500;
+        [self.photoArr addObject:info];
     }
-
 }
+
 - (void)setupUI {
     UIButton *rightBtn = ({
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -155,11 +155,20 @@
         make.bottom.mas_equalTo(self.view).mas_offset(-60-HOME_INDICATOR_HEIGHT);
     }];
     self.tableView.backgroundColor = COLOR_f5f5f5;
-    self.tableView.estimatedRowHeight = 97;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.estimatedRowHeight = 197;
     self.tableView.estimatedSectionHeaderHeight = 0;
     self.tableView.estimatedSectionFooterHeight = 0;
     [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib
-         forCellReuseIdentifier:@"CCGoodsDetail"];
+         forCellReuseIdentifier:@"CCGoodsDetail1"];
+    [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCGoodsDetail2"];
+    [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCGoodsDetail3"];
+    [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCGoodsDetail4"];
+    [self.tableView registerNib:CCGoodsDetailTableViewCell.loadNib
+         forCellReuseIdentifier:@"CCGoodsDetail5"];
     [self.tableView registerClass:CCGoodsDetailHeadTableViewCell.class
            forCellReuseIdentifier:@"CCGoodsDetailHeadTableViewCell"];
     self.bottomView.frame = CGRectMake(0, Window_H-60-HOME_INDICATOR_HEIGHT, Window_W, 60);
@@ -168,12 +177,9 @@
     XYWeakSelf;
     _bottomView.clickCallBack = ^(NSInteger tag) {
         if (tag ==2) {
-            if (!weakSelf.bottomView.isOpen) {
-                [weakSelf requestShopCarData];
-            } else {
-                [weakSelf.bottomView hide];
-                weakSelf.bottomView.isOpen = NO;
-            }
+            CCShopCarViewController *vc = [CCShopCarViewController new];
+            vc.isShowLeftButton = YES;
+            [weakSelf.navigationController pushViewController:vc animated:YES];
         } else if(tag == 1){
             if (!weakSelf.isOpen) {
                 [weakSelf requestService];
@@ -191,9 +197,31 @@
                 } completion:^(BOOL finished) {
                 }];
             }
+        } else if(tag == 4) {//加入购物车
+            NKAlertView *alertView = [[NKAlertView alloc] init];
+            BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, weakSelf.view.bounds.size.width, 554) withShowSure:YES];
+            customContentView.blockMothed = ^{
+            };
+            customContentView.blackSelect = ^(NSString * _Nonnull str) {
+            };
+            customContentView.model = weakSelf.goodsDetailModel;
+            alertView.type = NKAlertViewTypeBottom;
+            alertView.contentView = customContentView;
+            alertView.hiddenWhenTapBG = YES;
+            [alertView show];
         } else {
-            CCSureOrderViewController *vc = [CCSureOrderViewController new];
-            [weakSelf.navigationController pushViewController:vc animated:YES];
+            CCShaiXuanAlertView *alertView = [[CCShaiXuanAlertView alloc] initWithFrame:weakSelf.view.frame inView:weakSelf.view];
+            BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, weakSelf.view.bounds.size.width, 554) withShowSure:YES];
+            customContentView.isSureOrder = YES;
+            customContentView.blockMothed = ^{
+            };
+            customContentView.blackSelect = ^(NSString * _Nonnull str) {
+            };
+            customContentView.model = weakSelf.goodsDetailModel;
+            alertView.type = NKAlertViewTypeBottom;
+            alertView.contentView = customContentView;
+            alertView.hiddenWhenTapBG = YES;
+            [alertView show];
         }
     };
     [self.view addSubview:self.massageView];
@@ -203,7 +231,7 @@
         make.width.mas_equalTo(152);
         make.height.mas_equalTo(78);
     }];
-    UILabel *style = [[UILabel alloc] initWithFrame:CGRectMake(Window_W-90, 228, 79, 18)];
+    UILabel *style = [[UILabel alloc] initWithFrame:CGRectMake(Window_W-90, Window_W-30, 79, 18)];
     style.layer.cornerRadius = 3;
     style.layer.backgroundColor = [[UIColor colorWithRed:0.0f/255.0f
                                                    green:0.0f/255.0f
@@ -214,6 +242,32 @@
     style.textAlignment = NSTextAlignmentCenter;
     self.salesLab = style;
     [_cycleScrollView addSubview:style];
+    path = dispatch_group_create();
+    dispatch_group_notify(path, dispatch_get_main_queue(), ^{
+        [weakSelf.tableView reloadData];
+    });
+}
+- (void)addShopCar {
+    NSDictionary *params = @{@"center_sku_id":STRING_FROM_INTAGER(self.goodsDetailModel.ccid),
+                             @"count":checkNull(@"1"),
+    };
+    NSString *path = @"/app0/mcarts/";
+    [[STHttpResquest sharedManager] requestWithMethod:POST
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        if(status == 0){
+            [kNotificationCenter postNotificationName:@"requestShopCarData1" object:nil];
+            [kNotificationCenter postNotificationName:@"refreshShopCarInfo" object:nil];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+    }];
 }
 - (void)requestService {
     XYWeakSelf;
@@ -239,6 +293,7 @@
         weakSelf.showErrorView = YES;
     }];
 }
+
 - (void)requestShopCarData1 {
     XYWeakSelf;
     NSDictionary *params = @{};
@@ -256,9 +311,8 @@
             [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
                                                        value:results.count
                                                animationType:WBadgeAnimTypeNone];
-//            weakSelf.bottomView.shopCarImage.badgeCenterOffset = CGPointMake(24, 2);
             float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
-            NSString *price = [NSString stringWithFormat:@"￥%.2f",toal_price];
+            NSString *price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(toal_price)];
             //189-00
             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
             [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
@@ -286,6 +340,7 @@
         weakSelf.showErrorView = YES;
     }];
 }
+
 - (void)requestShopCarData {
     XYWeakSelf;
     NSDictionary *params = @{};
@@ -306,7 +361,7 @@
                                                        value:results.count
                                                animationType:WBadgeAnimTypeNone];
             float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
-            NSString *price = [NSString stringWithFormat:@"￥%.2f",toal_price];
+            NSString *price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(toal_price)];
             //189-00
             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
             [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
@@ -338,6 +393,7 @@
         weakSelf.showErrorView = YES;
     }];
 }
+
 #pragma mark  - Get
 - (CCServiceMassageView *)massageView {
     if (!_massageView) {
@@ -372,6 +428,7 @@
                                                                                                                         0,
                                                                                                                         self.view.bounds.size.width,
                                                                                                                         133+49+5)];
+    customContentView.model = self.goodsDetailModel;
     CCSharePicView *customImageView = [[CCSharePicView alloc] initWithFrame:CGRectMake(0, 0, Window_W-106, 370)];
     customImageView.model = self.goodsDetailModel;
     alertView.type = NKAlertViewTypeBottom;
@@ -388,7 +445,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return 4;
+        if (self.goodsDetailModel.promote == nil) {
+            return 3;
+        } else {
+            return 4;
+        }
     } else if(section == 1){
         return 2;
     } else {
@@ -397,27 +458,44 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = nil;
+
     if (indexPath.section == 0 && indexPath.row == 0) {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetailHeadTableViewCell"];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        CCGoodsDetailHeadTableViewCell *ccc = (CCGoodsDetailHeadTableViewCell *)cell;
+        CCGoodsDetailHeadTableViewCell *ccc  = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetailHeadTableViewCell"];
+        ccc.selectionStyle = UITableViewCellSelectionStyleNone;
+        NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:15]};
+        CGSize labelSize = [self.goodsDetailModel.goods_name boundingRectWithSize:CGSizeMake(Window_W-20, 5000) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+        if (labelSize.height>17) {
+            [ccc.goodsTitleLab mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(labelSize.height+10);
+            }];
+        }
         ccc.goodsTitleLab.text = self.goodsDetailModel.goods_name;
         ccc.kuCunLab.text =[NSString stringWithFormat:@"库存量：%ld件",(long)self.goodsDetailModel.stock];
-        ccc.priceLab2.text =[NSString stringWithFormat:@"建议零售价：¥%ld",(long)self.goodsDetailModel.retail_price];
-        NSString *oldPriceStr =[NSString stringWithFormat:@"￥%@",STRING_FROM_INTAGER(self.goodsDetailModel.promote.old_price)];
-        NSString *pricestr = self.goodsDetailModel.promote == nil ? STRING_FROM_INTAGER(self.goodsDetailModel.play_price):STRING_FROM_INTAGER(self.goodsDetailModel.promote.now_price);
+        if (self.goodsDetailModel.retail_price) {
+            ccc.priceLab2.text =[NSString stringWithFormat:@"建议零售价：¥%@",STRING_FROM_0_FLOAT(self.goodsDetailModel.retail_price)];
+        } else {
+            ccc.priceLab2.text =[NSString stringWithFormat:@"建议零售价："];
+        }
+
+        NSString *pricestr = self.goodsDetailModel.promote == nil ? STRING_FROM_0_FLOAT(self.goodsDetailModel.play_price):STRING_FROM_0_FLOAT(self.goodsDetailModel.promote.now_price);
+        if (self.goodsDetailModel.promote !=nil && self.goodsDetailModel.promote.types == 2) {
+            pricestr = STRING_FROM_0_FLOAT(self.goodsDetailModel.play_price);
+        }
         NSMutableAttributedString *nameString = [[NSMutableAttributedString alloc] initWithString:@"¥" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:krgb(255,69,4)}];
         NSMutableAttributedString *nameString2 = [[NSMutableAttributedString alloc] initWithString:pricestr attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:21],NSForegroundColorAttributeName:krgb(255,69,4)}];
-        NSAttributedString *countString = [[NSAttributedString alloc] initWithString:@" 原价：" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999}];
-        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:oldPriceStr attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
         [nameString appendAttributedString:nameString2];
-        [nameString appendAttributedString:countString];
-        [nameString appendAttributedString:attrStr];
+        if (self.goodsDetailModel.promote.old_price) {
+            NSString *oldPriceStr =[NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(self.goodsDetailModel.promote.old_price)];
+            NSAttributedString *countString = [[NSAttributedString alloc] initWithString:@" 原价：" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999}];
+            NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:oldPriceStr attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13],NSForegroundColorAttributeName:COLOR_999999,NSStrikethroughColorAttributeName:COLOR_999999,NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid)}];
+            [nameString appendAttributedString:countString];
+            [nameString appendAttributedString:attrStr];
+        }
         ccc.priceLab.attributedText = nameString;
+        return ccc;
     } else if (indexPath.section == 2){
         static NSString *CellIdentifier = @"CellIdentifier";
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if(cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
             cell.backgroundColor = [UIColor clearColor];
@@ -436,24 +514,57 @@
              make.width.mas_equalTo(cell.contentView);
              make.height.mas_equalTo(cell.contentView);
          }];
+        XYWeakSelf;
+        photoInfo *info = self.photoArr[indexPath.row];
+        [imageBgView addTapGestureWithBlock:^(UIView *gestureView) {
+            [weakSelf cleckImageViewAction:info.url];
+        }];
         if (_photoArr.count) {
-            photoInfo *model = self.photoArr[indexPath.row];
-            imageBgView.image = model.image;
+            photoInfo *info = self.photoArr[indexPath.row];
+            dispatch_group_enter(path);
+            XYWeakSelf;
+            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:info.url]
+                                                                  options:SDWebImageDownloaderUseNSURLCache
+                                                                 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+
+             } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                 //这边就能拿到图片了
+                 CGFloat width = image.size.width;
+                 CGFloat height = image.size.height;
+                 CGFloat cellHeight = height/width *Window_W;
+                 info.width = width;
+                 info.height = cellHeight;
+                 imageBgView.image = image;
+                 [weakSelf.photoArr replaceObjectAtIndex:indexPath.row withObject:info];
+                 dispatch_group_leave(self->path);
+            }];
         }
         return cell;
     } else {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail"];
-        CCGoodsDetailTableViewCell *cellll = (CCGoodsDetailTableViewCell *)cell;
         if (indexPath.section == 0) {
             NSArray *arr = (NSArray *)self.titleArray[indexPath.section];
-            [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row-1];
             if (indexPath.row == 1 || indexPath.row == 2 || indexPath.row ==3) {
-                cellll.jiantouimageView.hidden = YES;
                 if (indexPath.row == 1) {
+                    CCGoodsDetailTableViewCell *cellll = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail1" forIndexPath:indexPath];
+                    cellll.titleLab.text = arr[indexPath.row-1];
                     cellll.subLab.text = [NSString stringWithFormat:@"%@%@%@",self.goodsDetailModel.address.place1,self.goodsDetailModel.address.place2,self.goodsDetailModel.address.place3];
+                    cellll.strokLab.hidden = NO;
+                    if (self.goodsDetailModel.stock>0) {
+                        cellll.strokLab.text=@"有货";
+                    } else {
+                        cellll.strokLab.text=@"无货";
+                    }
+                    cellll.titleCenterConstraint.constant = -10;
+                    cellll.subTitleConstraint.constant = -10;
+                    return cellll;
                 } else if (indexPath.row == 2){
-                    cellll.subLab.text = @"包邮";
+                    CCGoodsDetailTableViewCell *cellll2 = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail2" forIndexPath:indexPath];
+                    cellll2.titleLab.text = arr[indexPath.row-1];
+                    cellll2.subLab.text = @"包邮";
+                    return cellll2;
                 } else if (indexPath.row == 3){
+                    CCGoodsDetailTableViewCell *cellll3 = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail3" forIndexPath:indexPath];
+                    cellll3.titleLab.text = arr[indexPath.row-1];
                     if (self.goodsDetailModel.coupon_set.count) {
                         Coupon_setItem *item = self.goodsDetailModel.coupon_set[0];
                         if (item.types == 0) {
@@ -465,32 +576,47 @@
                             attach.bounds = CGRectMake(5, -2.5, 13, 15);
                             NSAttributedString *attachString2 = [NSAttributedString attributedStringWithAttachment:attach];
                             [attributedString appendAttributedString:attachString2];
-                            cellll.subLab.attributedText =attributedString;
+                            cellll3.subLab.attributedText =attributedString;
                         } else {
-                            cellll.subLab.text =[NSString stringWithFormat:@"%@",item.discount];
+                            cellll3.subLab.text =[NSString stringWithFormat:@"点击领取优惠券"];
                         }
-                        cellll.subLab.textColor = krgb(255,63,62);
+                        cellll3.subLab.textColor = krgb(255,63,62);
+                    }else {
+                        cellll3.subLab.text = @"";
                     }
+                    return cellll3;
                 }
             }
         } else if(indexPath.section == 1) {
             NSArray *arr = (NSArray *)self.titleArray[indexPath.section];
-            [(CCGoodsDetailTableViewCell *)cell titleLab].text = arr[indexPath.row];
             if (indexPath.row == 0) {
-                cellll.subLab.text = @"选择颜色、数量、尺码";
+                CCGoodsDetailTableViewCell *cell0 = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail4" forIndexPath:indexPath];
+                cell0.titleLab.text = arr[indexPath.row];
+                NSMutableString *string = [[NSMutableString alloc] initWithFormat:@"选择:"];
+                for (Spec_setItem *item in self.goodsDetailModel.spec_set) {
+                    [string appendFormat:@"%@,",item.spec_name];
+                }
+                cell0.subLab.text = string;
+                return cell0;
             } else {
-                cellll.subLab.text = @"生产日期、品牌...";
+                CCGoodsDetailTableViewCell *cell1 = [tableView dequeueReusableCellWithIdentifier:@"CCGoodsDetail5" forIndexPath:indexPath];
+                cell1.titleLab.text = arr[indexPath.row];
+                cell1.subLab.text = @"生产日期、品牌...";
+                return cell1;
             }
-        } else {
-            
         }
     }
-    return cell;
+    return nil;
 }
 
 #pragma mark - Table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && indexPath.row == 0) {
+        NSDictionary *attribute = @{NSFontAttributeName: [UIFont systemFontOfSize:15]};
+        CGSize labelSize = [self.goodsDetailModel.goods_name boundingRectWithSize:CGSizeMake(Window_W-20, 5000) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+        if (labelSize.height>17) {
+            return 90+labelSize.height;
+        }
         return 97;
     } else if (indexPath.section == 2) {
         if (self.photoArr.count) {
@@ -498,6 +624,14 @@
             return model.height;
         }else {
             return 500;
+        }
+    } else if (indexPath.section == 0 && indexPath.row == 1){
+        return 43+34;
+    } else if (indexPath.section == 0 && indexPath.row == 3){
+        if (self.goodsDetailModel.promote == nil) {
+            return 0.001f;
+        } else {
+            return [CCGoodsDetailTableViewCell height];
         }
     }
     return [CCGoodsDetailTableViewCell height];
@@ -541,14 +675,24 @@
         if (indexPath.row == 1) {
             NKAlertView *alertView = [[NKAlertView alloc] init];
             BottomAlertContentView *customContentView = [[BottomAlertContentView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 426)];
+            
             customContentView.model = self.goodsDetailModel;
             alertView.type = NKAlertViewTypeBottom;
             alertView.contentView = customContentView;
             alertView.hiddenWhenTapBG = YES;
             [alertView show];
         }else {
-            NKAlertView *alertView = [[NKAlertView alloc] init];
+            CCGoodsDetailTableViewCell *cell = (CCGoodsDetailTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+            CCShaiXuanAlertView *alertView = [[CCShaiXuanAlertView alloc] initWithFrame:self.view.frame inView:self.view];
             BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
+            XYWeakSelf;
+            customContentView.blockMothed = ^{
+                CCSureOrderViewController *vc = [CCSureOrderViewController new];
+                [weakSelf.navigationController pushViewController:vc animated:YES];
+            };
+            customContentView.blackSelect = ^(NSString * _Nonnull str) {
+                cell.subLab.text = str;
+            };
             customContentView.model = self.goodsDetailModel;
             alertView.type = NKAlertViewTypeBottom;
             alertView.contentView = customContentView;
@@ -567,6 +711,8 @@
 /** 点击图片回调 */
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
     NSLog(@"%ld",(long)index);
+    [self cleckImageViewAction2:self.goodsDetailModel.goodsimage_set];
+    background.index = index;
 }
 
 /** 图片滚动回调 */
@@ -582,7 +728,7 @@
 }
 - (SDCycleScrollView *)cycleScrollView {
     if (!_cycleScrollView) {
-        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, Window_W, 258) delegate:self placeholderImage:IMAGE_NAME(@"")];
+        _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, Window_W, Window_W) delegate:self placeholderImage:IMAGE_NAME(@"")];
         _cycleScrollView.currentPageDotColor = kMainColor;
         _cycleScrollView.pageDotColor = kWhiteColor;
 
@@ -621,7 +767,42 @@
     return _topBar;
 }
 
-
-
-
+- (void)dealloc {
+    [kNotificationCenter removeObserver:self name:@"requestShopCarData1" object:nil];
+}
+- (void)cleckImageViewAction2:(NSArray *)url{
+    WSLPictureBrowseView * browseView = [[WSLPictureBrowseView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    browseView.backgroundColor = [UIColor blackColor];
+    browseView.viewController = self;
+    browseView.urlArray = url.mutableCopy;
+    background = browseView;
+    [self.view addSubview:browseView];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(closeView)];
+    [background addGestureRecognizer:tapGesture];
+    [self shakeToShow:browseView];
+}
+- (void)cleckImageViewAction:(NSString *)url{
+    WSLPictureBrowseView * browseView = [[WSLPictureBrowseView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    browseView.backgroundColor = [UIColor blackColor];
+    browseView.viewController = self;
+    browseView.urlArray = @[url].mutableCopy;
+    background = browseView;
+    [self.view addSubview:browseView];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(closeView)];
+    [background addGestureRecognizer:tapGesture];
+    [self shakeToShow:browseView];
+}
+-(void)closeView{
+    [background removeFromSuperview];
+}
+//放大过程中出现的缓慢动画
+- (void)shakeToShow:(UIView*)aView{
+    CAKeyframeAnimation* animation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    animation.duration = 0.3;
+    NSMutableArray *values = [NSMutableArray array];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.1, 0.1, 1.0)]];
+    [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1.0)]];
+    animation.values = values;
+    [aView.layer addAnimation:animation forKey:nil];
+}
 @end

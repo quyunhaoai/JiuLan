@@ -26,10 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong) CCYouHuiQuan *modelddd;
 
+@property (assign, nonatomic) BOOL isOrderVc; //
 
+@property(weak, nonatomic) id<KKCommonDelegate>delegate;
 
+@property (assign, nonatomic) BOOL isActive; //
 
-
+@property (nonatomic,strong) CCYouHuiQuan *modelccc;
 
 + (CGFloat)height;
 @end

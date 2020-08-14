@@ -25,7 +25,8 @@ static NSString *everDayCell = @"everDayCell";
 
 #import "CCGoodsDetail.h"
 #import "CCLunboTuModel.h"
-@interface CCHomeViewController ()<UICollectionViewDelegate,UICollectionViewDataSource>
+#import "CCActiveModel.h"
+@interface CCHomeViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,KKCommonDelegate>
 @property (nonatomic,strong) UICollectionView    *collectionView;
 @property (nonatomic,strong) CCHomeHeaderView    *headView;
 @property (strong, nonatomic) NSArray *titleArray;
@@ -33,16 +34,20 @@ static NSString *everDayCell = @"everDayCell";
 @property (strong, nonatomic) NSArray *hotArray;
 @property (strong, nonatomic) NSArray *activeArray;
 @property (strong, nonatomic) NSArray *teJiaArray;
+@property (strong, nonatomic) CCActiveModel *myActiveModel;
+@property (strong, nonatomic) NKAlertView *alert;
 @end
 
 @implementation CCHomeViewController
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.alert hide];
+}
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    NKAlertView *alert = [[NKAlertView alloc] init];
-//    alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];
-//    alert.hiddenWhenTapBG = YES;
-//    alert.type = NKAlertViewTypeDef;
-//    [alert show];
+    [self getMessagebage:^(BOOL isScu) {
+        
+    }];
 }
 
 - (void)viewDidLoad {
@@ -67,20 +72,30 @@ static NSString *everDayCell = @"everDayCell";
         [weakSelf initData];
     }];
     [self.collectionView.mj_header setIgnoredScrollViewContentInsetTop:256];
+    [kNotificationCenter addObserver:self selector:@selector(initData1) name:@"refreshHome" object:nil];
 }
-
+- (void)initData1 {
+    [self.collectionView.mj_header beginRefreshing];
+}
 - (void)initData {
      dispatch_group_t group = dispatch_group_create();
-     
      // 分类
      dispatch_group_enter(group);
     [self getCetagoryDataRequestisScu:^(BOOL isScu) {
         dispatch_group_leave(group);
     }];
-     
      // 我的关注
      dispatch_group_enter(group);
     [self getTeJieData:^(BOOL isScu) {
+        dispatch_group_leave(group);
+    }];
+     // 活动
+     dispatch_group_enter(group);
+    [self getActiveApi:^(BOOL isScu) {
+        dispatch_group_leave(group);
+    }];
+     dispatch_group_enter(group);
+    [self getMessagebage:^(BOOL isScu) {
         dispatch_group_leave(group);
     }];
      // 我的关注
@@ -100,12 +115,91 @@ static NSString *everDayCell = @"everDayCell";
                      [photoArr addObject:model.image];
                  }
                  weakSelf.headView.bgImage.imageURLStringsGroup = photoArr;
-                 
+                 weakSelf.headView.photosArray = weakSelf.photoArray;
                  [weakSelf.collectionView reloadData];
              }
          }];
      });
-    
+}
+- (void)getMessagebage:(void(^)(BOOL isScu))requestisScu{
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/mordermessagecount/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            NSInteger a = [data[@"count0"] integerValue];
+            NSInteger b = [data[@"count1"] integerValue];
+            NSInteger c = [data[@"count2"] integerValue];
+            NSInteger d = [data[@"count3"] integerValue];
+            NSInteger e = [data[@"count4"] integerValue];
+            UIView *bageView = [[UIView alloc] init];
+            [weakSelf.searBarView addSubview:bageView];
+            [bageView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.right.mas_equalTo(weakSelf.searBarView).mas_offset(-12);
+                make.size.mas_equalTo(CGSizeMake(6, 6));
+                make.top.mas_equalTo(weakSelf.searBarView.rightBtn.mas_top).mas_offset(0);
+            }];
+            if (a>0||b>0||c>0||d>0||e>0) {
+                [bageView showBadge];
+            } else {
+                [bageView clearBadge];
+            }
+            requestisScu(YES);
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+            requestisScu(NO);
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+    }];
+}
+- (void)getActiveApi:(void(^)(BOOL isScu))requestisScu {
+    if (![[kUserDefaults objectForKey:isOK] isEqualToString:@"ok"]) {
+        XYWeakSelf;
+         NSDictionary *params = @{};
+         NSString *path = @"/app0/popad/";
+         [[STHttpResquest sharedManager] requestWithMethod:GET
+                                                  WithPath:path
+                                                WithParams:params
+                                          WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+             NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+             NSString *msg = [[dic objectForKey:@"errmsg"] description];
+             weakSelf.showErrorView = NO;
+             if(status == 0){
+                 NSDictionary *data = dic[@"data"];
+                 NSLog(@"活动：%@",data);
+                 weakSelf.myActiveModel = [CCActiveModel modelWithJSON:data];
+                 if (weakSelf.myActiveModel.image.length>0) {
+                     weakSelf.alert = [[NKAlertView alloc] init];
+                       CCActivityView *view = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W* 600/750, kScreenHeight* 900/1334+47)];//CGRectMake(0, 0, Window_W-73-73, 304+60)
+                       view.Model = weakSelf.myActiveModel;
+                       weakSelf.alert.contentView =view;
+                       weakSelf.alert.hiddenWhenTapBG = YES;
+                       weakSelf.alert.type = NKAlertViewTypeDef;
+                       [weakSelf.alert show];
+                 }
+                 requestisScu(YES);
+                 [kUserDefaults setValue:@"ok" forKey:isOK];
+             }else {
+                 if (msg.length>0) {
+                     [MBManager showBriefAlert:msg];
+                 }
+             }
+         } WithFailurBlock:^(NSError * _Nonnull error) {
+             weakSelf.showErrorView = YES;
+             requestisScu(NO);
+         }];
+    } else {
+         requestisScu(YES);
+    }
+ 
 }
 - (void)getTeJieData:(void(^)(BOOL isScu))requestisScu {
     XYWeakSelf;
@@ -224,11 +318,6 @@ static NSString *everDayCell = @"everDayCell";
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
-//    NKAlertView *alert = [[NKAlertView alloc] init];
-//    alert.contentView = [[CCActivityView alloc] initWithFrame:CGRectMake(0, 0, Window_W-73-73, 304+60)];
-//    alert.hiddenWhenTapBG = YES;
-//    alert.type = NKAlertViewTypeDef;
-//    [alert show];
 }
 
 - (void)layoutCollectionView {
@@ -325,11 +414,7 @@ static NSString *everDayCell = @"everDayCell";
         CCEverDayTeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:everDayCell
                                                                                         forIndexPath:indexPath];
         cell.model = [CCGoodsDetail modelWithJSON:self.teJiaArray[indexPath.row]];
-//        XYWeakSelf;
-//        [cell.sureSales addTapGestureWithBlock:^(UIView *gestureView) {
-//            CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
-//            [weakSelf.navigationController pushViewController:vc animated:YES];
-//        }];
+        cell.delegate = self;
         return cell;
     } else if (indexPath.section == 1){
         CCCommodityCollectionViewCell *cell =  [collectionView dequeueReusableCellWithReuseIdentifier:CellInder
@@ -344,21 +429,21 @@ static NSString *everDayCell = @"everDayCell";
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        return CGSizeMake(Window_W, 184);
+        if (self.hotArray.count) {
+            return CGSizeMake(Window_W, kWidth(155)+63+30);
+        } else {
+            return CGSizeMake(0.0001, 0.0001);	
+        }
     } else if (indexPath.section == 2){
         return CGSizeMake(Window_W-20, 120);
     }
-    return CGSizeMake((Window_W-20)/2, 198);
+    return CGSizeMake((Window_W-30)/2, (Window_W-30)/2+70+40);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 2 ) {
-        CCGoodsDetail *model = [CCGoodsDetail modelWithJSON:self.teJiaArray[indexPath.row]];
-        CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
-        vc.goodsID = STRING_FROM_INTAGER(model.ccid);
-        [self.navigationController pushViewController:vc animated:YES];
     } else if( indexPath.section ==1) {
         CCGoodsDetail *model = [CCGoodsDetail modelWithJSON:self.activeArray[indexPath.row]];
         CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
@@ -426,16 +511,26 @@ static NSString *everDayCell = @"everDayCell";
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (section == 2) {
-        return 0.1f;
+        return 10.0f;
     }
     return 12.f;
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    if (section == 1) {
-        return UIEdgeInsetsMake(0, 0, 0, 10);
-    }
-    return UIEdgeInsetsMake(0, 10, 0, 10);
+//    if (section == 1) {
+        return UIEdgeInsetsMake(10, 10, 10, 10);
+//    } else {
+//
+//    }
+//    return UIEdgeInsetsMake(0, 10, 0, 10);
 }
     
+#pragma mark  -  kkcommondelegate
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item {
+    CCGoodsDetail *model = (CCGoodsDetail *)item;
+    CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+    vc.goodsID = STRING_FROM_INTAGER(model.ccid);
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 @end

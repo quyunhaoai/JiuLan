@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UILabel *sumlab;
 @property (weak, nonatomic) IBOutlet UIButton *zanCunBtn;
-
+@property (nonatomic,copy) NSString *paindianID;  
 @end
 
 NS_ASSUME_NONNULL_END

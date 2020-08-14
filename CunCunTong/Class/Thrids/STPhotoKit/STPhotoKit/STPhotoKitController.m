@@ -196,6 +196,11 @@ NS_ASSUME_NONNULL_END
         CGFloat buttonH = 28;
         CGFloat buttonX = STMarginBig;
         CGFloat buttonY = ScreenHeight - buttonH - STMarginBig;
+        if (@available(iOS 13, *)) {
+            buttonY = ScreenHeight - buttonH - STMarginBig-NAVIGATION_BAR_HEIGHT;
+        } else {
+            
+        }
         _buttonCancel = [[UIButton alloc]initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
         [_buttonCancel setBackgroundColor:RGBA(0, 0, 0, 50.0/255)];
         [_buttonCancel setTitle:@"取消" forState:UIControlStateNormal];
@@ -221,6 +226,11 @@ NS_ASSUME_NONNULL_END
         CGFloat buttonH = 28;
         CGFloat buttonX = ScreenWidth - buttonW - STMarginBig;
         CGFloat buttonY = ScreenHeight - buttonH - STMarginBig;
+        if (@available(iOS 13, *)) {
+            buttonY = ScreenHeight - buttonH - STMarginBig-NAVIGATION_BAR_HEIGHT;
+        } else {
+            
+        }
         _buttonConfirm = [[UIButton alloc]initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
         [_buttonConfirm setBackgroundColor:RGBA(0, 0, 0, 50.0/255)];
         [_buttonConfirm setTitle:@"确定" forState:UIControlStateNormal];

@@ -20,6 +20,7 @@
         self.backgroundColor = kWhiteColor;
         [self imageV];
         [self nameLabel];
+        
     }
     return self;
 }
@@ -45,6 +46,7 @@
     }
     return _nameLabel;
 }
+
 - (void)setModel:(SH_WithDrawalsCategoryModel *)model {
     _model = model;
     [self.imageV sd_setImageWithURL:[NSURL URLWithString:_model.image] placeholderImage:IMAGE_NAME(@"")];

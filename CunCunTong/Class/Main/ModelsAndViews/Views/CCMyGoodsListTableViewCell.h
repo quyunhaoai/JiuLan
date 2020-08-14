@@ -7,7 +7,7 @@
 //
 
 #import "BaseTableViewCell.h"
-
+#import "CCMyGoodsList.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCMyGoodsListTableViewCell : BaseTableViewCell
@@ -29,10 +29,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UILabel *bottomTitle2Lab;
 
+@property (assign, nonatomic) BOOL isKUCun;
+@property (weak, nonatomic) IBOutlet UIButton *button1;
+@property (weak, nonatomic) IBOutlet UIButton *button2;
+@property (weak, nonatomic) IBOutlet UIView *meddilLine;
+@property (weak, nonatomic) id<KKCommonDelegate>delegate;
+@property (strong, nonatomic) CCMyGoodsList *moddd;
+@property (weak, nonatomic) IBOutlet UITextField *textField2;
+@property (weak, nonatomic) IBOutlet UITextField *textField1;
+@property (weak, nonatomic) IBOutlet UIButton *changeButton;
+@property (weak, nonatomic) IBOutlet UILabel *kucunLab;
 
-
-
-
+@property (weak, nonatomic) IBOutlet UIButton *outGoodsBtn;
 
 + (CGFloat)height;
 @end

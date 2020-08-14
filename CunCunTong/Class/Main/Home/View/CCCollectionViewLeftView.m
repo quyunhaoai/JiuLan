@@ -22,12 +22,6 @@ static NSString *cellReuseIdentifier = @"STRecommonPersonCollectionViewCell";
     }];
 }
 
-//- (NSMutableArray *)dataArray {
-//    if (!_dataArray) {
-//        _dataArray =[NSMutableArray arrayWithArray:@[@"",@"",@"",@"",@"",@"",@"",@""]];
-//    }
-//    return _dataArray;
-//}
 - (void)setDataArray:(NSMutableArray *)dataArray {
     _dataArray = dataArray;
     [self.collectView reloadData];
@@ -75,7 +69,7 @@ static NSString *cellReuseIdentifier = @"STRecommonPersonCollectionViewCell";
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return CGSizeMake(kWidth(155), 174);
+    return CGSizeMake(kWidth(155), kWidth(155)+60+30);
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

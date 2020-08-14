@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) UILabel *nameLab;
 @property (strong, nonatomic) UILabel *addressLab;
 @property (strong, nonatomic) UILabel *numberLab;
+@property (weak, nonatomic) IBOutlet UIImageView *bgImage;
 
 
 @property (nonatomic,strong)  KKButton *modifyBtn;

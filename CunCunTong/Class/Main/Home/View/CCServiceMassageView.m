@@ -18,7 +18,7 @@
 
     KKButton *rightBtn = [KKButton buttonWithType:UIButtonTypeCustom];
     rightBtn.tag = 11;
-    [rightBtn setTitle:@"weixin123456" forState:UIControlStateNormal];
+//    [rightBtn setTitle:@"weixin123456" forState:UIControlStateNormal];
     [rightBtn setImage:IMAGE_NAME(@"微信图标") forState:UIControlStateNormal];
     [rightBtn setTitleColor:COLOR_666666 forState:UIControlStateNormal];
     rightBtn.titleLabel.font = [UIFont systemFontOfSize:12];
@@ -29,7 +29,7 @@
     self.weixinBtn = rightBtn;
     KKButton *telBtn = [KKButton buttonWithType:UIButtonTypeCustom];
     telBtn.tag = 12;
-    [telBtn setTitle:@"12345678911" forState:UIControlStateNormal];
+//    [telBtn setTitle:@"12345678911" forState:UIControlStateNormal];
     [telBtn setImage:IMAGE_NAME(@"小电话图标") forState:UIControlStateNormal];
     [telBtn setTitleColor:COLOR_666666 forState:UIControlStateNormal];
     telBtn.titleLabel.font = [UIFont systemFontOfSize:12];

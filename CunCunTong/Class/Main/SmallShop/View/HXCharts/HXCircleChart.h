@@ -23,6 +23,7 @@
 ///单色
 @property (nonatomic, strong) UIColor *singleColor;
 
+
 ///初始化方法
 - (instancetype)initWithFrame:(CGRect)frame withMaxValue:(CGFloat)maxValue value:(CGFloat)value;
 

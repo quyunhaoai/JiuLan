@@ -8,12 +8,20 @@
 
 #import "CCBaseViewController.h"
 #import "LWExtendButton.h"
+#import <IQKeyboardManager.h>
 @interface CCBaseViewController ()
 
 @end
 	
 @implementation CCBaseViewController
-
+- (void)viewWillAppear:(BOOL)animated{
+     [super viewWillAppear:animated];
+     //点击背景收回键盘
+     [IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;
+ }
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+ }
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = kWhiteColor;
@@ -271,6 +279,9 @@
         if ([self.view.subviews containsObject:self.blankView]) {
             [self.blankView removeFromSuperview];
         }
+        if ([self.view.subviews containsObject:self.errorView]) {
+            [self.errorView removeFromSuperview];
+        }
         self.blankView = [[UIView alloc] init];
         self.blankView.frame = self.baseTableView.frame;
         [self.view addSubview:self.blankView];
@@ -278,6 +289,7 @@
         UIImageView *customBackgournd = [[UIImageView alloc] initWithImage:loadingImage];
         customBackgournd.frame = CGRectMake((Window_W-160)/2, 0, 160, 125);
         customBackgournd.centerY = self.view.centerY - 125 ;
+        customBackgournd.x = (self.baseTableView.width-160)/2;
         [self.blankView addSubview:customBackgournd];
         customBackgournd.contentMode = UIViewContentModeScaleAspectFit;
         LWExtendButton *requestButton = [LWExtendButton buttonWithType:UIButtonTypeCustom];
@@ -296,7 +308,7 @@
         });
         [self.blankView addSubview:tipLabel];
         [tipLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.mas_equalTo(self.view.mas_centerX);
+            make.centerX.mas_equalTo(self.baseTableView.mas_centerX);
             make.top.mas_equalTo(customBackgournd.mas_bottom).mas_offset(5);
             make.width.mas_equalTo(200);
         }];
@@ -323,6 +335,7 @@
         UIImageView *customBackgournd = [[UIImageView alloc] initWithImage:errorImage];
         customBackgournd.frame = CGRectMake((Window_W-160)/2, 0, 160, 125);
         customBackgournd.centerY = self.errorView.centerY - 65;
+        customBackgournd.x = (self.baseTableView.width-160)/2;
         customBackgournd.contentMode = UIViewContentModeScaleAspectFit;
         [self.errorView addSubview:customBackgournd];
         LWExtendButton *requestButton = [LWExtendButton buttonWithType:UIButtonTypeCustom];
@@ -336,7 +349,7 @@
             label.font = [UIFont systemFontOfSize:14];
             label.backgroundColor = [UIColor clearColor];
             label.numberOfLines = 0 ;
-            label.text = @"啊哦 网络开小车";
+            label.text = @"啊哦 网络开小车啦~";
             label;
         });
         [self.errorView addSubview:tipLabel];
@@ -352,11 +365,5 @@
         self.baseTableView.hidden = NO;
     }
 }
-
-
-
-
-
-
 
 @end

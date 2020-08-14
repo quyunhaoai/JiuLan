@@ -40,12 +40,17 @@
             addressLab.textColor = krgb(36,149,143);
             addressLab.font = FONT_15;
             addressLab.text = @"1000";
+            self.title1Lab = addressLab;
         } else if (a == 2) {
             addressLab.textColor = krgb(255,0,0);
             addressLab.font = FONT_15;
             addressLab.text = @"3000";
+            self.title3Lab = addressLab;
         } else if (a == 3){
             addressLab.text = @"库存金额";
+            self.title4Lab = addressLab;
+        } else {
+            self.title2Lab = addressLab;
         }
     }
     

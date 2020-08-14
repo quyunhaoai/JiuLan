@@ -9,6 +9,8 @@
 #import "CCHomeHeaderView.h"
 #import "ImageTitleButton.h"
 #import "SDCycleScrollView.h"
+#import "CCCommodDetaildViewController.h"
+#import "CCMallSubClassViewController.h"
 @interface CCHomeHeaderView()
 //@property (strong, nonatomic) SDCycleScrollView *bgImage;
 
@@ -43,7 +45,7 @@
     
     
     NSArray *arr = @[@"每日特价",@"活动专区",@"热门推荐",@"商品分类"];
-    NSArray *icon = @[@"特价图标",@"推荐图标",@"特价图标",@"catetiy_icon"];
+    NSArray *icon = @[@"特价图标",@"home_active",@"推荐图标",@"catetiy_icon"];
     NSMutableArray *tolAry = [NSMutableArray new];
     for (int i = 0; i <arr.count; i ++) {
         ImageTitleButton *button = [[ImageTitleButton alloc] initWithStyle:EImageTopTitleBottom maggin:UIEdgeInsetsMake(0, 0, 0, 0) padding:CGSizeMake(0, 0)];
@@ -79,11 +81,23 @@
     if (!_bgImage) {
         _bgImage = ({
             SDCycleScrollView *view = [[SDCycleScrollView alloc] init];
-            view.showPageControl = NO;
-//            view.clickItemOperationBlock = ^(NSInteger currentIndex) {
-//
-//            };
-//            view.placeholderImage = IMAGE_NAME(@"banner图");
+            view.showPageControl = YES;
+            view.pageControlBottomOffset = kWidth(130);
+            view.pageControlRightOffset = 20;
+//            view.pageDotColor = kWhiteColor;
+            view.pageControlAliment = SDCycleScrollViewPageContolAlimentRight;
+            view.clickItemOperationBlock = ^(NSInteger currentIndex) {
+                CCLunboTuModel *model = [CCLunboTuModel modelWithJSON:self.photosArray[currentIndex]];
+                if (model.types == 0) {
+                    CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+                    vc.goodsID = STRING_FROM_INTAGER(model.center_goods_id);
+                    [self.viewController.navigationController pushViewController:vc animated:YES];
+                } if (model.types == 1){
+                    CCMallSubClassViewController *vc = [CCMallSubClassViewController new];
+                    vc.categoryID = STRING_FROM_INTAGER(model.category_id);
+                    [self.viewController.navigationController pushViewController:vc animated:YES];
+                }
+            };
             view ;
         });
     }

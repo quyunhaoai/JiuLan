@@ -96,7 +96,6 @@
 - (void)setMiddleView:(UIView *)middleView {
     _middleView = middleView;
     _middleView.center = self.center;
-//    _middleView.centerY = self.centerY-20;
     [self addSubview:_middleView];
 }
 - (void)setContentView:(UIView *)contentView

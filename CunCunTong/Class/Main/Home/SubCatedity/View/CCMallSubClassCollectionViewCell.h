@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CCGoodsDetail.h"
+#import "GBTagListView2.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCMallSubClassCollectionViewCell : UICollectionViewCell
@@ -22,7 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) UILabel *isSelfSupportLab;
 @property (strong, nonatomic) UIImageView *manjianImage;
 @property (strong, nonatomic) UILabel *manjianLab;  
+@property (weak, nonatomic) id<KKCommonDelegate>delegate;
 
+@property (strong, nonatomic) GBTagListView2 *tagContentView; // 
 
 
 @end

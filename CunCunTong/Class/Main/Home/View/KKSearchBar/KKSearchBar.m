@@ -93,6 +93,7 @@
         make.centerY.mas_equalTo(self).mas_offset(_centerYOff);
         make.right.mas_equalTo(self.rightBtn.mas_left).mas_offset(-11);
     }];
+    
 }
 
 - (void)btnClicked:(UIButton *)sender {

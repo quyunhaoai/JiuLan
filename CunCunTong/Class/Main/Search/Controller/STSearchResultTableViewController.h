@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface STSearchResultTableViewController : CCBaseTableViewController
-
+@property (nonatomic,copy) NSString *goods_name;  // 
 @end
 
 NS_ASSUME_NONNULL_END

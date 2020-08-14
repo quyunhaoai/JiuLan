@@ -11,6 +11,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCMubltylabView : CCBaseView
+@property (strong, nonatomic) UILabel *title1Lab;
+@property (strong, nonatomic) UILabel *title2Lab;
+@property (strong, nonatomic) UILabel *title3Lab;
+@property (strong, nonatomic) UILabel *title4Lab;
+
+
+
+
 
 @end
 

@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CCBalanceViewController : CCBaseTableViewController
 @property (weak, nonatomic) IBOutlet UILabel *priceLab;
 @property (weak, nonatomic) IBOutlet KKButton *goPay;
+@property (weak, nonatomic) IBOutlet UIImageView *bgView;
 
 @end
 

@@ -29,7 +29,7 @@
             view.textAlignment = NSTextAlignmentLeft;
             view.layer.masksToBounds = YES;
             view.layer.cornerRadius = 1;
-            view.text = @"零食";
+//            view.text = @"零食";
             view ;
         });
     }

@@ -8,7 +8,25 @@
 
 @end
 @implementation SegmentTapView
-
+- (instancetype)initWithFrame:(CGRect)frame withDataArray:(NSArray *)dataArray withFont:(CGFloat)font wihtLineWidth:(CGFloat)width{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.frame = frame;
+        self.lineWidth = width;
+        self.backgroundColor = [UIColor whiteColor];
+        _buttonsArray = [[NSMutableArray alloc] init];
+        _dataArray = dataArray;
+        _titleFont = font;
+        
+        //默认
+        self.textNomalColor    = [UIColor blackColor];
+        self.textSelectedColor = [UIColor redColor];
+        self.lineColor = [UIColor redColor];
+        
+        [self addSubSegmentView];
+    }
+    return self;
+}
 -(instancetype)initWithFrame:(CGRect)frame withDataArray:(NSArray *)dataArray withFont:(CGFloat)font {
     self = [super initWithFrame:frame];
     if (self) {
@@ -60,15 +78,30 @@
 //            [self addSubview:line];
         }
     }
-    self.lineImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20/_dataArray.count, self.frame.size.height-1, width-(20/_dataArray.count)*2, 1)];
+    self.lineImageView = [[UIImageView alloc] init];
+    if (_lineWidth) {
+        self.lineImageView.frame = CGRectMake(0, self.frame.size.height-1, _lineWidth, 1);
+        self.lineImageView.centerX = [(UIButton *)self.buttonsArray[0] centerX];
+    }else {
+        self.lineImageView.frame = CGRectMake(100/_dataArray.count, self.frame.size.height-1, width-(100/_dataArray.count)*2, 1);
+        self.lineImageView.centerX = [(UIButton *)self.buttonsArray[0] centerX];
+    }
     self.lineImageView.backgroundColor = _lineColor;
     [self addSubview:self.lineImageView];
 }
-
+- (void)setLineWidth:(CGFloat)lineWidth {
+    _lineWidth = lineWidth;
+}
 -(void)tapAction:(id)sender{
     UIButton *button = (UIButton *)sender;
     [UIView animateWithDuration:0.2 animations:^{
-       self.lineImageView.frame = CGRectMake(button.frame.origin.x+(20/_dataArray.count), self.frame.size.height-1, button.frame.size.width-(20/_dataArray.count)*2, 1);
+        if (_lineWidth) {
+            self.lineImageView.frame = CGRectMake(0, self.frame.size.height-1, _lineWidth, 1);
+            self.lineImageView.centerX = [button centerX];
+        } else {
+            self.lineImageView.frame = CGRectMake(button.frame.origin.x+(100/_dataArray.count), self.frame.size.height-1, button.frame.size.width-(100/_dataArray.count)*2, 1);
+        }
+
     }];
     for (UIButton *subButton in self.buttonsArray) {
         if (button == subButton) {
@@ -90,9 +123,10 @@
         }
         else{
             subButton.selected = YES;
-            [UIView animateWithDuration:0.2 animations:^{
-                self.lineImageView.frame = self.imageFrame.size.width ? self.imageFrame:CGRectMake(subButton.frame.origin.x, self.frame.size.height-1, subButton.frame.size.width, 1);
-            }];
+            self.lineImageView.centerX = subButton.centerX;
+//            [UIView animateWithDuration:0.2 animations:^{
+//                self.lineImageView.frame = _lineWidth ? CGRectMake(subButton.frame.origin.x, self.frame.size.height-1, _lineWidth, 1):CGRectMake(subButton.frame.origin.x, self.frame.size.height-1, subButton.frame.size.width, 1);
+//            }];
         }
     }
 }
@@ -101,6 +135,12 @@
     if (_lineColor != lineColor) {
         self.lineImageView.backgroundColor = lineColor;
         _lineColor = lineColor;
+    }
+}
+- (void)setLineHeight:(CGFloat)lineHeight {
+    if (_lineHeight != lineHeight) {
+        self.lineImageView.height = lineHeight;
+        _lineHeight = lineHeight;
     }
 }
 -(void)setTextNomalColor:(UIColor *)textNomalColor{

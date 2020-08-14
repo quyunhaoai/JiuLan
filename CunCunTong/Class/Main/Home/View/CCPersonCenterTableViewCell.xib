@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -48,12 +48,24 @@
                             <constraint firstAttribute="height" constant="1" id="ezS-k2-88A"/>
                         </constraints>
                     </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EdQ-P1-XSn">
+                        <rect key="frame" x="223" y="20.5" width="96" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="TFz-se-HiI"/>
+                            <constraint firstAttribute="width" constant="96" id="oLg-rm-SNG"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="sLb-7S-ag2" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="QrJ-oa-oQJ"/>
+                    <constraint firstItem="sLb-7S-ag2" firstAttribute="leading" secondItem="EdQ-P1-XSn" secondAttribute="trailing" constant="3" id="Tku-3C-CSr"/>
                     <constraint firstItem="KCt-aN-QVO" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="aUE-d1-LEE"/>
                     <constraint firstItem="k7D-GA-f4O" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="0.10000000000000001" id="aga-uD-f1R"/>
                     <constraint firstAttribute="trailing" secondItem="sLb-7S-ag2" secondAttribute="trailing" constant="11" id="dv2-GM-i7Q"/>
+                    <constraint firstItem="EdQ-P1-XSn" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ecu-Ua-8eT"/>
                     <constraint firstAttribute="trailing" secondItem="k7D-GA-f4O" secondAttribute="trailing" constant="0.10000000000000001" id="i7q-0J-dMb"/>
                     <constraint firstItem="KCt-aN-QVO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="13" id="kDe-YX-VAb"/>
                     <constraint firstAttribute="bottom" secondItem="k7D-GA-f4O" secondAttribute="bottom" constant="0.10000000000000001" id="ptF-Ab-mXa"/>
@@ -64,6 +76,7 @@
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="iconImageVice" destination="KCt-aN-QVO" id="O77-Ub-WMp"/>
+                <outlet property="subTitlelab" destination="EdQ-P1-XSn" id="iZl-dZ-geV"/>
                 <outlet property="titleLab" destination="bX0-dB-dMs" id="jM3-AE-DfF"/>
             </connections>
             <point key="canvasLocation" x="145.6521739130435" y="100.44642857142857"/>

@@ -14,7 +14,10 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
 #import "CCSureOrderViewController.h"
 
 #import "CCGoodsDetail.h"
-@interface CCEverDayTeViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "CCGoodsDetailInfoModel.h"
+#import "BottomAlert2Contentview.h"
+#import "CCCommodDetaildViewController.h"
+@interface CCEverDayTeViewController ()<UITableViewDelegate,UITableViewDataSource,KKCommonDelegate>
 @property (strong, nonatomic) CCShopBottomView *bottomView;
 @property (assign, nonatomic) BOOL                   isOpen;
 @property (strong, nonatomic) CCServiceMassageView   *massageView;
@@ -29,6 +32,8 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
     [self setupUI];
     [self addTableViewRefresh];
     [self initData];
+    [kNotificationCenter addObserver:self selector:@selector(requestShopCarData1) name:@"requestShopCarData1" object:nil];
+//    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
 
 - (void)initData {
@@ -60,14 +65,16 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
                         weakSelf.showTableBlankView = YES;
                     }
                  }
+                 [weakSelf.tableView.mj_header endRefreshing];
+                 [weakSelf.tableView.mj_footer endRefreshing];
                  if ([next isKindOfClass:[NSNull class]] || next == nil) {
                      [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
                  } else {
                      [weakSelf.tableView.mj_footer resetNoMoreData];
                  }
-                 [weakSelf.tableView.mj_header endRefreshing];
-                 [weakSelf.tableView.mj_footer endRefreshing];
                  [weakSelf.tableView reloadData];
+                 [weakSelf requestShopCarData1];
+                 weakSelf.page ++;
              }else {
                  if (msg.length>0) {
                      [MBManager showBriefAlert:msg];
@@ -77,10 +84,10 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
              weakSelf.showErrorView = YES;
          }];
     } else {
-        NSDictionary *params = @{@"limit":@(10),
+         NSDictionary *params = @{@"limit":@(10),
                                   @"offset":@(self.page*10),
-         };
-         NSString *path = @"/app0/listpromotegoods/";
+          };
+         NSString *path = [self.titleStr isEqualToString:@"热门推荐"] ? @"/app0/homerecommendgoods/" : @"/app0/listpromotegoods/";
          [[STHttpResquest sharedManager] requestWithMethod:GET
                                                   WithPath:path
                                                 WithParams:params
@@ -102,14 +109,16 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
                          weakSelf.showTableBlankView = YES;
                      }
                  }
+                 [weakSelf.tableView.mj_header endRefreshing];
+                 [weakSelf.tableView.mj_footer endRefreshing];
                  if ([next isKindOfClass:[NSNull class]] || next == nil) {
                      [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
                  } else {
                      [weakSelf.tableView.mj_footer resetNoMoreData];
                  }
-                 [weakSelf.tableView.mj_header endRefreshing];
-                 [weakSelf.tableView.mj_footer endRefreshing];
                  [weakSelf.tableView reloadData];
+                 [weakSelf requestShopCarData1];
+                 weakSelf.page ++;
              }else {
                  if (msg.length>0) {
                      [MBManager showBriefAlert:msg];
@@ -119,67 +128,140 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
              weakSelf.showErrorView = YES;
          }];
     }
- 
 }
+
 - (void)setupUI {
     [self customNavBarWithTitle:self.titleStr];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    [self.tableView registerNib:CCEverDayTeTableViewCell.loadNib forCellReuseIdentifier:cellIdentifier];
+    [self.tableView registerNib:CCEverDayTeTableViewCell.loadNib
+         forCellReuseIdentifier:cellIdentifier];
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT);
-        make.bottom.mas_equalTo(self.view).mas_offset(-(66+HOME_INDICATOR_HEIGHT));
+        make.bottom.mas_equalTo(self.view).mas_offset(-(0+HOME_INDICATOR_HEIGHT));
     }];
-    
-    [self.view addSubview:self.bottomView];
-    [self.bottomView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.bottom.equalTo(self.view).mas_offset(-HOME_INDICATOR_HEIGHT);
-        make.height.mas_equalTo(66);
-    }];
-    self.isOpen = NO;
+    self.baseTableView = self.tableView;
+}
+- (void)requestService {
     XYWeakSelf;
-    _bottomView.clickCallBack = ^(NSInteger tag) {
-        if (tag ==2) {
-            if (!weakSelf.bottomView.isOpen) {
-                CCShopCarView *customContentView = [[CCShopCarView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 554)];
-                weakSelf.bottomView.contentView = customContentView;
-                weakSelf.bottomView.hiddenWhenTapBG = YES;
-                [weakSelf.bottomView show];
-                weakSelf.bottomView.isOpen = YES;
-            } else {
-                [weakSelf.bottomView hide];
-                weakSelf.bottomView.isOpen = NO;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/service/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            [weakSelf.massageView.telBtn setTitle:BACKINFO_DIC_2_STRING(data, @"mobile") forState:UIControlStateNormal];
+            [weakSelf.massageView.weixinBtn setTitle:BACKINFO_DIC_2_STRING(data, @"wx_num") forState:UIControlStateNormal];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
             }
-        } else if(tag == 1){
-            if (!weakSelf.isOpen) {
-                weakSelf.isOpen = YES;
-                [UIView animateWithDuration:0.25 animations:^{
-                    weakSelf.massageView.alpha = 1.0;
-                    weakSelf.massageView.hidden = NO;
-                } completion:^(BOOL finished) {
-                }];
-            } else {
-                weakSelf.isOpen = NO;
-                [UIView animateWithDuration:0.25 animations:^{
-                    weakSelf.massageView.alpha = 0;
-                    weakSelf.massageView.hidden = YES;
-                } completion:^(BOOL finished) {
-                }];
-            }
-        } else {//去结算
-            CCSureOrderViewController *vc = [CCSureOrderViewController new];
-            [weakSelf.navigationController pushViewController:vc animated:YES];
         }
-    };
-    [self.view addSubview:self.massageView];
-    [self.massageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.view).mas_offset(13);
-        make.bottom.mas_equalTo(self.view).mas_offset(-(56+HOME_INDICATOR_HEIGHT));
-        make.width.mas_equalTo(152);
-        make.height.mas_equalTo(78);
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
     }];
-    
+}
+
+- (void)requestShopCarData1 {
+XYWeakSelf;
+NSDictionary *params = @{};
+NSString *path = @"/app0/mcarts/?limit=10";
+[[STHttpResquest sharedManager] requestWithMethod:GET
+                                         WithPath:path
+                                       WithParams:params
+                                 WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+    NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+    NSString *msg = [[dic objectForKey:@"errmsg"] description];
+    if(status == 0){
+        NSDictionary *data = dic[@"data"];
+        NSArray *results = data[@"results"];
+        [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
+                                                   value:results.count
+                                           animationType:WBadgeAnimTypeNone];
+        float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
+        NSString *price = [NSString stringWithFormat:@"￥%.2f",toal_price];
+        //189-00
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
+                                 range:NSMakeRange(0, 1)];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                            green:255.0f/255.0f
+                                                                                             blue:255.0f/255.0f
+                                                                                            alpha:1.0f]
+                                 range:NSMakeRange(0, 1)];
+        //189-00 text-style1
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f]
+                                 range:NSMakeRange(1, price.length-1)];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                            green:255.0f/255.0f
+                                                                                             blue:255.0f/255.0f
+                                                                                            alpha:1.0f]
+                                 range:NSMakeRange(1, price.length-1)];
+        weakSelf.bottomView.priceLab.attributedText = attributedString;
+    }else {
+        if (msg.length>0) {
+            [MBManager showBriefAlert:msg];
+        }
+    }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+    }];
+}
+- (void)requestShopCarData {
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/mcarts/?limit=10";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            CCShopCarView *customContentView = [[CCShopCarView alloc] initWithFrame:CGRectMake(0, 0, Window_W, 554)];
+            customContentView.DataDic = data.mutableCopy;
+            NSArray *results = data[@"results"];
+            [weakSelf.bottomView.shopCarImage showBadgeWithStyle:WBadgeStyleNumber
+                                                       value:results.count
+                                               animationType:WBadgeAnimTypeNone];
+            float toal_price = BACKINFO_DIC_2_FLOAT(data, @"total_price");
+            NSString *price = [NSString stringWithFormat:@"￥%@",STRING_FROM_0_FLOAT(toal_price)];
+            //189-00
+            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:price];
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:16.0f]
+                                     range:NSMakeRange(0, 1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(0, 1)];
+            //189-00 text-style1
+            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"PingFang-SC-Medium" size:19.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255.0f/255.0f
+                                                                                                green:255.0f/255.0f
+                                                                                                 blue:255.0f/255.0f
+                                                                                                alpha:1.0f]
+                                     range:NSMakeRange(1, price.length-1)];
+            weakSelf.bottomView.priceLab.attributedText = attributedString;
+            weakSelf.bottomView.contentView = customContentView;
+            weakSelf.bottomView.hiddenWhenTapBG = YES;
+            [weakSelf.bottomView show];
+            weakSelf.bottomView.isOpen = YES;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 #pragma mark  -  get
 - (CCServiceMassageView *)massageView {
@@ -207,10 +289,16 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
     return self.dataSoureArray.count;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CCEverDayTeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if ([self.titleStr isEqualToString:@"热门推荐"]) {
+        cell.isTejia = NO;
+    } else {
+        cell.isTejia = YES;
+    }
     cell.model = [CCGoodsDetail modelWithJSON:self.dataSoureArray[indexPath.row]];
+    cell.lineView.hidden = NO;
+    cell.delegate = self;
     return cell;
 }
 
@@ -237,8 +325,44 @@ static NSString *cellIdentifier = @"CCEverDayTeTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    STChildrenViewController *vc = [STChildrenViewController new];
-//    [self.navigationController pushViewController:vc animated:YES];
+    CCGoodsDetail *model = [CCGoodsDetail modelWithJSON:self.dataSoureArray[indexPath.row]];
+    CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+    vc.goodsID = STRING_FROM_INTAGER(model.ccid);
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item {
+    CCGoodsDetail *model = (CCGoodsDetail *)item;
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = [NSString stringWithFormat:@"/app0/goodsdetail/%ld/",model.ccid];
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            CCGoodsDetailInfoModel *goodsDetailModel = [CCGoodsDetailInfoModel modelWithJSON:data];
+            NKAlertView *alertView = [[NKAlertView alloc] init];
+            BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
+            customContentView.model = goodsDetailModel;
+            alertView.type = NKAlertViewTypeBottom;
+            alertView.contentView = customContentView;
+            alertView.hiddenWhenTapBG = YES;
+            [alertView show];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 
+- (void)dealloc {
+    [kNotificationCenter removeObserver:self name:@"requestShopCarData1" object:nil];
+}
 @end

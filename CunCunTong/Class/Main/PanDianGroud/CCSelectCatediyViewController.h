@@ -11,10 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCSelectCatediyViewController : CCBaseViewController
+@property (nonatomic,copy) NSString *selectName;  // 
 /*
  *  <#blockNema#> block
  */
-@property (copy, nonatomic) void(^clickCatedity)(NSString *name);
+@property (copy, nonatomic) void(^clickCatedity)(NSString *name,NSString *catedity1ID,NSString *catedity2ID,NSString *catedity3ID);
 
 @end
 

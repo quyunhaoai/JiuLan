@@ -104,6 +104,8 @@
         self.autoresizingMask = UIViewAutoresizingNone;
         // 设置图片为默认图片
         self.image = PYPlaceholderImage;
+        self.layer.masksToBounds = YES;
+        self.layer.cornerRadius = 5;
     }
     return self;
 }

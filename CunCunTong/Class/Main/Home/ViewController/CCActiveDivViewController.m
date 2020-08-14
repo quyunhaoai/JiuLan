@@ -11,8 +11,20 @@
 #import "CCActiveDivHeadView.h"
 #import "CCEverDayTeTableViewCell.h"
 #import "CCEverDayTe.h"
-@interface CCActiveDivViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "BottomAlert2Contentview.h"
+#import "CCGoodsDetail.h"
+#import "CCOrderSearchViewController.h"
+#import "CCCommodDetaildViewController.h"
+#import "SegmentTapView.h"
+#import "CCYouHuiQuan.h"
+#import "CCYouHuiQuanTableViewCell.h"
+#import "XYMallClassifyViewcController.h"
+@interface CCActiveDivViewController ()<UITableViewDelegate,UITableViewDataSource,KKCommonDelegate,SegmentTapViewDelegate>
 @property (strong, nonatomic) CCActiveDivHeadView *headView;
+@property (strong, nonatomic) NSMutableArray *dataArray;
+@property (strong, nonatomic) SegmentTapView *segment; //
+@property (strong, nonatomic) NSArray *titleArray;
+@property (assign, nonatomic) NSInteger listType;    //
 @end
 
 @implementation CCActiveDivViewController
@@ -32,25 +44,193 @@
     [rightBtn sizeToFit];
     [self customNavBarWithtitle:@"活动专区" andLeftView:@"" andRightView:@[rightBtn]];
     self.navTitleView.backgroundColor = [UIColor colorWithPatternImage:IMAGE_NAME(@"矩形1")];
-    
-    [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT);
-    }];
     [self.tableView registerNib:CCEverDayTeTableViewCell.loadNib
          forCellReuseIdentifier:@"CCEverDayTe"];
-    self.headView.frame = CGRectMake(0, 0, Window_W, 263);
-    self.tableView.tableHeaderView = self.headView;
+    self.baseTableView = self.tableView;
     self.tableView.delegate=self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = UIColorHex(0xf7f7f7);
+    [self setupUI];
+    self.listType = 0;
     [self initData];
+    [self addTableViewRefresh];
+    [kNotificationCenter addObserver:self selector:@selector(initData) name:@"refreshYouHuiQuan" object:nil];
 }
 
 - (void)initData {
-    self.dataSoureArray = @[[CCEverDayTe new]].mutableCopy;
+    if (self.listType == 0) {
+        [self initData2];
+    } else if(self.listType == 2){
+        [self getCuXiaoData];
+    } else {
+        [self initData1];
+    }
+}
+
+- (void)setupUI {
+    [self initSegment];
+}
+
+-(void)initSegment{
+    self.titleArray = @[@"优惠券专区",@"抢购专区",@"促销专区"];
+    self.segment = [[SegmentTapView alloc] initWithFrame:CGRectMake(0,
+                                                                    NAVIGATION_BAR_HEIGHT +0,
+                                                                    Window_W,
+                                                                    44)
+                                           withDataArray:self.titleArray
+                                                withFont:15 wihtLineWidth:30];
+    self.segment.backgroundColor = [UIColor colorWithPatternImage:IMAGE_NAME(@"矩形1")];
+    self.segment.delegate = self;
+    self.segment.textSelectedColor = kWhiteColor;
+    self.segment.textNomalColor = kWhiteColor;
+    self.segment.lineColor = kWhiteColor;
+    self.segment.lineHeight = 2;
+    [self.view addSubview:self.segment];
+    [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.view).mas_offset(NAVIGATION_BAR_HEIGHT+ 44);
+    }];
+}
+- (void)selectedIndex:(NSInteger)index {
+    self.listType = index;
+    self.page = 0;
+    [self.dataSoureArray removeAllObjects];
+    [self.dataArray removeAllObjects];
+    if (index == 0) {
+        [self initData2];
+    } else if(index == 2){
+        [self getCuXiaoData];
+    } else {
+        [self initData1];
+    }
+}
+- (void)initData1 {
+    XYWeakSelf;
+    [self.dataSoureArray removeAllObjects];
+    NSString *path = @"/app0/centergoodspromotelist/";
+    NSDictionary *params = @{@"limit":@(10),
+                             @"offset":@(self.page*10),
+    };
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            NSString *next = data[@"next"];
+            NSArray *array = data[@"results"];
+            if (weakSelf.page) {
+                [weakSelf.dataSoureArray addObjectsFromArray:array];
+            } else {
+                weakSelf.dataSoureArray = array.mutableCopy;
+                if (weakSelf.dataSoureArray.count) {
+                    weakSelf.showTableBlankView = NO;
+                } else {
+                    weakSelf.showTableBlankView = YES;
+                }
+            }
+            [weakSelf.tableView.mj_header endRefreshing];
+            [weakSelf.tableView.mj_footer endRefreshing];
+            if ([next isKindOfClass:[NSNull class]] || next == nil) {
+                [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+            } else {
+                [weakSelf.tableView.mj_footer resetNoMoreData];
+            }
+            [weakSelf.tableView reloadData];
+            weakSelf.page++;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+    }];
+}
+- (void)getCuXiaoData {
+    NSString *path = @"/app0/centergoodsreducelist/";
+    XYWeakSelf;
+    NSDictionary *params = @{@"limit":@(10),
+                             @"offset":@(self.page*10),
+    };
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            NSString *next = data[@"next"];
+            NSArray *array = data[@"results"];
+            if (weakSelf.page) {
+                [weakSelf.dataArray addObjectsFromArray:array];
+            } else {
+                weakSelf.dataArray = array.mutableCopy;
+                if (weakSelf.dataArray.count) {
+                    weakSelf.showTableBlankView = NO;
+                } else {
+                    weakSelf.showTableBlankView = YES;
+                }
+            }
+            [weakSelf.tableView.mj_header endRefreshing];
+            [weakSelf.tableView.mj_footer endRefreshing];
+            if ([next isKindOfClass:[NSNull class]] || next == nil) {
+                [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+            } else {
+                [weakSelf.tableView.mj_footer resetNoMoreData];
+            }
+            [weakSelf.tableView reloadData];
+            weakSelf.page++;
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
+}
+- (void)initData2 {
+    XYWeakSelf;
+    [self.dataSoureArray removeAllObjects];
+    NSDictionary *params = @{};
+    NSString *path = @"/app0/coupon/";
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSArray *data = dic[@"data"];
+            if (data.count) {
+                for (NSDictionary *dict in data) {
+                    CCYouHuiQuan *model = [CCYouHuiQuan modelWithJSON:dict];
+                    [weakSelf.dataSoureArray addObject:model];
+                }
+                weakSelf.showTableBlankView = NO;
+            } else {
+                weakSelf.showTableBlankView = YES;
+            }
+            [weakSelf.tableView.mj_header endRefreshing];
+            [weakSelf.tableView.mj_footer endRefreshing];
+            [weakSelf.tableView reloadData];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
 - (void)rightBtn:(UIButton *)button {
-    
+    CCOrderSearchViewController *vc = [CCOrderSearchViewController new];
+    vc.searchStr = @"请输入商品名称";
+    [self.navigationController pushViewController:vc animated:YES];
 }
 - (CCActiveDivHeadView *)headView {
     if (!_headView) {
@@ -58,31 +238,56 @@
     }
     return _headView;
 }
-
+#pragma mark  -  kkcommonDelegate
+- (void)jumpBtnClicked:(id)item {
+    XYMallClassifyViewcController *vc = [XYMallClassifyViewcController new];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.dataSoureArray.count;
+    if (self.listType == 2) {
+        return self.dataArray.count;
+    } else if(self.listType == 0){
+        return self.dataSoureArray.count;
+    } else {
+        return self.dataSoureArray.count;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CCEverDayTeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCEverDayTe"];
-    cell.backgroundColor = kWhiteColor;
-    return cell;
+    if (self.listType == 0) {
+        CCYouHuiQuanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCYouHuiQuan"];
+        cell.isActive = YES;
+        cell.modelccc = self.dataSoureArray[indexPath.row];
+        [cell setDelegate:self];
+        return cell;
+    } else {
+        CCEverDayTeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CCEverDayTe"];
+        cell.backgroundColor = kWhiteColor;
+        if (self.listType ==2) {
+              cell.model = [CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];
+        } else {
+              cell.model = [CCGoodsDetail modelWithJSON:self.dataSoureArray[indexPath.row]];
+        }
+        cell.delegate = self;
+        return cell;
+    }
 }
 
 #pragma mark - Table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *modelName = NSStringFromClass([self.dataSoureArray[indexPath.row] class]);
-    Class CellClass = NSClassFromString([modelName stringByAppendingString:@"TableViewCell"]);
-    return [CellClass height];
+    if (self.listType == 1 || self.listType == 2) {
+        return 130;
+    }
+    return 137;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30.0001f;
+    return 0.0001;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -91,36 +296,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *view = [[UIView alloc] init];
-    UIView *line = [UIView new];
-    line.backgroundColor = krgb(255,69,4);
-    [view addSubview:line];
-    [line mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(view).mas_offset(10);
-        make.size.mas_equalTo(CGSizeMake(3, 14));
-        make.top.mas_equalTo(view).mas_offset(10);
-    }];
-    UILabel *nameLab = ({
-        UILabel *view = [UILabel new];
-        view.textColor =COLOR_333333;
-        view.font = STFont(15);
-        view.lineBreakMode = NSLineBreakByTruncatingTail;
-        view.backgroundColor = [UIColor clearColor];
-        view.textAlignment = NSTextAlignmentLeft;
-        view ;
-    });
-    [view addSubview:nameLab];
-    [nameLab mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(view).mas_offset(20);
-        make.size.mas_equalTo(CGSizeMake(77, 14));
-        make.top.mas_equalTo(view).mas_offset(10);
-    }];
-    if (section == 0) {
-        nameLab.text = @"抢购专区";
-    } else{
-        nameLab.text = @"促销专区";
-    }
     return view;
-
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -129,7 +305,21 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [self tableViewDidSelect:indexPath];
+//    [self tableViewDidSelect:indexPath];
+    CCGoodsDetail *model;
+    if (self.listType==2) {
+        model = [CCGoodsDetail modelWithJSON:self.dataSoureArray[indexPath.row]];
+        CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+        vc.goodsID = STRING_FROM_INTAGER(model.ccid);
+        [self.navigationController pushViewController:vc animated:YES];
+    } else if(self.listType==1){
+        model = [CCGoodsDetail modelWithJSON:self.dataArray[indexPath.row]];
+        CCCommodDetaildViewController *vc = [CCCommodDetaildViewController new];
+        vc.goodsID = STRING_FROM_INTAGER(model.ccid);
+        [self.navigationController pushViewController:vc animated:YES];
+    } else {
+        
+    }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -204,14 +394,47 @@
     cell.selectedBackgroundView = selectedBackgroundView;
     
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)clickButtonWithType:(KKBarButtonType)type item:(id)item {
+    CCGoodsDetail *model = (CCGoodsDetail *)item;
+    XYWeakSelf;
+    NSDictionary *params = @{};
+    NSString *path = [NSString stringWithFormat:@"/app0/goodsdetail/%ld/",model.ccid];
+    [[STHttpResquest sharedManager] requestWithMethod:GET
+                                             WithPath:path
+                                           WithParams:params
+                                     WithSuccessBlock:^(NSDictionary * _Nonnull dic) {
+        NSInteger status = [[dic objectForKey:@"errno"] integerValue];
+        NSString *msg = [[dic objectForKey:@"errmsg"] description];
+        weakSelf.showErrorView = NO;
+        if(status == 0){
+            NSDictionary *data = dic[@"data"];
+            CCGoodsDetailInfoModel *goodsDetailModel = [CCGoodsDetailInfoModel modelWithJSON:data];
+            NKAlertView *alertView = [[NKAlertView alloc] init];
+            BottomAlert2Contentview *customContentView = [[BottomAlert2Contentview alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 554)];
+            customContentView.model = goodsDetailModel;
+            alertView.type = NKAlertViewTypeBottom;
+            alertView.contentView = customContentView;
+            alertView.hiddenWhenTapBG = YES;
+            [alertView show];
+        }else {
+            if (msg.length>0) {
+                [MBManager showBriefAlert:msg];
+            }
+        }
+    } WithFailurBlock:^(NSError * _Nonnull error) {
+        weakSelf.showErrorView = YES;
+    }];
 }
-*/
 
+- (NSMutableArray *)dataArray {
+    if (!_dataArray) {
+        _dataArray = [[NSMutableArray alloc] init];
+    }
+    return _dataArray;
+}
+
+- (void)dealloc {
+    [kNotificationCenter removeObserver:self name:@"refreshYouHuiQuan" object:nil];
+}
 @end

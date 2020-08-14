@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BottomAlertContentView : UIView
 @property (nonatomic, strong)CCGoodsDetailInfoModel *model;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

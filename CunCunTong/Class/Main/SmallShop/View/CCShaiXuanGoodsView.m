@@ -15,7 +15,10 @@
 
 @interface CCShaiXuanGoodsView ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
-
+@property (nonatomic,copy) NSString *catedity1ID;
+@property (nonatomic,copy) NSString *catedity3ID;
+@property (nonatomic,copy) NSString *catedity2ID;
+@property (nonatomic,copy) NSString *pinpaiID;  // <#name#>
 @end
 
 @implementation CCShaiXuanGoodsView
@@ -40,7 +43,7 @@
         self.tableView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame) - 41);
         [self.tableView registerNib:CCTextCustomTableViewCell.loadNib forCellReuseIdentifier:@"cell1234"];
         UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        rightBtn.tag = 12;
+        rightBtn.tag = 11;
         [rightBtn setTitle:@"重置" forState:UIControlStateNormal];
         [rightBtn setTitleColor:COLOR_333333 forState:UIControlStateNormal];
         [rightBtn setTitleColor:kMainColor forState:UIControlStateHighlighted];
@@ -62,6 +65,10 @@
         rightBtn2.layer.cornerRadius = 23;
         [self addSubview:rightBtn2];
         rightBtn2.frame = CGRectMake(CGRectGetWidth(frame)/2, CGRectGetHeight(frame) - 41, CGRectGetWidth(frame)/2, 41);
+        self.pinpaiID = @"";
+        self.catedity1ID = @"";
+        self.catedity2ID = @"";
+        self.catedity3ID = @"";
     }
     return self;
 }
@@ -92,7 +99,7 @@
     }
     if (indexPath.row == 0) {
         cell.textLabel.text = @"商品分类";
-        cell.detailTextLabel.text = @"全部分类";
+        cell.detailTextLabel.text = @"全部类别";
     } else {
         cell.textLabel.text = @"品牌";
         cell.detailTextLabel.text = @"全部品牌";
@@ -108,18 +115,45 @@
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    XYWeakSelf;
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (indexPath.row == 0) {
         CCSelectCatediyViewController *vc = [CCSelectCatediyViewController new];
+        vc.selectName = cell.detailTextLabel.text;
+        vc.clickCatedity = ^(NSString * _Nonnull name, NSString * _Nonnull catedity1ID, NSString * _Nonnull catedity2ID, NSString * _Nonnull catedity3ID) {
+            cell.detailTextLabel.text = name;
+            weakSelf.catedity1ID = catedity1ID;
+            weakSelf.catedity2ID = catedity2ID;
+            weakSelf.catedity3ID = catedity3ID;
+        };
         [self.superview.viewController.navigationController pushViewController:vc animated:YES];
     } else {
         CCSelectPinPaViewController *vc = [CCSelectPinPaViewController new];
+        vc.selename = cell.detailTextLabel.text;
+        vc.clickCatedity = ^(NSString * _Nonnull name, NSInteger ID) {
+            cell.detailTextLabel.text = name;
+            weakSelf.pinpaiID = STRING_FROM_INTAGER(ID);
+        };
         [self.superview.viewController.navigationController pushViewController:vc animated:YES];
     }
 }
 - (void)botBtnClick:(UIButton *)btn
 {
-    NKAlertView *alertView = (NKAlertView *)self.superview;
-    [alertView hide];
+    if (btn.tag == 12) {
+        if (self.blackID) {
+            self.blackID(self.catedity1ID,self.catedity2ID,self.catedity3ID, self.pinpaiID);
+        }
+        NKAlertView *alertView = (NKAlertView *)self.superview;
+        [alertView hide];
+    } else {
+        self.catedity3ID = @"";
+        self.catedity2ID = @"";
+        self.catedity1ID = @"";
+        self.pinpaiID = @"";
+        [self.tableView reloadData];
+    }
+
+
 }
 
 @end

@@ -19,7 +19,8 @@ typedef NS_ENUM(NSInteger, GradientType) {
 };
 
 @interface HXBarChart : UIView
-
+///文字数组
+@property (nonatomic, strong) NSArray *titleArray2;
 ///文字数组
 @property (nonatomic, strong) NSArray *titleArray;
 ///数值数组

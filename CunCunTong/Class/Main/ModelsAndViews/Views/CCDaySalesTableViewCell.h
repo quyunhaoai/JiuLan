@@ -7,7 +7,7 @@
 //
 
 #import "BaseTableViewCell.h"
-
+#import "CCDaySales.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCDaySalesTableViewCell : BaseTableViewCell
@@ -23,10 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *stateBtn;
 
 @property (weak, nonatomic) IBOutlet UIButton *zhanCunBtn;
-
-
-
-
+@property (weak, nonatomic) IBOutlet UIImageView *rightIcon;
+@property (weak, nonatomic) id<KKCommonDelegate>delegate;
+@property (strong,nonatomic)CCDaySales *modelsss;
+@property (assign, nonatomic) BOOL isSales; 
+@property (strong,nonatomic)CCDaySales *models;
+@property (weak, nonatomic) IBOutlet UIView *contentSubView;
 
 + (CGFloat )height;
 @end

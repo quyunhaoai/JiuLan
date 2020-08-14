@@ -11,8 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCGoodsDetailTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UILabel *titleLab;
 
+@property (weak, nonatomic) IBOutlet UILabel *titleLab;
 
 @property (weak, nonatomic) IBOutlet UILabel *subLab;
 
@@ -20,9 +20,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UIImageView *jiantouimageView;
 
+@property (weak, nonatomic) IBOutlet UILabel *strokLab;
 
 
 + (CGFloat )height;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleCenterConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *subTitleConstraint;
 
 
 @end

@@ -10,20 +10,6 @@
 #import "CCGoodsDetail.h"
 #import "GHDropMenuModel.h"
 NS_ASSUME_NONNULL_BEGIN
-//@interface Promote :NSObject
-//@property (nonatomic , assign) NSInteger              types;
-//@property (nonatomic , assign) NSInteger              now_price;
-//@property (nonatomic , assign) NSInteger              old_price;
-//
-//@end
-
-
-//@interface ChildrenItem :NSObject
-//@property (nonatomic , assign) NSInteger              specoption_id;
-//@property (nonatomic , copy) NSString              * specoption_name;
-//
-//@end
-
 
 @interface Spec_setItem :NSObject
 @property (nonatomic , assign) NSInteger              spec_id;
@@ -44,21 +30,30 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , assign) NSInteger              limit;
 @property (nonatomic , assign) NSInteger              types;
 @property (nonatomic , assign) NSInteger              limit_stock;
-@property (nonatomic , assign) NSInteger              old_price;
-@property (nonatomic , assign) NSInteger              now_price;
-
+@property (nonatomic , assign) CGFloat              old_price;
+@property (nonatomic , assign) CGFloat              now_price;
+@property (nonatomic , assign) NSInteger              full;
+@property (nonatomic , assign) NSInteger              give;
 @end
 
+@interface Grid_play_priceItem :NSObject
+@property (nonatomic , assign) NSInteger              play_price;
+@property (nonatomic , assign) NSInteger              down_limit;
+@property (nonatomic , assign) NSInteger              up_limit;
+
+@end
 
 @interface Sku_setItem :NSObject
 @property (nonatomic , assign) NSInteger              sku_id;
 @property (nonatomic , copy) NSString              * image;
 @property (nonatomic , assign) NSInteger              stock;
 @property (nonatomic , assign) BOOL              is_grid_play_price;
-@property (nonatomic , assign) NSInteger              play_price;
+@property (nonatomic , assign) CGFloat              play_price;
 @property (nonatomic , strong) Sku_promote              * sku_promote;
-@property (nonatomic , strong) NSArray <NSNumber *>              * specoption_id_set;
-@property (nonatomic,copy) NSString *specoption_str;  
+@property (nonatomic , strong) NSArray <NSNumber *>     * specoption_id_set;
+@property (nonatomic,copy) NSString                     *specoption_str;
+@property (nonatomic , copy) NSString                   * unit;
+@property (nonatomic , strong) NSArray <Grid_play_priceItem *>              * grid_play_price;
 @end
 
 
@@ -74,13 +69,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Coupon_setItem :NSObject
 @property (assign, nonatomic) NSInteger cut;
 @property (assign, nonatomic) NSInteger types;
-@property (nonatomic,copy) NSString *discount; 
+@property (nonatomic,copy) NSString *discount;
+@property (nonatomic , assign) NSInteger              id;
+@property (nonatomic , copy) NSString              * begin_time;
+@property (nonatomic , copy) NSString              * end_time;
+@property (nonatomic , copy) NSString              * name;
+@property (nonatomic , assign) BOOL              use_selfimage;
+@property (nonatomic , copy) NSString              * selfimage;
+
 @end
 @interface CCGoodsDetailInfoModel : BaseModel
 @property (nonatomic , assign) NSInteger              ccid;
 @property (nonatomic , copy) NSString              * goods_name;
-@property (nonatomic , assign) NSInteger              play_price;
-@property (nonatomic , assign) NSInteger              retail_price;
+@property (nonatomic , assign) CGFloat                play_price;
+@property (nonatomic , assign) CGFloat                retail_price;
 @property (nonatomic , assign) NSInteger              sales;
 @property (nonatomic , assign) NSInteger              stock;
 @property (nonatomic , strong) NSArray <NSString *>              * goodsimage_set;
@@ -90,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , strong) NSArray <Arguments_setItem *>              * arguments_set;
 @property (nonatomic , strong) NSArray <NSString *>              * detailimage_set;
 @property (nonatomic , strong) NSArray <Sku_setItem *>              * sku_set;
-@property (nonatomic , strong) Address              * address;
+@property (nonatomic , strong) Address              *address;
 @property (nonatomic , strong) NSArray <Coupon_setItem *>              * coupon_set;
 @end
 

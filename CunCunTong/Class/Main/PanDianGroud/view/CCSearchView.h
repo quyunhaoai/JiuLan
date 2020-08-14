@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CCSearchView : CCBaseView
 @property (strong, nonatomic) UIView *contentView; 
-
+@property (strong, nonatomic) UITextField *searchTextField;   
 
 @end
 

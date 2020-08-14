@@ -11,10 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCSelectPinPaViewController : CCBaseTableViewController
+@property (nonatomic,copy) NSString *selename;  // 
 /*
  *  <#blockNema#> block
  */
-@property (copy, nonatomic) void(^clickCatedity)(NSString *name);
+@property (copy, nonatomic) void(^clickCatedity)(NSString *name,NSInteger ID);
 @end
 
 NS_ASSUME_NONNULL_END

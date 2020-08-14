@@ -11,6 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CCShaiXuanGoodsView : CCBaseView
+/*
+ *  <#blockNema#> block
+ */
+@property (copy, nonatomic) void(^blackID)(NSString *catedity1ID,NSString *catedity2ID,NSString *catedity3ID,NSString *pinPaiID);
 
 @end
 

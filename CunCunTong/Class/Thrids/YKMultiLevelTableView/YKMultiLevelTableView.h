@@ -12,6 +12,8 @@
 typedef void(^YKSelectBlock)(YKNodeModel *node);
 
 @interface YKMultiLevelTableView : UITableView
-
+@property (nonatomic,copy) NSString *name;  // 
+//all nodes
+@property (nonatomic, copy) NSMutableArray *nodes;
 - (id)initWithFrame:(CGRect)frame nodes:(NSArray*)nodes rootNodeID:(NSString*)rootID needPreservation:(BOOL)need selectBlock:(YKSelectBlock)block;
 @end
